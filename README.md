@@ -3,6 +3,8 @@
 ## Introduction
 Electron density plotter is a tiny tool for generating electron density plots from VASP output.
 
+![CO orbitals generated using EDP](http://www.github.com/ifilot/edp/examples/CO_orbitals.jpg)
+
 ## Compilation
 EDP depends on a couple of libraries, which are normally directly available by your favorite package manager.
 * Boost
