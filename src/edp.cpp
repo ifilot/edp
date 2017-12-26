@@ -122,11 +122,10 @@ int main(int argc, char *argv[]) {
         //**************************************
         // start running the program
         //**************************************
-        std::cout << "==============================================================" << std::endl;
-        std::cout << "Electron Density Plotter v1.1.1" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Ivo Filot <i.a.w.filot@tue.nl>" << std::endl;
-        std::cout << "==============================================================" << std::endl;
+        std::cout << "--------------------------------------------------------------" << std::endl;
+        std::cout << "Executing EDP v.1.1.1" << std::endl;
+        std::cout << "Author: Ivo Filot <i.a.w.filot@tue.nl>" << std::endl;
+        std::cout << "--------------------------------------------------------------" << std::endl;
         std::cout << std::endl;
         std::cout << boost::format("Lattice vector 1: (%12.6f;%12.6f;%12.6f)") % v_in[0] % v_in[1] % v_in[2] << std::endl;
         std::cout << boost::format("Lattice vector 2: (%12.6f;%12.6f;%12.6f)") % w_in[0] % w_in[1] % w_in[2] << std::endl;
@@ -161,8 +160,8 @@ int main(int argc, char *argv[]) {
         elapsed_seconds = end-start;
         std::cout << "Constructed contour plot in " << elapsed_seconds.count() << " seconds." << std::endl;
 
-        std::cout << "==============================================================" << std::endl;
-        std::cout << "Done" << std::endl;
+        std::cout << "--------------------------------------------------------------" << std::endl;
+        std::cout << "Done" << std::endl << std::endl;
 
         return 0;
     } catch (TCLAP::ArgException &e) {
