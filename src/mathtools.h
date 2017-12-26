@@ -29,13 +29,15 @@
 class Vector {
 private:
   float r[3];
+
 public:
-  Vector();
-  Vector(float x, float y, float z);
-  float operator[](const unsigned int &i);
-  const float& operator[](const unsigned int &i) const;
-  float length();
-  void normalize();
+    Vector();
+    Vector(float x, float y, float z);
+    float operator[](const unsigned int &i);
+    const float& operator[](const unsigned int &i) const;
+    float length();
+    void normalize();
+
 private:
 };
 
@@ -44,13 +46,15 @@ private:
  */
 class Matrix {
 private:
-  float* r[3];
+    float* r[3];
+
 public:
-  Matrix();
-  ~Matrix();
-  void inverse();
-  float* operator[](const unsigned int &i);
-  const float* operator[](const unsigned int &i) const;
+    Matrix();
+    ~Matrix();
+    void inverse();
+    float* operator[](const unsigned int &i);
+    const float* operator[](const unsigned int &i) const;
+
 private:
 };
 
@@ -59,12 +63,14 @@ private:
  */
 class Plane {
 private:
-  Vector origin; // origin of the plane
-  Vector normal; // normal vector
+    Vector origin; // origin of the plane
+    Vector normal; // normal vector
+
 public:
-  Plane(const Vector &r, const Vector &n);
+    Plane(const Vector &r, const Vector &n);
+
 private:
-  void parametrize();
+    void parametrize();
 };
 
 #endif //_MATHTOOLS_H

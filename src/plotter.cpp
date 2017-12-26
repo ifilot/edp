@@ -20,25 +20,25 @@
 
 #include "plotter.h"
 
-Plotter::Plotter(const unsigned int &_width, const unsigned int &_height) {
-  this->scheme = new ColorScheme(0, 10);
+Plotter::Plotter(unsigned int _width, unsigned int _height) {
+    this->scheme = new ColorScheme(0, 10, 0);
 
-  this->width = _width;
-  this->height = _height;
+    this->width = _width;
+    this->height = _height;
 
-  this->surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, this->width, this->height);
-  this->cr = cairo_create (this->surface);
+    this->surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, this->width, this->height);
+    this->cr = cairo_create (this->surface);
 
-  this->set_background(Color(255, 252, 213));
+    this->set_background(Color(255, 252, 213));
 }
 
 /*
  * Sets the background color of the image
  */
 void Plotter::set_background(const Color &_color) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_rectangle(this->cr, 0, 0, this->width, this->height);
-  cairo_fill(this->cr);
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_rectangle(this->cr, 0, 0, this->width, this->height);
+    cairo_fill(this->cr);
 }
 
 /*
@@ -47,53 +47,53 @@ void Plotter::set_background(const Color &_color) {
  */
 void Plotter::draw_line(float xstart, float ystart, float xstop, float ystop,
                         const Color &_color, float line_width) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_move_to(this->cr, xstart, ystart);
-  cairo_line_to(this->cr, xstop, ystop);
-  cairo_set_line_width(this->cr, line_width);
-  cairo_stroke(this->cr);
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_move_to(this->cr, xstart, ystart);
+    cairo_line_to(this->cr, xstop, ystop);
+    cairo_set_line_width(this->cr, line_width);
+    cairo_stroke(this->cr);
 }
 
 /*
  * Create a filled rectangle. That is a rectangle without a border.
  */
 void Plotter::draw_filled_rectangle(float xstart, float ystart, float xstop, float ystop,
-                        const Color &_color) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
-  cairo_fill(this->cr);
+                                    const Color &_color) {
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
+    cairo_fill(this->cr);
 }
 
 /*
  * Create an empty rectangle. In other words, just the border of the rectangle.
  */
 void Plotter::draw_empty_rectangle(float xstart, float ystart, float xstop, float ystop,
-                        const Color &_color, float line_width) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
-  cairo_set_line_width(this->cr, line_width);
-  cairo_stroke(this->cr);
+                                   const Color &_color, float line_width) {
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
+    cairo_set_line_width(this->cr, line_width);
+    cairo_stroke(this->cr);
 }
 
 /*
  * Create a filled circle. That is a circle without a border.
  */
 void Plotter::draw_filled_circle(float cx, float cy, float radius,
-                          const Color &_color) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
-  cairo_fill(this->cr);
+                                 const Color &_color) {
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
+    cairo_fill(this->cr);
 }
 
 /*
  * Create an empty circle. In other words, just the border of the circle.
  */
 void Plotter::draw_empty_circle(float cx, float cy, float radius,
-                          const Color &_color, float line_width) {
-  cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
-  cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
-  cairo_set_line_width(this->cr, line_width);
-  cairo_stroke(this->cr);
+                                const Color &_color, float line_width) {
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
+    cairo_set_line_width(this->cr, line_width);
+    cairo_stroke(this->cr);
 }
 
 void Plotter::write(const char* filename) {
@@ -106,8 +106,6 @@ void Plotter::write(const char* filename) {
  *                                                                        *
  **************************************************************************/
 
-#include "color_scheme.h"
-
 /**
  * Constructor
  *
@@ -116,11 +114,11 @@ void Plotter::write(const char* filename) {
  * is within the boundaries set here.
  *
  */
-ColorScheme::ColorScheme(const double &_low, const double &_high) {
-  this->low = _low;
-  this->high = _high;
-  this->construct_scheme();
-  this->convert_scheme();
+ColorScheme::ColorScheme(double _low, double _high, unsigned int scheme_id) {
+    this->low = _low;
+    this->high = _high;
+    this->construct_scheme(scheme_id);
+    this->convert_scheme();
 }
 
 /**
@@ -129,28 +127,46 @@ ColorScheme::ColorScheme(const double &_low, const double &_high) {
  * http://colorbrewer2.org/
  *
  */
-void ColorScheme::construct_scheme() {
-  // this->scheme.push_back("ffffd9");
-  // this->scheme.push_back("edf8b1");
-  // this->scheme.push_back("c7e9b4");
-  // this->scheme.push_back("7fcdbb");
-  // this->scheme.push_back("41b6c4");
-  // this->scheme.push_back("1d91c0");
-  // this->scheme.push_back("225ea8");
-  // this->scheme.push_back("253494");
-  // this->scheme.push_back("081d58");
-
-  this->scheme.push_back("053061");
-  this->scheme.push_back("2166ac");
-  this->scheme.push_back("4393c3");
-  this->scheme.push_back("92c5de");
-  this->scheme.push_back("d1e5f0");
-  this->scheme.push_back("f7f7f7");
-  this->scheme.push_back("fddbc7");
-  this->scheme.push_back("f4a582");
-  this->scheme.push_back("d6604d");
-  this->scheme.push_back("b2182b");
-  this->scheme.push_back("67001f");
+void ColorScheme::construct_scheme(unsigned int scheme_id) {
+    switch(scheme_id) {
+        case 0:
+            this->scheme.push_back("053061");
+            this->scheme.push_back("2166ac");
+            this->scheme.push_back("4393c3");
+            this->scheme.push_back("92c5de");
+            this->scheme.push_back("d1e5f0");
+            this->scheme.push_back("f7f7f7");
+            this->scheme.push_back("fddbc7");
+            this->scheme.push_back("f4a582");
+            this->scheme.push_back("d6604d");
+            this->scheme.push_back("b2182b");
+            this->scheme.push_back("67001f");
+        break;
+        case 1:
+            this->scheme.push_back("ffffd9");
+            this->scheme.push_back("edf8b1");
+            this->scheme.push_back("c7e9b4");
+            this->scheme.push_back("7fcdbb");
+            this->scheme.push_back("41b6c4");
+            this->scheme.push_back("1d91c0");
+            this->scheme.push_back("225ea8");
+            this->scheme.push_back("253494");
+            this->scheme.push_back("081d58");
+        break;
+        default:
+            this->scheme.push_back("053061");
+            this->scheme.push_back("2166ac");
+            this->scheme.push_back("4393c3");
+            this->scheme.push_back("92c5de");
+            this->scheme.push_back("d1e5f0");
+            this->scheme.push_back("f7f7f7");
+            this->scheme.push_back("fddbc7");
+            this->scheme.push_back("f4a582");
+            this->scheme.push_back("d6604d");
+            this->scheme.push_back("b2182b");
+            this->scheme.push_back("67001f");
+        break;
+    }
 }
 
 /**
@@ -159,9 +175,9 @@ void ColorScheme::construct_scheme() {
  *
  */
 void ColorScheme::convert_scheme() {
-  for(unsigned int i=0; i<this->scheme.size(); i++) {
-    this->colors.push_back(this->rgb2color(this->scheme[i]));
-  }
+    for(unsigned int i=0; i<this->scheme.size(); i++) {
+        this->colors.push_back(this->rgb2color(this->scheme[i]));
+    }
 }
 
 /**
@@ -170,9 +186,9 @@ void ColorScheme::convert_scheme() {
  *
  */
 Color ColorScheme::rgb2color(const std::string &_hex) {
-  return Color(this->hex2int(_hex.substr(0,2)),
-               this->hex2int(_hex.substr(2,2)),
-               this->hex2int(_hex.substr(4,2)));
+    return Color(this->hex2int(_hex.substr(0,2)),
+                 this->hex2int(_hex.substr(2,2)),
+                 this->hex2int(_hex.substr(4,2)));
 }
 
 /**
@@ -180,26 +196,26 @@ Color ColorScheme::rgb2color(const std::string &_hex) {
  * Return a color by interpolation by supplying a value
  *
  */
-Color ColorScheme::get_color(const double &_value) {
+Color ColorScheme::get_color(double _value) {
 
-  if(_value > this->high) {
-    return this->colors.back();
-  }
-  if(_value < this->low) {
-    return this->colors.front();
-  }
+    if(_value > this->high) {
+        return this->colors.back();
+    }
+    if(_value < this->low) {
+        return this->colors.front();
+    }
 
-  float binsize = ((this->high - this->low)/(double)(this->colors.size()-1));
-  unsigned int bin = floor((_value - this->low) / binsize);
+    float binsize = ((this->high - this->low)/(double)(this->colors.size()-1));
+    unsigned int bin = floor((_value - this->low) / binsize);
 
-  // interpolate between the two colors
-  float residual = (_value - this->low - (float)bin * binsize) / binsize;
+    // interpolate between the two colors
+    float residual = (_value - this->low - (float)bin * binsize) / binsize;
 
-  float r = residual * this->colors[bin+1].get_r() + (1.0-residual) * this->colors[bin].get_r();
-  float g = residual * this->colors[bin+1].get_g() + (1.0-residual) * this->colors[bin].get_g();
-  float b = residual * this->colors[bin+1].get_b() + (1.0-residual) * this->colors[bin].get_b();
+    float r = residual * this->colors[bin+1].get_r() + (1.0-residual) * this->colors[bin].get_r();
+    float g = residual * this->colors[bin+1].get_g() + (1.0-residual) * this->colors[bin].get_g();
+    float b = residual * this->colors[bin+1].get_b() + (1.0-residual) * this->colors[bin].get_b();
 
-  return Color(r*255,g*255,b*255);
+    return Color(r*255,g*255,b*255);
 }
 
 /**
@@ -208,13 +224,13 @@ Color ColorScheme::get_color(const double &_value) {
  *
  */
 unsigned int ColorScheme::hex2int(const std::string &_hex) {
-  char* offset;
-  if(_hex.length() > 2) {
-    if(_hex[0] == '0' && _hex[1] == 'x') {
-      return strtol(_hex.c_str(), &offset, 0);
+    char* offset;
+    if(_hex.length() > 2) {
+        if(_hex[0] == '0' && _hex[1] == 'x') {
+            return strtol(_hex.c_str(), &offset, 0);
+        }
     }
-  }
-  return strtol(_hex.c_str(), &offset, 16);
+    return strtol(_hex.c_str(), &offset, 16);
 }
 
 /**
@@ -223,9 +239,9 @@ unsigned int ColorScheme::hex2int(const std::string &_hex) {
  *
  */
 Color::Color(unsigned int _r, unsigned int _g, unsigned int _b) {
-  this->r = _r;
-  this->g = _g;
-  this->b = _b;
+    this->r = _r;
+    this->g = _g;
+    this->b = _b;
 }
 
 /**
@@ -234,7 +250,7 @@ Color::Color(unsigned int _r, unsigned int _g, unsigned int _b) {
  *
  */
 float Color::get_r() const {
-  return this->r / 255.0f;
+    return this->r / 255.0f;
 }
 
 /**
@@ -243,7 +259,7 @@ float Color::get_r() const {
  *
  */
 float Color::get_g() const {
-  return this->g / 255.0f;
+    return this->g / 255.0f;
 }
 
 /**
@@ -252,5 +268,5 @@ float Color::get_g() const {
  *
  */
 float Color::get_b() const {
-  return this->b / 255.0f;
+    return this->b / 255.0f;
 }

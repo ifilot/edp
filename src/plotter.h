@@ -30,27 +30,27 @@
 
 class Color {
 private:
-  unsigned int r,g,b;
+    unsigned int r,g,b;
 public:
-  Color(unsigned int _r, unsigned int _g, unsigned int _b);
-  float get_r() const;
-  float get_g() const;
-  float get_b() const;
+    Color(unsigned int _r, unsigned int _g, unsigned int _b);
+    float get_r() const;
+    float get_g() const;
+    float get_b() const;
 };
 
 class ColorScheme {
 private:
-  std::vector<std::string> scheme;
-  std::vector<Color> colors;
-  double low, high;
+    std::vector<std::string> scheme;
+    std::vector<Color> colors;
+    double low, high;
 public:
-  ColorScheme(const double &_low, const double &_high);
-  Color get_color(const double &_value);
+    ColorScheme(double _low, double _high, unsigned int scheme_id);
+    Color get_color(double _value);
 private:
-  void construct_scheme();
-  void convert_scheme();
-  Color rgb2color(const std::string &_hex);
-  unsigned int hex2int(const std::string &_hex);
+    void construct_scheme(unsigned int scheme_id);
+    void convert_scheme();
+    Color rgb2color(const std::string& _hex);
+    unsigned int hex2int(const std::string& _hex);
 };
 
 
@@ -60,20 +60,22 @@ private:
   cairo_surface_t *surface;
   unsigned int width, height;
   ColorScheme *scheme;
+
 public:
-  Plotter(const unsigned int &_width, const unsigned int &_height);
+  Plotter(const unsigned int _width, const unsigned int _height);
   void set_background(const Color &_color);
   void write(const char* filename);
   void draw_filled_rectangle(float xstart, float ystart, float xstop, float ystop,
-                      const Color &_color);
+                             const Color &_color);
   void draw_empty_rectangle(float xstart, float ystart, float xstop, float ystop,
-                      const Color &_color, float line_width);
+                            const Color &_color, float line_width);
   void draw_line(float xstart, float ystart, float xstop, float ystop,
                  const Color &_color, float line_width);
   void draw_filled_circle(float cx, float cy, float radius,
                           const Color &_color);
   void draw_empty_circle(float cx, float cy, float radius,
-                        const Color &_color, float line_width);
+                         const Color &_color, float line_width);
+
 private:
 
 };

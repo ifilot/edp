@@ -24,32 +24,32 @@
  * Default vector constructor
  */
 Vector::Vector() {
-  this->r[0] = 0;
-  this->r[1] = 0;
-  this->r[2] = 0;
+    this->r[0] = 0;
+    this->r[1] = 0;
+    this->r[2] = 0;
 }
 
 /*
  * Specific vector constructor
  */
 Vector::Vector(float x, float y, float z) {
-  this->r[0] = x;
-  this->r[1] = y;
-  this->r[2] = z;
+    this->r[0] = x;
+    this->r[1] = y;
+    this->r[2] = z;
 }
 
 /*
  * Allocator method to place a value in the Vector
  */
 float Vector::operator[](const unsigned int &i) {
-  return this->r[i];
+    return this->r[i];
 }
 
 /*
  * Allocator method to grab a value from the Vector
  */
 const float& Vector::operator[](const unsigned int &i) const {
-  return this->r[i];
+    return this->r[i];
 }
 
 float Vector::length() {
@@ -69,40 +69,40 @@ void Vector::normalize() {
  * Default matrix constructor
  */
 Matrix::Matrix() {
-  for(unsigned int i=0; i<3; i++) {
-    this->r[i] = new float[3];
-    for(unsigned int j=0; j<3; j++) {
-      this->r[i][j] = 0.0f;
+    for(unsigned int i=0; i<3; i++) {
+        this->r[i] = new float[3];
+        for(unsigned int j=0; j<3; j++) {
+            this->r[i][j] = 0.0f;
+        }
     }
-  }
 }
 
 /*
  * Matrix destructor
  */
 Matrix::~Matrix() {
-  for(unsigned int i=0; i<3; i++) {
-    delete[] this->r[i];
-  }
+    for(unsigned int i=0; i<3; i++) {
+        delete[] this->r[i];
+    }
 }
 
 /*
  * Allocator method to place a value in the matrix
  */
 float* Matrix::operator[](const unsigned int &i) {
-  return this->r[i];
+    return this->r[i];
 }
 
 /*
  * Allocator method to grab a value from the matrix
  */
 const float* Matrix::operator[](const unsigned int &i) const {
-  return this->r[i];
+    return this->r[i];
 }
 
 Plane::Plane(const Vector &r, const Vector &n) {
-  this->origin = r;
-  this->normal = n;
+    this->origin = r;
+    this->normal = n;
 }
 
 void Plane::parametrize() {
