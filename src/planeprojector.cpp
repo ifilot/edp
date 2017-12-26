@@ -24,7 +24,7 @@
 PlaneProjector::PlaneProjector(ScalarField* _sf, float _min, float _max) {
     this->min = _min;
     this->max = _max;
-    this->scheme = new ColorScheme(_min, _max, 1);
+    this->scheme = new ColorScheme(_min, _max, 0);
     this->sf = _sf;
 }
 
