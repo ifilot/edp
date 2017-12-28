@@ -18,59 +18,17 @@
  *                                                                        *
  **************************************************************************/
 
-#ifndef _MATHTOOLS_H
-#define _MATHTOOLS_H
+#ifndef _CONFIG_H
+#define _CONFIG_H
 
-#include <cmath>
+#cmakedefine VERSION_MAJOR @VERSION_MAJOR@
+#cmakedefine VERSION_MINOR @VERSION_MINOR@
+#cmakedefine VERSION_MICRO @VERSION_MICRO@
+#define VERSION "@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_MICRO@"
 
-/*
- * Vector class in 3D space
- */
-class Vector {
-private:
-  float r[3];
+static const std::string PROGRAM_VERSION(VERSION);
+static const unsigned int PROGRAM_VERSION_MAJOR = VERSION_MAJOR;
+static const unsigned int PROGRAM_VERSION_MINOR = VERSION_MINOR;
+static const unsigned int PROGRAM_VERSION_MICRO = VERSION_MICRO;
 
-public:
-    Vector();
-    Vector(float x, float y, float z);
-    float operator[](const unsigned int &i);
-    const float& operator[](const unsigned int &i) const;
-    float length();
-    void normalize();
-
-private:
-};
-
-/*
- * 3x3 Matrix class
- */
-class Matrix {
-private:
-    float* r[3];
-
-public:
-    Matrix();
-    ~Matrix();
-    void inverse();
-    float* operator[](const unsigned int &i);
-    const float* operator[](const unsigned int &i) const;
-
-private:
-};
-
-/*
- * Plane class
- */
-class Plane {
-private:
-    Vector origin; // origin of the plane
-    Vector normal; // normal vector
-
-public:
-    Plane(const Vector &r, const Vector &n);
-
-private:
-    void parametrize();
-};
-
-#endif //_MATHTOOLS_H
+#endif // _CONFIG_H

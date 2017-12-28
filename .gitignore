@@ -30,3 +30,4 @@
 build/*
 CHGCAR*
 *.png
+src/config.h

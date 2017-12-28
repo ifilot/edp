@@ -2,13 +2,13 @@
  *                                                                        *
  *   Author: Ivo Filot <i.a.w.filot@tue.nl>                               *
  *                                                                        *
- *   DEN2BIN is free software:                                            *
+ *   EDP is free software:                                                *
  *   you can redistribute it and/or modify it under the terms of the      *
  *   GNU General Public License as published by the Free Software         *
  *   Foundation, either version 3 of the License, or (at your option)     *
  *   any later version.                                                   *
  *                                                                        *
- *   DEN2BIN is distributed in the hope that it will be useful,           *
+ *   EDP is distributed in the hope that it will be useful,               *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty          *
  *   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.              *
  *   See the GNU General Public License for more details.                 *
@@ -50,12 +50,10 @@ void PlaneProjector::extract(Vector _v1, Vector _v2, Vector _s, float _scale, fl
             float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _s[2];
             float val = this->sf->get_value_interp(x,y,z);
             if(negative_values) {
-                if(val < -10) {
+                if(val < 0) {
                     this->planegrid_log[j * this->ix + i] = -log10(-val);
-                } else if(val > 10) {
-                    this->planegrid_log[j * this->ix + i] = log10(val);
                 } else {
-                    this->planegrid_log[j * this->ix + i] = val / 10.0;
+                    this->planegrid_log[j * this->ix + i] = log10(val);
                 }
             } else {
                 // cast negative values to a very small number

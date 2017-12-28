@@ -2,13 +2,13 @@
  *                                                                        *
  *   Author: Ivo Filot <i.a.w.filot@tue.nl>                               *
  *                                                                        *
- *   DEN2BIN is free software:                                            *
+ *   EDP is free software:                                                *
  *   you can redistribute it and/or modify it under the terms of the      *
  *   GNU General Public License as published by the Free Software         *
  *   Foundation, either version 3 of the License, or (at your option)     *
  *   any later version.                                                   *
  *                                                                        *
- *   DEN2BIN is distributed in the hope that it will be useful,           *
+ *   EDP is distributed in the hope that it will be useful,               *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty          *
  *   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.              *
  *   See the GNU General Public License for more details.                 *
@@ -41,6 +41,7 @@
 #include "mathtools.h"
 #include "scalar_field.h"
 #include "planeprojector.h"
+#include "config.h"
 
 int main(int argc, char *argv[]) {
     // command line grabbing
@@ -123,7 +124,7 @@ int main(int argc, char *argv[]) {
         // start running the program
         //**************************************
         std::cout << "--------------------------------------------------------------" << std::endl;
-        std::cout << "Executing EDP v.1.1.1" << std::endl;
+        std::cout << "Executing EDP v." << PROGRAM_VERSION << std::endl;
         std::cout << "Author: Ivo Filot <i.a.w.filot@tue.nl>" << std::endl;
         std::cout << "--------------------------------------------------------------" << std::endl;
         std::cout << std::endl;
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]) {
 
         // construct plane
         start = std::chrono::system_clock::now();
-        PlaneProjector pp(&sf, -4, 1);
+        PlaneProjector pp(&sf, negative_values ? -5 : -4, negative_values ? 5 : 1);
         pp.extract(v1, v2, s, scale, li, hi, lj, hj, negative_values);
         pp.plot();
         pp.isolines(6, negative_values);
