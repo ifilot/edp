@@ -51,9 +51,9 @@ void PlaneProjector::extract(Vector _v1, Vector _v2, Vector _s, float _scale, fl
             float val = this->sf->get_value_interp(x,y,z);
             if(negative_values) {
                 if(val < 0) {
-                    this->planegrid_log[j * this->ix + i] = -log10(-val);
+                    this->planegrid_log[j * this->ix + i] = -std::min(-1e-4, (-log10(-val) - 6.0) / 5.0);
                 } else {
-                    this->planegrid_log[j * this->ix + i] = log10(val);
+                    this->planegrid_log[j * this->ix + i] = -std::max(1e-4, (log10(val) + 6.0) / 5.0);
                 }
             } else {
                 // cast negative values to a very small number
@@ -71,19 +71,15 @@ void PlaneProjector::extract(Vector _v1, Vector _v2, Vector _s, float _scale, fl
 }
 
 void PlaneProjector::isolines(unsigned int bins, bool negative_values) {
-    float binsize = (this->max - this->min) / float(bins + 1);
     if(negative_values) {
-        for(float val = this->min; val < this->max; val += binsize) {
-            if(val < -1) {
-                this->draw_isoline(-pow(10,-val));
-            }
-            if(val > 1) {
-                this->draw_isoline(pow(10,val));
-            }
+        for(float val = -5; val <= 1; val += 1) {
+            this->draw_isoline(-pow(10, val));
+            this->draw_isoline(pow(10, val));
         }
         this->draw_isoline(0);
     } else {
-        for(float val = this->min; val < this->max; val += binsize) {
+        float binsize = (this->max - this->min) / float(bins + 1);
+        for(float val = this->min; val <= this->max; val += binsize) {
             this->draw_isoline(pow(10,val));
         }
         this->draw_isoline(0);
