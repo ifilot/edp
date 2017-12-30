@@ -76,6 +76,10 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<unsigned int> arg_s("s","scale","Scaling in px/angstrom",true, 200,"unsigned integer");
         cmd.add(arg_s);
 
+        // colorscheme id
+        TCLAP::ValueArg<unsigned int> arg_c("c","color-scheme-id","Color scheme ID",false, 0,"unsigned integer");
+        cmd.add(arg_c);
+
         // whether or not negative values are allowed
         TCLAP::SwitchArg arg_negative("n","negative_values","CHGCAR can contain negative values", cmd, false);
 
@@ -118,6 +122,8 @@ int main(int argc, char *argv[]) {
 
         float scale = arg_s.getValue();
 
+        unsigned int color_scheme_id = arg_c.getValue();
+
         bool negative_values = arg_negative.getValue();
 
         //**************************************
@@ -152,7 +158,7 @@ int main(int argc, char *argv[]) {
 
         // construct plane
         start = std::chrono::system_clock::now();
-        PlaneProjector pp(&sf, negative_values ? -1 : -4, negative_values ? 1 : 1);
+        PlaneProjector pp(&sf, negative_values ? -1 : -4, negative_values ? 1 : 1, color_scheme_id);
         pp.extract(v1, v2, s, scale, li, hi, lj, hj, negative_values);
         pp.plot();
         pp.isolines(6, negative_values);

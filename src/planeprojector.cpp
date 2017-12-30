@@ -21,10 +21,10 @@
  #include "planeprojector.h"
 
 
-PlaneProjector::PlaneProjector(ScalarField* _sf, float _min, float _max) {
+PlaneProjector::PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int color_scheme_id) {
     this->min = _min;
     this->max = _max;
-    this->scheme = new ColorScheme(_min, _max, 0);
+    this->scheme = new ColorScheme(_min, _max, color_scheme_id);
     this->sf = _sf;
 }
 

@@ -129,7 +129,7 @@ ColorScheme::ColorScheme(double _low, double _high, unsigned int scheme_id) {
  */
 void ColorScheme::construct_scheme(unsigned int scheme_id) {
     switch(scheme_id) {
-        case 0:
+        case 0: // http://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
             this->scheme.push_back("053061");
             this->scheme.push_back("2166ac");
             this->scheme.push_back("4393c3");
@@ -142,7 +142,7 @@ void ColorScheme::construct_scheme(unsigned int scheme_id) {
             this->scheme.push_back("b2182b");
             this->scheme.push_back("67001f");
         break;
-        case 1:
+        case 1: // http://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
             this->scheme.push_back("ffffd9");
             this->scheme.push_back("edf8b1");
             this->scheme.push_back("c7e9b4");
@@ -152,6 +152,137 @@ void ColorScheme::construct_scheme(unsigned int scheme_id) {
             this->scheme.push_back("225ea8");
             this->scheme.push_back("253494");
             this->scheme.push_back("081d58");
+        break;
+        case 2: // http://colorbrewer2.org/#type=diverging&scheme=BrBG&n=11
+            this->scheme.push_back("543005");
+            this->scheme.push_back("8c510a");
+            this->scheme.push_back("bf812d");
+            this->scheme.push_back("dfc27d");
+            this->scheme.push_back("f6e8c3");
+            this->scheme.push_back("f5f5f5");
+            this->scheme.push_back("c7eae5");
+            this->scheme.push_back("80cdc1");
+            this->scheme.push_back("35978f");
+            this->scheme.push_back("01665e");
+            this->scheme.push_back("003c30");
+        break;
+        case 3: // http://colorbrewer2.org/#type=diverging&scheme=PiYG&n=11
+            this->scheme.push_back("8e0152");
+            this->scheme.push_back("c51b7d");
+            this->scheme.push_back("de77ae");
+            this->scheme.push_back("f1b6da");
+            this->scheme.push_back("fde0ef");
+            this->scheme.push_back("f7f7f7");
+            this->scheme.push_back("e6f5d0");
+            this->scheme.push_back("b8e186");
+            this->scheme.push_back("7fbc41");
+            this->scheme.push_back("4d9221");
+            this->scheme.push_back("276419");
+        break;
+        case 4: // http://colorbrewer2.org/#type=diverging&scheme=RdYlGn&n=11
+            this->scheme.push_back("a50026");
+            this->scheme.push_back("d73027");
+            this->scheme.push_back("f46d43");
+            this->scheme.push_back("fdae61");
+            this->scheme.push_back("fdae61");
+            this->scheme.push_back("ffffbf");
+            this->scheme.push_back("d9ef8b");
+            this->scheme.push_back("a6d96a");
+            this->scheme.push_back("66bd63");
+            this->scheme.push_back("1a9850");
+            this->scheme.push_back("006837");
+        break;
+        case 5: // http://colorbrewer2.org/#type=sequential&scheme=PuBuGn&n=9
+            this->scheme.push_back("fff7fb");
+            this->scheme.push_back("ece2f0");
+            this->scheme.push_back("d0d1e6");
+            this->scheme.push_back("a6bddb");
+            this->scheme.push_back("67a9cf");
+            this->scheme.push_back("3690c0");
+            this->scheme.push_back("02818a");
+            this->scheme.push_back("016c59");
+            this->scheme.push_back("014636");
+        break;
+        case 6: http://colorbrewer2.org/#type=sequential&scheme=RdPu&n=9
+            this->scheme.push_back("fff7f3");
+            this->scheme.push_back("fde0dd");
+            this->scheme.push_back("fcc5c0");
+            this->scheme.push_back("fa9fb5");
+            this->scheme.push_back("f768a1");
+            this->scheme.push_back("dd3497");
+            this->scheme.push_back("ae017e");
+            this->scheme.push_back("7a0177");
+            this->scheme.push_back("49006a");
+        break;
+        case 7: // http://tristen.ca/hcl-picker/#/hlc/6/1.05/CAF270/453B52
+            this->scheme.push_back("CAF270");
+            this->scheme.push_back("73D487");
+            this->scheme.push_back("30B097");
+            this->scheme.push_back("288993");
+            this->scheme.push_back("41607A");
+            this->scheme.push_back("453B52");
+        break;
+        case 8: // http://tristen.ca/hcl-picker/#/hlc/6/1.05/80C5F4/411D1E
+            this->scheme.push_back("80C5F4");
+            this->scheme.push_back("929ACB");
+            this->scheme.push_back("92729C");
+            this->scheme.push_back("824F6B");
+            this->scheme.push_back("653340");
+            this->scheme.push_back("411D1E");
+        break;
+        case 9: // http://tristen.ca/hcl-picker/#/hlc/6/1/21313E/EFEE69
+            this->scheme.push_back("21313E");
+            this->scheme.push_back("20575F");
+            this->scheme.push_back("268073");
+            this->scheme.push_back("53A976");
+            this->scheme.push_back("98CF6F");
+            this->scheme.push_back("EFEE69");
+        break;
+        case 10: // http://tristen.ca/hcl-picker/#/clh/6/253/134695/D8C8BC
+            this->scheme.push_back("D8C8BC");
+            this->scheme.push_back("B4ABC5");
+            this->scheme.push_back("8F90C5");
+            this->scheme.push_back("6876BD");
+            this->scheme.push_back("415DAD");
+            this->scheme.push_back("134695");
+        break;
+        case 11: // http://tristen.ca/hcl-picker/#/clh/6/253/134695/D8C8BC
+            this->scheme.push_back("134695");
+            this->scheme.push_back("415DAD");
+            this->scheme.push_back("6876BD");
+            this->scheme.push_back("8F90C5");
+            this->scheme.push_back("B4ABC5");
+            this->scheme.push_back("D8C8BC");
+        break;
+        case 12: // http://gka.github.io/palettes/#diverging|c0=darkred,deeppink,lightyellow|c1=lightyellow,lightgreen,teal|steps=13|bez0=1|bez1=1|coL0=1|coL1=1
+            this->scheme.push_back("008080");
+            this->scheme.push_back("399785");
+            this->scheme.push_back("5aaf8c");
+            this->scheme.push_back("7ac696");
+            this->scheme.push_back("9edba4");
+            this->scheme.push_back("c7f0ba");
+            this->scheme.push_back("ffffe0");
+            this->scheme.push_back("ffd1c9");
+            this->scheme.push_back("fea0ac");
+            this->scheme.push_back("ef738b");
+            this->scheme.push_back("d84765");
+            this->scheme.push_back("b61d39");
+            this->scheme.push_back("8b0000");
+        break;
+        case 13: // http://gka.github.io/palettes/#diverging|c0=darkred,lightyellow|c1=lightyellow,lightgreen,teal|steps=13|bez0=1|bez1=1|coL0=1|coL1=1
+            this->scheme.push_back("008080");
+            this->scheme.push_back("399785");
+            this->scheme.push_back("5aaf8c");
+            this->scheme.push_back("7ac696");
+            this->scheme.push_back("9edba4");
+            this->scheme.push_back("c7f0ba");
+            this->scheme.push_back("ffffe0");
+            this->scheme.push_back("f1d7b7");
+            this->scheme.push_back("e2b08f");
+            this->scheme.push_back("cf8a69");
+            this->scheme.push_back("bb6345");
+            this->scheme.push_back("a43c23");
+            this->scheme.push_back("8b0000");
         break;
         default:
             this->scheme.push_back("053061");

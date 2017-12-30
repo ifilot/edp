@@ -24,3 +24,11 @@ make -j5
 
 ## Usage
 A short tutorial on using the program is provided in this [blog post](http://www.ivofilot.nl/posts/view/27/Visualising+the+electron+density+of+the+binding+orbitals+of+the+CO+molecule+using+VASP).
+
+## References
+
+Color schemes have been taken from the following sources
+
+* [Color brewer 2.0](http://colorbrewer2.org)
+* [Colorpicker for data (tristen.ca)](http://tristen.ca/hcl-picker/#/hlc/6/1.05/CAF270/453B52)
+* [Chroma.js Color Scale Helper](http://gka.github.io/palettes)
