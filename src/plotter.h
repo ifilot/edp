@@ -76,6 +76,14 @@ public:
   void draw_empty_circle(float cx, float cy, float radius,
                          const Color &_color, float line_width);
 
+  cairo_text_extents_t get_text_bounds(float fontsize, const std::string& text);
+
+  void type(float x, float y, float fontsize, float rotation, const Color &_color, const std::string &_text);
+
+  inline auto get_cairo_ptr() {
+    return this->cr;
+  }
+
 private:
 
 };

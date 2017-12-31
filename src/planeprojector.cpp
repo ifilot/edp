@@ -20,7 +20,14 @@
 
  #include "planeprojector.h"
 
-
+/**
+ * @brief      constructor
+ *
+ * @param      _sf              pointer to ScalarField
+ * @param[in]  _min             minimum value
+ * @param[in]  _max             maximum value
+ * @param[in]  color_scheme_id  The color scheme identifier
+ */
 PlaneProjector::PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int color_scheme_id) {
     this->min = _min;
     this->max = _max;
@@ -34,6 +41,7 @@ void PlaneProjector::extract(Vector _v1, Vector _v2, Vector _s, float _scale, fl
     _v1.normalize();
     _v2.normalize();
 
+    this->scale = _scale;
     this->ix = int((hi - li) * _scale);
     this->iy = int((hj - lj) * _scale);
 
@@ -83,6 +91,38 @@ void PlaneProjector::isolines(unsigned int bins, bool negative_values) {
             this->draw_isoline(pow(10,val));
         }
         this->draw_isoline(0);
+    }
+}
+
+void PlaneProjector::draw_legend(unsigned int bins, bool negative_values) {
+    // set cairo font
+    cairo_select_font_face(this->plt->get_cairo_ptr(), "monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+
+    // set sizes
+    const float size = this->scale;
+    const float fontsize = 28.f / 100.f * this->scale;
+    const float offset = size / 10;
+
+    auto bounds = this->plt->get_text_bounds(fontsize, "eV / A^3");
+    this->plt->type(this->ix - size / 2 - bounds.width, size / 2 - bounds.height / 2, fontsize, 0, Color(0,0,0), "eV / A^3");
+
+    float yy = 0;
+    for(float val = this->max; val >= this->min; val--) {
+        this->plt->draw_filled_rectangle(this->ix - size, size / 2.0f + yy, size / 2.0f, size / 2.0f, this->scheme->get_color(val));
+        this->plt->draw_empty_rectangle(this->ix - size, size / 2.0f + yy, size / 2.0f, size / 2.0f, Color(0,0,0), 1);
+
+        // calculate bounds
+        auto bounds1 = this->plt->get_text_bounds(fontsize, "10");
+        auto bounds2 = this->plt->get_text_bounds(20.f / 32.f * fontsize, "00");
+
+        // print 10
+        this->plt->type(this->ix - size - (bounds1.width + bounds2.width) - offset, (yy + 0.75 * size) + (bounds1.height + bounds2.height) / 2, fontsize, 0, Color(0,0,0), "10");
+
+        // print power
+        const std::string txt = (boost::format("% i") % val).str();
+        this->plt->type(this->ix - size - bounds2.width - offset, (yy + 0.75 * size) + (bounds1.height + bounds2.height) / 2 - bounds1.height, 20.f / 32.f * fontsize, 0, Color(0,0,0), txt);
+
+        yy += size / 2.0f;
     }
 }
 

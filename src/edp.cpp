@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
         cmd.add(arg_w);
 
         // scaling constant
-        TCLAP::ValueArg<unsigned int> arg_s("s","scale","Scaling in px/angstrom",true, 200,"unsigned integer");
+        TCLAP::ValueArg<unsigned int> arg_s("s","scale","Scaling in px/angstrom",false, 100,"unsigned integer");
         cmd.add(arg_s);
 
         // colorscheme id
@@ -82,6 +82,9 @@ int main(int argc, char *argv[]) {
 
         // whether or not negative values are allowed
         TCLAP::SwitchArg arg_negative("n","negative_values","CHGCAR can contain negative values", cmd, false);
+
+        // whether or not to print a legend
+        TCLAP::SwitchArg arg_legend("l","legend","Print legend", cmd, false);
 
         cmd.parse(argc, argv);
 
@@ -125,6 +128,7 @@ int main(int argc, char *argv[]) {
         unsigned int color_scheme_id = arg_c.getValue();
 
         bool negative_values = arg_negative.getValue();
+        bool print_legend = arg_legend.getValue();
 
         //**************************************
         // start running the program
@@ -162,6 +166,9 @@ int main(int argc, char *argv[]) {
         pp.extract(v1, v2, s, scale, li, hi, lj, hj, negative_values);
         pp.plot();
         pp.isolines(6, negative_values);
+        if(print_legend) {
+            pp.draw_legend(6, negative_values);
+        }
         pp.write(output_filename);
         end = std::chrono::system_clock::now();
         elapsed_seconds = end-start;

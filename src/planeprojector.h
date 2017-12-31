@@ -22,6 +22,8 @@
 #define _PLANEPROJECTOR_H
 
 #include <algorithm>
+#include <boost/format.hpp>
+
 #include "plotter.h"
 #include "mathtools.h"
 #include "scalar_field.h"
@@ -37,11 +39,23 @@ private:
     float min, max;
 
     int ix, iy;
+    float scale;
+
 public:
+
+    /**
+     * @brief      constructor
+     *
+     * @param      _sf              pointer to ScalarField
+     * @param[in]  _min             minimum value
+     * @param[in]  _max             maximum value
+     * @param[in]  color_scheme_id  The color scheme identifier
+     */
     PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int color_scheme_id);
     void extract(Vector _v1, Vector _v2, Vector _s, float _scale, float li, float hi, float lj, float hj, bool negative_values);
     void plot();
     void isolines(unsigned int bins, bool negative_values);
+    void draw_legend(unsigned int bins, bool negative_values);
     void write(std::string filename);
     ~PlaneProjector();
 private:

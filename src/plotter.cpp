@@ -100,6 +100,24 @@ void Plotter::write(const char* filename) {
   cairo_surface_write_to_png(this->surface, filename);
 }
 
+void Plotter::type(float x, float y, float fontsize, float rotation, const Color &_color, const std::string &_text) {
+    cairo_text_extents_t te;
+    cairo_set_source_rgb(this->cr, _color.get_r(), _color.get_g(), _color.get_b());
+    cairo_set_font_size(this->cr, fontsize);
+    cairo_text_extents (this->cr, "a", &te);
+    cairo_move_to(this->cr, x, y);
+    cairo_rotate(this->cr, rotation * M_PI / 180.);
+    cairo_show_text (this->cr, _text.c_str());
+    cairo_rotate(this->cr, -rotation * M_PI / 180.); // rotate back
+}
+
+cairo_text_extents_t Plotter::get_text_bounds(float fontsize, const std::string& text) {
+    cairo_text_extents_t te;
+    cairo_set_font_size(this->cr, fontsize);
+    cairo_text_extents (this->cr, text.c_str(), &te);
+    return te;
+}
+
 /**************************************************************************
  *                                                                        *
  *   Color scheme and colors                                              *
@@ -283,6 +301,15 @@ void ColorScheme::construct_scheme(unsigned int scheme_id) {
             this->scheme.push_back("bb6345");
             this->scheme.push_back("a43c23");
             this->scheme.push_back("8b0000");
+        break;
+        case 14: // http://paletton.com/#uid=52T0M0kkJlXa9xzfrrfq5gAvubc
+            this->scheme.push_back("96A93C");
+            this->scheme.push_back("2F8441");
+            this->scheme.push_back("2F4C73");;
+        break;
+        case 15: // black and white
+            this->scheme.push_back("000000");
+            this->scheme.push_back("FFFFFF");
         break;
         default:
             this->scheme.push_back("053061");
