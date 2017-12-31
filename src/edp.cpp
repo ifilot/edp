@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
 
         // construct plane
         start = std::chrono::system_clock::now();
-        PlaneProjector pp(&sf, negative_values ? -1 : -4, negative_values ? 1 : 1, color_scheme_id);
+        PlaneProjector pp(&sf, negative_values ? -1 : -7, negative_values ? 1 : 1, color_scheme_id);
         pp.extract(v1, v2, s, scale, li, hi, lj, hj, negative_values);
         pp.plot();
         pp.isolines(6, negative_values);
