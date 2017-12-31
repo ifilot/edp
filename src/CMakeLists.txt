@@ -83,7 +83,7 @@ file(GLOB_RECURSE SOURCES "*.cpp")
 add_executable(edp ${SOURCES})
 
 # Set C++14
-add_definitions(-std=c++17 -march=native)
+add_definitions(-std=c++14)
 
 # Link libraries
 if(UNIX AND NOT APPLE)
