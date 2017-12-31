@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
         pp.plot();
         pp.isolines(6, negative_values);
         if(print_legend) {
-            pp.draw_legend(6, negative_values);
+            pp.draw_legend(negative_values);
         }
         pp.write(output_filename);
         end = std::chrono::system_clock::now();

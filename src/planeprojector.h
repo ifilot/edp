@@ -40,6 +40,7 @@ private:
 
     int ix, iy;
     float scale;
+    unsigned int color_scheme_id;
 
 public:
 
@@ -51,16 +52,77 @@ public:
      * @param[in]  _max             maximum value
      * @param[in]  color_scheme_id  The color scheme identifier
      */
-    PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int color_scheme_id);
-    void extract(Vector _v1, Vector _v2, Vector _s, float _scale, float li, float hi, float lj, float hj, bool negative_values);
+    PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int _color_scheme_id);
+
+    /**
+     * @brief      plot contour plane
+     */
     void plot();
+
+    /**
+     * @brief      extract plane from scalar field
+     *
+     * @param[in]  _v1              direction vector 1
+     * @param[in]  _v2              direction vector 2
+     * @param[in]  _s               position vector
+     * @param[in]  _scale           scaling constant (from Angstrom to pixels)
+     * @param[in]  li               extend in -v1 direction in Angstrom
+     * @param[in]  hi               extend in +v1 direction in Angstrom
+     * @param[in]  lj               extend in -v2 direction in Angstrom
+     * @param[in]  hj               extend in +v2 direction in Angstrom
+     * @param[in]  negative_values  whether there are negative values in the plot
+     */
+    void extract(Vector _v1, Vector _v2, Vector _s, float _scale, float li, float hi, float lj, float hj, bool negative_values);
+
+    /**
+     * @brief      draw isolines
+     *
+     * @param[in]  bins             number of bins
+     * @param[in]  negative_values  whether there are negative values in the plot
+     */
     void isolines(unsigned int bins, bool negative_values);
-    void draw_legend(unsigned int bins, bool negative_values);
+
+    /**
+     * @brief      Draws a legend.
+     *
+     * @param[in]  negative_values  whether there are negative values in the plot
+     */
+    void draw_legend(bool negative_values);
+
+    /**
+     * @brief      write contour plane to file
+     *
+     * @param[in]  filename  path to png file
+     */
     void write(std::string filename);
+
+    /**
+     * @brief      Destroys the object.
+     */
     ~PlaneProjector();
 private:
+
+    /**
+     * @brief      reposition plane within the boundaries of the unit cell
+     */
     void cut_and_recast_plane();
+
+    /**
+     * @brief      draw a single isoline
+     *
+     * @param[in]  val   value of the isoline
+     */
     void draw_isoline(float val);
+
+    /**
+     * @brief      determines whether a value on the pixel the isovalue is crossing
+     *
+     * @param[in]  i     index i on contour plane
+     * @param[in]  j     index j on contour plane
+     * @param[in]  val   isovalue
+     *
+     * @return     True if crossing, False otherwise.
+     */
     bool is_crossing(const unsigned int &i, const unsigned int &j, const float &val);
 };
 
