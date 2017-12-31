@@ -42,8 +42,9 @@ A short tutorial on using the program is provided in this [blog post](http://www
 
 ## References
 
-Color schemes have been taken from the following sources
+Color schemes have been taken from the following sources. Details can be found in [plotter.cpp](https://raw.githubusercontent.com/ifilot/edp/master/src/plotter.cpp).
 
 * [Color brewer 2.0](http://colorbrewer2.org)
 * [Colorpicker for data (tristen.ca)](http://tristen.ca/hcl-picker/#/hlc/6/1.05/CAF270/453B52)
 * [Chroma.js Color Scale Helper](http://gka.github.io/palettes)
+* [Paletton](http://paletton.com/)
