@@ -42,13 +42,14 @@ class ScalarField{
 private:
     std::string filename;
     float scalar;
-    float mat[3][3];    //!< matrix dimensions
-    float imat[3][3];   //!< inverse of matrix
-    glm::mat3 mat33;    //!< glm version of the matrix
-    float volume;       //!< unit cell volume
+    float mat[3][3];            //!< matrix dimensions
+    float imat[3][3];           //!< inverse of matrix
+    glm::mat3 mat33;            //!< glm version of the matrix
+    float volume;               //!< unit cell volume
 
     unsigned int grid_dimensions[3];
     std::vector<unsigned int> nrat;
+    std::vector<glm::vec3> atom_pos;
     std::string gridline;
     std::vector<float> gridptr;  //!< grid to first pos of float array
     std::vector<float> gridptr2; //!< grid to first pos of float array
@@ -75,6 +76,8 @@ public:
 
     void read();
 
+    void read_header_and_atoms();
+
     float get_value_interp(float x, float y, float z) const;
 
     float get_value(unsigned int i, unsigned int j, unsigned int k) const;
@@ -87,9 +90,11 @@ public:
 
     void copy_grid_dimensions(unsigned int _grid_dimensions[]) const;
 
-    float get_max();
+    float get_max() const;
 
-    float get_min();
+    float get_min() const;
+
+    glm::vec3 get_atom_position(unsigned int atid) const;
 
     inline const glm::mat3& get_mat_unitcell() const {
         return this->mat33;
@@ -112,7 +117,8 @@ private:
     void read_scalar();
     void read_matrix();
     void read_grid_dimensions();
-    void read_atoms();
+    void read_nr_atoms();
+    void read_atom_positions();
     void read_grid();
     float get_max_direction(unsigned int dim);
     void calculate_inverse();

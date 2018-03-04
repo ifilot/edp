@@ -90,19 +90,33 @@ void ScalarField::output() const {
  * Usage: sf.read(true);
  *
  */
-void ScalarField::read() {
-    if(has_read) {
+void ScalarField::read_header_and_atoms() {
+    if(this->header_read) {
         return;
     }
 
-    if(!this->header_read) {
-        this->test_vasp5();
-        this->read_scalar();
-        this->read_matrix();
-        this->read_atoms();
-        this->read_grid_dimensions();
+    this->test_vasp5();
+    this->read_scalar();
+    this->read_matrix();
+    this->read_nr_atoms();
+    this->read_atom_positions();
+    this->read_grid_dimensions();
+}
+
+/*
+ * void read()
+ *
+ * Wrapper function that reads in the OUTCAR file
+ *
+ * Usage: sf.read(true);
+ *
+ */
+void ScalarField::read() {
+    if(this->has_read) {
+        return;
     }
 
+    this->read_header_and_atoms();
     this->read_grid();
 }
 
@@ -200,7 +214,7 @@ void ScalarField::read_matrix() {
 }
 
 /*
- * void read_atoms()
+ * void read_nr_atoms()
  *
  * Read the number of atoms of each element. These
  * numbers are used to skip the required amount of
@@ -213,7 +227,7 @@ void ScalarField::read_matrix() {
  * wrapper function.
  *
  */
-void ScalarField::read_atoms() {
+void ScalarField::read_nr_atoms() {
     std::ifstream infile(this->filename.c_str());
     std::string line;
     for(unsigned int i=0; i < (this->vasp5_input ? 7 : 6); i++) { // discard first two lines
@@ -227,6 +241,29 @@ void ScalarField::read_atoms() {
         boost::trim(pieces[i]);
         this->nrat.push_back(boost::lexical_cast<unsigned int>(pieces[i]));
     }
+
+    infile.close();
+}
+
+void ScalarField::read_atom_positions() {
+    std::ifstream infile(this->filename.c_str());
+    std::string line;
+    // skip lines that contain atoms
+    for(unsigned int i=0; i<(this->vasp5_input ? 8 : 7); i++) {
+        std::getline(infile, line);
+    }
+
+    // read the atom positions
+    for(unsigned int i=0; i<this->nrat.size(); i++) {
+        for(unsigned int j=0; j<this->nrat[i]; j++) {
+                std::getline(infile, line);
+                std::vector<std::string> pieces;
+                boost::split(pieces, line, boost::is_any_of("\t "), boost::token_compress_on);
+                this->atom_pos.push_back(glm::vec3(boost::lexical_cast<float>(pieces[1]), boost::lexical_cast<float>(pieces[2]), boost::lexical_cast<float>(pieces[3])));
+        }
+    }
+
+    infile.close();
 }
 
 /*
@@ -245,13 +282,15 @@ void ScalarField::read_atoms() {
 void ScalarField::read_grid_dimensions() {
     std::ifstream infile(this->filename.c_str());
     std::string line;
-    // skip lines that contain atoms
+    // skip lines
     for(unsigned int i=0; i<(this->vasp5_input ? 10 : 9); i++) {
         std::getline(infile, line);
     }
+
+    // // skip atom positions
     for(unsigned int i=0; i<this->nrat.size(); i++) {
         for(unsigned int j=0; j<this->nrat[i]; j++) {
-                std::getline(infile, line);
+            std::getline(infile, line);
         }
     }
 
@@ -263,6 +302,11 @@ void ScalarField::read_grid_dimensions() {
     for(unsigned int i=0; i<pieces.size(); i++) {
         this->grid_dimensions[i] = boost::lexical_cast<unsigned int>(pieces[i]);
     }
+
+    this->gridsize = this->grid_dimensions[0] * this->grid_dimensions[1] * this->grid_dimensions[2];
+    this->header_read = true;
+
+    infile.close();
 }
 
 /*
@@ -280,24 +324,16 @@ void ScalarField::read_grid_dimensions() {
  *
  */
 void ScalarField::read_grid() {
-    if(!this->header_read) {
-        this->header_read = true;
-        this->infile.open(this->filename.c_str());
-        std::string line;
-        // skip lines that contain atoms
-        unsigned int skiplines = 0;
-        for(unsigned int i=0; i<(this->vasp5_input ? 10 : 9); i++) {
-            std::getline(this->infile, line);
-            skiplines++;
-        }
-        for(unsigned int i=0; i<this->nrat.size(); i++) {
-            for(unsigned int j=0; j<this->nrat[i]; j++) {
-                    std::getline(this->infile, line);
-                    skiplines++;
-            }
-        }
+    this->read_header_and_atoms();
 
-        this->gridsize = this->grid_dimensions[0] * this->grid_dimensions[1] * this->grid_dimensions[2];
+    this->infile.open(this->filename.c_str());
+    std::string line;
+    // skip irrelevant lines
+    for(unsigned int i=0; i<(this->vasp5_input ? 10 : 9); i++) {
+        std::getline(this->infile, line);
+    }
+    for(unsigned int i=0; i<this->atom_pos.size(); i++) {
+        std::getline(this->infile, line);
     }
 
     float_parser p;
@@ -305,7 +341,6 @@ void ScalarField::read_grid() {
     /* read spin up */
     unsigned int linecounter=0; // for the counter
     static const boost::regex regex_augmentation("augmentation.*");
-    std::string line;
 
     while(std::getline(this->infile, line)) {
         // stop looping when a second gridline appears (this
@@ -344,6 +379,8 @@ void ScalarField::read_grid() {
             this->has_read = true;
         }
     }
+
+    infile.close();
 }
 
 /*
@@ -554,10 +591,18 @@ void ScalarField::copy_grid_dimensions(unsigned int _grid_dimensions[]) const {
     }
 }
 
-float ScalarField::get_max() {
+float ScalarField::get_max() const {
     return *std::max_element(this->gridptr.begin(), this->gridptr.end());
 }
 
-float ScalarField::get_min() {
+float ScalarField::get_min() const {
     return *std::min_element(this->gridptr.begin(), this->gridptr.end());
+}
+
+glm::vec3 ScalarField::get_atom_position(unsigned int atid) const {
+    if(atid < this->atom_pos.size()) {
+        return this->mat33 * this->atom_pos[atid];
+    } else {
+        throw std::runtime_error("Requested atom id lies outside bounds");
+    }
 }

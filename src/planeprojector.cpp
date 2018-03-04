@@ -62,11 +62,11 @@ void PlaneProjector::plot() {
  * @param[in]  hj               extend in +v2 direction in Angstrom
  * @param[in]  negative_values  whether there are negative values in the plot
  */
-void PlaneProjector::extract(Vector _v1, Vector _v2, Vector _s, float _scale, float li, float hi, float lj, float hj, bool negative_values) {
+void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _s, float _scale, float li, float hi, float lj, float hj, bool negative_values) {
 
     // use normalized vectors
-    _v1.normalize();
-    _v2.normalize();
+    _v1 = glm::normalize(_v1);
+    _v2 = glm::normalize(_v2);
 
     this->scale = _scale;
     this->ix = int((hi - li) * _scale);
@@ -381,7 +381,7 @@ void PlaneProjector::draw_isoline(float val) {
  *
  * @return     True if crossing, False otherwise.
  */
-bool PlaneProjector::is_crossing(const unsigned int &i, const unsigned int &j, const float &val) {
+bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, float val) {
     if(this->planegrid_real[(j-1) * this->ix + (i)] < val && this->planegrid_real[(j+1) * this->ix + (i)] > val) {
         return true;
     }

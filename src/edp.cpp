@@ -38,7 +38,6 @@
 #include <tclap/CmdLine.h>
 #include <boost/format.hpp>
 
-#include "mathtools.h"
 #include "scalar_field.h"
 #include "planeprojector.h"
 #include "config.h"
@@ -89,68 +88,105 @@ int main(int argc, char *argv[]) {
         cmd.parse(argc, argv);
 
         //**************************************
-        // parsing values
-        //**************************************
-        std::string input_filename = arg_input_filename.getValue();
-        std::string output_filename = arg_output_filename.getValue();
-
-        boost::regex re("^([0-9.-]+),([0-9.-]+),([0-9.-]+)$");
-        std::string sp = arg_sp.getValue();
-        float sp_in[3];
-        boost::smatch what;
-        if(boost::regex_match(sp, what, re)) {
-            sp_in[0] = boost::lexical_cast<float>(what[1]);
-            sp_in[1] = boost::lexical_cast<float>(what[2]);
-            sp_in[2] = boost::lexical_cast<float>(what[3]);
-        }
-        Vector s(sp_in[0],sp_in[1],sp_in[2]);
-
-        std::string v = arg_v.getValue();
-        float v_in[3];
-        if(boost::regex_match(v, what, re)) {
-            v_in[0] = boost::lexical_cast<float>(what[1]);
-            v_in[1] = boost::lexical_cast<float>(what[2]);
-            v_in[2] = boost::lexical_cast<float>(what[3]);
-        }
-        Vector v1(v_in[0],v_in[1],v_in[2]);
-
-        std::string w = arg_w.getValue();
-        float w_in[3];
-        if(boost::regex_match(w, what, re)) {
-            w_in[0] = boost::lexical_cast<float>(what[1]);
-            w_in[1] = boost::lexical_cast<float>(what[2]);
-            w_in[2] = boost::lexical_cast<float>(what[3]);
-        }
-        Vector v2(w_in[0],w_in[1],w_in[2]);
-
-        float scale = arg_s.getValue();
-
-        unsigned int color_scheme_id = arg_c.getValue();
-
-        bool negative_values = arg_negative.getValue();
-        bool print_legend = arg_legend.getValue();
-
-        //**************************************
-        // start running the program
+        // Inform user about execution
         //**************************************
         std::cout << "--------------------------------------------------------------" << std::endl;
         std::cout << "Executing EDP v." << PROGRAM_VERSION << std::endl;
         std::cout << "Author: Ivo Filot <i.a.w.filot@tue.nl>" << std::endl;
         std::cout << "--------------------------------------------------------------" << std::endl;
-        std::cout << std::endl;
-        std::cout << boost::format("Lattice vector 1: (%12.6f;%12.6f;%12.6f)") % v_in[0] % v_in[1] % v_in[2] << std::endl;
-        std::cout << boost::format("Lattice vector 2: (%12.6f;%12.6f;%12.6f)") % w_in[0] % w_in[1] % w_in[2] << std::endl;
-        std::cout << boost::format("Starting point  : (%12.6f;%12.6f;%12.6f)") % sp_in[0] % sp_in[1] % sp_in[2] << std::endl;
-        std::cout << std::endl;
 
-        // read in field
+        //**************************************
+        // parsing values
+        //**************************************
+        std::string input_filename = arg_input_filename.getValue();
+        std::string output_filename = arg_output_filename.getValue();
+
+        //**************************************
+        // read header and atoms
+        //**************************************
+        ScalarField sf(input_filename.c_str());
+        sf.read_header_and_atoms();
+
+        //**************************************
+        // determine vector and positions
+        //**************************************
+        boost::regex re_vec3("^([0-9.-]+),([0-9.-]+),([0-9.-]+)$");     // 3-vector
+        boost::regex re_scalar("^([0-9]+)$");                           // single atom
+        boost::regex re_scalar_2("^([0-9]+)-([0-9]+)$");                // two atoms
+
+        // get position for the point
+        std::string sp = arg_sp.getValue();
+        boost::smatch what;
+        glm::vec3 p;
+        if(boost::regex_match(sp, what, re_vec3)) {
+            p[0] = boost::lexical_cast<float>(what[1]);
+            p[1] = boost::lexical_cast<float>(what[2]);
+            p[2] = boost::lexical_cast<float>(what[3]);
+        } else if(boost::regex_match(sp, what, re_scalar)) {
+            p = sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1);
+        } else {
+            std::runtime_error("Could not obtain a vector p");
+        }
+
+        // obtain first vector
+        std::string v_str = arg_v.getValue();
+        glm::vec3 v;
+        if(boost::regex_match(v_str, what, re_vec3)) {
+            v[0] = boost::lexical_cast<float>(what[1]);
+            v[1] = boost::lexical_cast<float>(what[2]);
+            v[2] = boost::lexical_cast<float>(what[3]);
+        } else if(boost::regex_match(v_str, what, re_scalar_2)) {
+            v = glm::normalize(
+                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
+                );
+        } else {
+            std::runtime_error("Could not obtain a vector v");
+        }
+
+        // obtain second vector
+        std::string w_str = arg_w.getValue();
+        glm::vec3 w;
+        if(boost::regex_match(w_str, what, re_vec3)) {
+            w[0] = boost::lexical_cast<float>(what[1]);
+            w[1] = boost::lexical_cast<float>(what[2]);
+            w[2] = boost::lexical_cast<float>(what[3]);
+        } else if(boost::regex_match(w_str, what, re_scalar_2)) {
+            w = glm::normalize(
+                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
+                );
+        } else {
+            std::runtime_error("Could not obtain a vector w");
+        }
+
+        //**************************************
+        // read grid
+        //**************************************
         std::cout << "Start reading " << input_filename << "..." << std::endl;
         auto start = std::chrono::system_clock::now();
-        ScalarField sf(input_filename.c_str());
         sf.read();
         auto end = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = end-start;
         std::cout << "Done reading " << input_filename << " in " << elapsed_seconds.count() << " seconds." << std::endl;
+        std::cout << std::endl;
+
+        //**************************************
+        // determine size and colors
+        //**************************************
+
+        const float scale = arg_s.getValue();
+        const unsigned int color_scheme_id = arg_c.getValue();
+        const bool negative_values = arg_negative.getValue();
+        const bool print_legend = arg_legend.getValue();
+
+        //**************************************
+        // execute construction
+        //**************************************
+        std::cout << std::endl;
+        std::cout << boost::format("Lattice vector 1: (%12.6f;%12.6f;%12.6f)") % v[0] % v[1] % v[2] << std::endl;
+        std::cout << boost::format("Lattice vector 2: (%12.6f;%12.6f;%12.6f)") % w[0] % w[1] % w[2] << std::endl;
+        std::cout << boost::format("Starting point  : (%12.6f;%12.6f;%12.6f)") % p[0] % p[1] % p[2] << std::endl;
         std::cout << std::endl;
 
         // define intervals in Angstrom
@@ -160,10 +196,12 @@ int main(int argc, char *argv[]) {
         const float lj = -interval;
         const float hj = interval;
 
+        //**************************************
         // construct plane
+        //**************************************
         start = std::chrono::system_clock::now();
         PlaneProjector pp(&sf, negative_values ? -1 : -7, negative_values ? 1 : 1, color_scheme_id);
-        pp.extract(v1, v2, s, scale, li, hi, lj, hj, negative_values);
+        pp.extract(v, w, p, scale, li, hi, lj, hj, negative_values);
         pp.plot();
         pp.isolines(6, negative_values);
         if(print_legend) {
@@ -178,6 +216,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Done" << std::endl << std::endl;
 
         return 0;
+
     } catch (TCLAP::ArgException &e) {
         std::cerr << "error: " << e.error() <<
                      " for arg " << e.argId() << std::endl;
