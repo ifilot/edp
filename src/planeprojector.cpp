@@ -54,7 +54,7 @@ void PlaneProjector::plot() {
  *
  * @param[in]  _v1              direction vector 1
  * @param[in]  _v2              direction vector 2
- * @param[in]  _s               position vector
+ * @param[in]  _p               position vector
  * @param[in]  _scale           scaling constant (from Angstrom to pixels)
  * @param[in]  li               extend in -v1 direction in Angstrom
  * @param[in]  hi               extend in +v1 direction in Angstrom
@@ -62,7 +62,7 @@ void PlaneProjector::plot() {
  * @param[in]  hj               extend in +v2 direction in Angstrom
  * @param[in]  negative_values  whether there are negative values in the plot
  */
-void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _s, float _scale, float li, float hi, float lj, float hj, bool negative_values) {
+void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj, bool negative_values) {
 
     // use normalized vectors
     _v1 = glm::normalize(_v1);
@@ -80,9 +80,9 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _s, 
     #pragma omp parallel for collapse(2)
     for(int i=0; i<this->ix; i++) {
         for(int j=0; j<this->iy; j++) {
-            float x = _v1[0] * float(i - this->ix / 2) / _scale + _v2[0] * float(j - this->iy / 2) / _scale + _s[0];
-            float y = _v1[1] * float(i - this->ix / 2) / _scale + _v2[1] * float(j - this->iy / 2) / _scale + _s[1];
-            float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _s[2];
+            float x = _v1[0] * float(i - this->ix / 2) / _scale + _v2[0] * float(j - this->iy / 2) / _scale + _p[0];
+            float y = _v1[1] * float(i - this->ix / 2) / _scale + _v2[1] * float(j - this->iy / 2) / _scale + _p[1];
+            float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _p[2];
             float val = this->sf->get_value_interp(x,y,z);
             if(negative_values) {
                 if(val < 0) {
@@ -103,6 +103,46 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _s, 
     }
 
     this->cut_and_recast_plane();
+}
+
+/**
+ * @brief      extract line
+ *
+ * @param[in]  e       vector direction
+ * @param[in]  p       position vector
+ * @param[in]  _scale  scale
+ * @param[in]  li      extend in -e direction
+ * @param[in]  hi      extend in +e direction
+ */
+void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale, float li, float hi) {
+    e = glm::normalize(e);
+
+    this->scale = _scale;
+    this->ix = int((hi - li) * _scale);
+
+    std::vector<glm::vec3> pos;
+    std::vector<float> vals;
+
+    for(int i=0; i<this->ix; i++) {
+        float x = e[0] * float(i - this->ix / 2) / _scale + p[0];
+        float y = e[1] * float(i - this->ix / 2) / _scale + p[0];
+        float z = e[2] * float(i - this->ix / 2) / _scale + p[0];
+
+        float val = this->sf->get_value_interp(x,y,z);
+
+        if(val != 0.0) {
+            pos.push_back(glm::vec3(x,y,z));
+            vals.push_back(val);
+        }
+    }
+
+    // open file and output results
+    std::ofstream out("line_extraction.txt");
+    for(unsigned int i=0; i<vals.size(); i++) {
+        out << boost::format("%12.6f  %12.6f  %12.6f  %12.6e\n") % pos[i][0] % pos[i][1] % pos[i][2] % vals[i];
+    }
+
+    out.close();
 }
 
 /**

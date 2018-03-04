@@ -45,7 +45,7 @@
 int main(int argc, char *argv[]) {
     // command line grabbing
     try {
-        TCLAP::CmdLine cmd("Projects the electrondensity of a CHGCAR file onto a image file.", ' ', "1.1.1");
+        TCLAP::CmdLine cmd("Projects the electrondensity of a CHGCAR file onto a image file.", ' ', PROGRAM_VERSION);
 
         //**************************************
         // declare values to be parsed
@@ -84,6 +84,10 @@ int main(int argc, char *argv[]) {
 
         // whether or not to print a legend
         TCLAP::SwitchArg arg_legend("l","legend","Print legend", cmd, false);
+
+        // whether to perform 1d extraction
+        TCLAP::ValueArg<std::string> arg_ext("e","extraction","Line extraction vector",false, "", "two atoms ids");
+        cmd.add(arg_ext);
 
         cmd.parse(argc, argv);
 
@@ -213,6 +217,25 @@ int main(int argc, char *argv[]) {
         std::cout << "Constructed contour plot in " << elapsed_seconds.count() << " seconds." << std::endl;
 
         std::cout << "--------------------------------------------------------------" << std::endl;
+
+        //**************************************
+        // Performing optional 1D line extraction
+        //**************************************
+        std::string ex_str = arg_ext.getValue();
+        glm::vec3 e;
+        if(boost::regex_match(ex_str, what, re_vec3)) {
+            e[0] = boost::lexical_cast<float>(what[1]);
+            e[1] = boost::lexical_cast<float>(what[2]);
+            e[2] = boost::lexical_cast<float>(what[3]);
+            pp.extract_line(e, p, scale, li, hi);
+        } else if(boost::regex_match(ex_str, what, re_scalar_2)) {
+            e = glm::normalize(
+                sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
+            );
+            pp.extract_line(e, p, scale, li, hi);
+        }
+
         std::cout << "Done" << std::endl << std::endl;
 
         return 0;

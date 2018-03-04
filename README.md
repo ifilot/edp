@@ -43,13 +43,25 @@ make -j5
 ```
 
 ## Usage
-To run EDP, use the following command:
+To run EDP to construct a contour plane, use something like the command below
 
 ```
 ./edp -i <PATH_TO_CHGCAR> -v <v1,v2,v3> -w <w1,w2,w3> -p <p1,p2,p3> -o plot.png
 ```
 
+where `v` and `w` correspond to two vectors that will span the plane and `p` corresponds to a position on that plane. Additionally, you can supply `-s` to indicate a scaling in pixels/angstrom. Instead of supplying vectors, you can also supply *two* atoms for the vectors `v` and `w` and a *single* atom for the position `p`. For example:
+
+```
+./edp -i CHGCAR -v 1-2 -w 0,0,1 -p 1 -o plot.png
+```
+
 There are 16 different color schemes built into EDP, which you can choose using the `-c` directive. If there are negative values in the density file, use the `-n` directive. Finally, to create a legend, use the `-l` directive.
+
+To obtain a concise overview of all the command line directives, you can run
+
+```
+./edp --help
+```
 
 ## Color schemes
 
@@ -59,6 +71,14 @@ The following color schemes are built into EDP
 
 ## Tutorial
 A short tutorial on using the program is provided in this [blog post](http://www.ivofilot.nl/posts/view/27/Visualising+the+electron+density+of+the+binding+orbitals+of+the+CO+molecule+using+VASP).
+
+## Line extraction
+
+A recently requested feature was to not only construct contour planes from a scalar field, but also allow to project the scalar values onto a line to make a simple graph. To do so, you can use the `-e` command line parameter followed by either two atoms or a vector. On the line as indicated by the vector and the point supplied by `p`, the scalar field will be projected and written to the textfile `line_extraction.txt` which you can then plot. In the file `line_extraction.txt`, there are four columns which are the Cartesian x,y,z positions and the value at that point.
+
+Below, an example graph is provided which shows the electron density of the 5 sigma orbital of CO projected on the line that crosses both atoms. The x-axis presents the z-position in the unit cell. The C and O atoms are placed at `z = 5.00A` and `z = 6.15A`, respectively.
+
+![Electron density graph of 5 sigma orbital of CO](https://raw.githubusercontent.com/ifilot/edp/master/examples/co_density.png)
 
 ## References
 

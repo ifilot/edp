@@ -63,7 +63,7 @@ public:
      *
      * @param[in]  _v1              direction vector 1
      * @param[in]  _v2              direction vector 2
-     * @param[in]  _s               position vector
+     * @param[in]  _p               position vector
      * @param[in]  _scale           scaling constant (from Angstrom to pixels)
      * @param[in]  li               extend in -v1 direction in Angstrom
      * @param[in]  hi               extend in +v1 direction in Angstrom
@@ -71,7 +71,18 @@ public:
      * @param[in]  hj               extend in +v2 direction in Angstrom
      * @param[in]  negative_values  whether there are negative values in the plot
      */
-    void extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _s, float _scale, float li, float hi, float lj, float hj, bool negative_values);
+    void extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj, bool negative_values);
+
+    /**
+     * @brief      extract line
+     *
+     * @param[in]  e       vector direction
+     * @param[in]  p       position vector
+     * @param[in]  _scale  scale
+     * @param[in]  li      extend in -e direction
+     * @param[in]  hi      extend in +e direction
+     */
+    void extract_line(glm::vec3 e, const glm::vec3& p, float _scale, float li, float hi);
 
     /**
      * @brief      draw isolines
