@@ -125,8 +125,8 @@ void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale,
 
     for(int i=0; i<this->ix; i++) {
         float x = e[0] * float(i - this->ix / 2) / _scale + p[0];
-        float y = e[1] * float(i - this->ix / 2) / _scale + p[0];
-        float z = e[2] * float(i - this->ix / 2) / _scale + p[0];
+        float y = e[1] * float(i - this->ix / 2) / _scale + p[1];
+        float z = e[2] * float(i - this->ix / 2) / _scale + p[2];
 
         float val = this->sf->get_value_interp(x,y,z);
 
