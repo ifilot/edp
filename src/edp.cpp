@@ -71,6 +71,9 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<std::string> arg_w("w","vector2","Plane Vector 2",true,"(0,0,1)","3d-vector");
         cmd.add(arg_w);
 
+        // whether or not to orthogonalize the input vectors
+        TCLAP::SwitchArg arg_gram_schmidt("g","gramschmidt","Orthogonalize input vectors", cmd, false);
+
         // scaling constant
         TCLAP::ValueArg<unsigned int> arg_s("s","scale","Scaling in px/angstrom",false, 100,"unsigned integer");
         cmd.add(arg_s);
@@ -162,6 +165,11 @@ int main(int argc, char *argv[]) {
                 );
         } else {
             std::runtime_error("Could not obtain a vector w");
+        }
+
+        // check whether vectors need to be orthogonalized
+        if(arg_gram_schmidt.getValue()) {
+            v = v - glm::dot(v, w) / glm::dot(w, w) * w;
         }
 
         //**************************************

@@ -72,6 +72,9 @@ The following color schemes are built into EDP
 ## Tutorial
 A short tutorial on using the program is provided in this [blog post](http://www.ivofilot.nl/posts/view/27/Visualising+the+electron+density+of+the+binding+orbitals+of+the+CO+molecule+using+VASP).
 
+## Projections
+To obtain an meaningful plane projection, the vectors `v` and `w` should be orthogonal to each other. When you are using atoms instead of vectors as input to `-v` and `-w`, this is not always the case. Hence, the option to project vector `v` on `w` according to the [Gram-Schmidt process](https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process) is provided. To do so, simply add `-g` as an input directive.
+
 ## Line extraction
 
 A recently requested feature was to not only construct contour planes from a scalar field, but also allow to project the scalar values onto a line to make a simple graph. To do so, you can use the `-e` command line parameter followed by either two atoms or a vector. On the line as indicated by the vector and the point supplied by `p`, the scalar field will be projected and written to the textfile `line_extraction.txt` which you can then plot. In the file `line_extraction.txt`, there are four columns which are the Cartesian x,y,z positions and the value at that point.
