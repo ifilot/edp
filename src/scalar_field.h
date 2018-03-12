@@ -78,7 +78,30 @@ public:
 
     void read_header_and_atoms();
 
+    /*
+     * float get_value_interp(x,y,z)
+     *
+     * Grabs a value from the 3D scalar field. Calculate the value
+     * by using a trilinear interpolation.
+     *
+     * The trilinear interpolation algorithm has been extracted from:
+     * http://paulbourke.net/miscellaneous/interpolation/
+     *
+     * Future algorithm can make use of a cubic interpolation.
+     *
+     */
     float get_value_interp(float x, float y, float z) const;
+
+    /**
+     * @brief      test whether point is inside unit cell
+     *
+     * @param[in]  x     x position
+     * @param[in]  y     y position
+     * @param[in]  z     z position
+     *
+     * @return     True if inside, False otherwise.
+     */
+    bool is_inside(float x, float y, float z) const;
 
     float get_value(unsigned int i, unsigned int j, unsigned int k) const;
 

@@ -44,7 +44,11 @@ void PlaneProjector::plot() {
 
     for(unsigned int i=0; i<uint(this->iy); i++) {
         for(unsigned int j=0; j<uint(this->ix); j++) {
-            this->plt->draw_filled_rectangle(j,i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
+            if(this->planegrid_box[i * this->ix + j]) {
+                this->plt->draw_filled_rectangle(j,i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
+            } else {
+                this->plt->draw_filled_rectangle(j,i, 1, 1, Color(0,0,0,0));
+            }
         }
     }
 }
@@ -74,16 +78,29 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, 
 
     std::cout << "Creating " << this->ix << "x" << this->iy << "px image..." << std::endl;
 
-    this->planegrid_log =  new float[this->ix * this->iy];
+    this->planegrid_log =   new float[this->ix * this->iy];
     this->planegrid_real =  new float[this->ix * this->iy];
+    this->planegrid_box =   new bool[this->ix * this->iy];
 
     #pragma omp parallel for collapse(2)
     for(int i=0; i<this->ix; i++) {
         for(int j=0; j<this->iy; j++) {
-            float x = _v1[0] * float(i - this->ix / 2) / _scale + _v2[0] * float(j - this->iy / 2) / _scale + _p[0];
-            float y = _v1[1] * float(i - this->ix / 2) / _scale + _v2[1] * float(j - this->iy / 2) / _scale + _p[1];
-            float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _p[2];
-            float val = this->sf->get_value_interp(x,y,z);
+            const float x = _v1[0] * float(i - this->ix / 2) / _scale + _v2[0] * float(j - this->iy / 2) / _scale + _p[0];
+            const float y = _v1[1] * float(i - this->ix / 2) / _scale + _v2[1] * float(j - this->iy / 2) / _scale + _p[1];
+            const float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _p[2];
+
+            const bool is_inside = this->sf->is_inside(x,y,z);
+            const float val = this->sf->get_value_interp(x,y,z);
+
+            if(!is_inside) {
+                this->planegrid_box[j * this->ix + i] = false;
+                this->planegrid_log[j * this->ix + i] = 0.0f;
+                this->planegrid_real[j * this->ix + i] = 0.0f;
+                continue;
+            } else {
+                this->planegrid_box[j * this->ix + i] = true;
+            }
+
             if(negative_values) {
                 if(val < 0) {
                     this->planegrid_log[j * this->ix + i] = -std::min(-1e-4, (-log10(-val) - 5.0) / 5.0);
@@ -295,6 +312,7 @@ void PlaneProjector::write(std::string filename) {
 PlaneProjector::~PlaneProjector() {
     delete[] this->planegrid_log;
     delete[] this->planegrid_real;
+    delete[] this->planegrid_box;
 }
 
 /**
@@ -379,20 +397,25 @@ void PlaneProjector::cut_and_recast_plane() {
     // recasting
     float* newgrid_log = new float[nx * ny];
     float* newgrid_real = new float[nx * ny];
+    bool* newgrid_box = new bool[nx * ny];
 
     #pragma omp parallel for collapse(2)
     for(unsigned int i=0; i<nx; i++) {
         for(unsigned int j=0; j<ny; j++) {
             newgrid_log[j * nx + i] = this->planegrid_log[(j + min_y) * this->ix + (i + min_x)];
             newgrid_real[j * nx + i] = this->planegrid_real[(j + min_y) * this->ix + (i + min_x)];
+            newgrid_box[j * nx + i] = this->planegrid_box[(j + min_y) * this->ix + (i + min_x)];
         }
     }
 
     delete[] this->planegrid_real;
     delete[] this->planegrid_log;
+    delete[] this->planegrid_box;
 
     this->planegrid_real = newgrid_real;
     this->planegrid_log = newgrid_log;
+    this->planegrid_box = newgrid_box;
+
     this->ix = nx;
     this->iy = ny;
 }

@@ -29,7 +29,7 @@ Plotter::Plotter(unsigned int _width, unsigned int _height) {
     this->surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, this->width, this->height);
     this->cr = cairo_create (this->surface);
 
-    this->set_background(Color(255, 252, 213, 255));
+    this->set_background(Color(255, 255, 255, 0));
 }
 
 /*

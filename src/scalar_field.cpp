@@ -396,31 +396,13 @@ void ScalarField::read_grid() {
  *
  */
 float ScalarField::get_value_interp(float x, float y, float z) const {
+    if(!this->is_inside(x,y,z)) {
+        return 0.0f;
+    }
+
     // cast the input to the nearest grid point
     glm::vec3 r = this->realspace_to_grid(x,y,z);
     glm::vec3 d = this->realspace_to_direct(x,y,z);
-
-    // to test whether the point is inside the box, we cast the point back
-    // to the direct grid and check if it is for each cartesian coordinate
-    // within the domain [0,1]
-    if(d[0] < 0 || d[0] > 1.0) {
-        // std::cerr << "[Error] Attempt to access point outside the grid" << std::endl;
-        // std::cerr << "[" << x << "," << y << "," << z << "]" << std::endl;
-        // std::cerr << "[" << d[0] << "," << d[0] << "," << d[0] << "]" << std::endl;
-        return 0.0;
-    }
-    if(d[1] < 0 || d[1] > 1.0) {
-        // std::cerr << "[Error] Attempt to access point outside the grid" << std::endl;
-        // std::cerr << "[" << x << "," << y << "," << z << "]" << std::endl;
-        // std::cerr << "[" << d[0] << "," << d[0] << "," << d[0] << "]" << std::endl;
-        return 0.0;
-    }
-    if(d[2] < 0 || d[2] > 1.0) {
-        // std::cerr << "[Error] Attempt to access point outside the grid" << std::endl;
-        // std::cerr << "[" << x << "," << y << "," << z << "]" << std::endl;
-        // std::cerr << "[" << d[0] << "," << d[0] << "," << d[0] << "]" << std::endl;
-        return 0.0;
-    }
 
     // calculate value using trilinear interpolation
     float xd = remainderf(r[0], 1.0);
@@ -447,6 +429,32 @@ float ScalarField::get_value_interp(float x, float y, float z) const {
     this->get_value(x0, y1, z1) * (1.0 - xd) * yd                 * zd                 +
     this->get_value(x1, y1, z0) * xd                 * yd                 * (1.0 - zd) +
     this->get_value(x1, y1, z1) * xd                 * yd                 * zd;
+}
+
+/**
+ * @brief      test whether point is inside unit cell
+ *
+ * @param[in]  x     x position
+ * @param[in]  y     y position
+ * @param[in]  z     z position
+ *
+ * @return     True if inside, False otherwise.
+ */
+bool ScalarField::is_inside(float x, float y, float z) const {
+    // cast the input to the nearest grid point
+    glm::vec3 d = this->realspace_to_direct(x,y,z);
+
+    if(d[0] < 0 || d[0] > 1.0) {
+        return false;
+    }
+    if(d[1] < 0 || d[1] > 1.0) {
+        return false;
+    }
+    if(d[2] < 0 || d[2] > 1.0) {
+        return false;
+    }
+
+    return true;
 }
 
 /*
@@ -510,21 +518,9 @@ void ScalarField::calculate_volume() {
  *
  */
 float ScalarField::get_value(unsigned int i, unsigned int j, unsigned int k) const {
-    if(i >= this->grid_dimensions[0]) {
-        std::cerr << "ERROR: Cannot access x=" << i << std::endl;
-    }
-    if(j >= this->grid_dimensions[1]) {
-        std::cerr << "ERROR: Cannot access y=" << j << std::endl;
-    }
-    if(k >= this->grid_dimensions[2]) {
-        std::cerr << "ERROR: Cannot access z=" << k << std::endl;
-    }
     unsigned int idx = k * this->grid_dimensions[0] * this->grid_dimensions[1] +
-                                         j * this->grid_dimensions[0] +
-                                         i;
-    if(idx > this->gridsize) {
-        std::cerr << "Trying to allocate value outside gridspace: (" << i << "," << j << "," << k << ")" << std::endl;
-    }
+                       j * this->grid_dimensions[0] +
+                       i;
     return this->gridptr[idx];
 }
 
