@@ -30,12 +30,15 @@
 
 class Color {
 private:
-    unsigned int r,g,b;
+    unsigned int r,g,b,a;
 public:
     Color(unsigned int _r, unsigned int _g, unsigned int _b);
+
+    Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a);
     float get_r() const;
     float get_g() const;
     float get_b() const;
+    float get_a() const;
 };
 
 class ColorScheme {

@@ -35,6 +35,7 @@ private:
 
     float* planegrid_log;
     float* planegrid_real;
+    bool* planegrid_box;
     float min, max;
 
     int ix, iy;
