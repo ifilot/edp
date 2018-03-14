@@ -108,10 +108,27 @@ int main(int argc, char *argv[]) {
         std::string input_filename = arg_input_filename.getValue();
         std::string output_filename = arg_output_filename.getValue();
 
+        //***************************************)
+        // identify whether this file is a locpot
+        //***************************************
+        bool is_locpot = false;
+        if(input_filename.size() >= 6) {
+            if(input_filename.substr(0,6).compare("LOCPOT") == 0) {
+                is_locpot = true;
+            }
+        }
+        if(is_locpot) {
+            std::cout << input_filename << " is identified as a LOCPOT file. This means that we use scalar field as is and perform *no* volume correction on it." << std::endl;
+        } else {
+            std::cout << input_filename << " is identified as a CHGCAR/PARCHG file. This means that we perform a volume correction on it as described in the link below:" << std::endl;
+            std::cout << "https://cms.mpi.univie.ac.at/vasp/vasp/CHGCAR_file.html#file-chgcar." << std::endl;
+        }
+        std::cout << std::endl;
+
         //**************************************
         // read header and atoms
         //**************************************
-        ScalarField sf(input_filename.c_str());
+        ScalarField sf(input_filename.c_str(), is_locpot);
         sf.read_header_and_atoms();
 
         //**************************************
@@ -181,6 +198,8 @@ int main(int argc, char *argv[]) {
         auto end = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = end-start;
         std::cout << "Done reading " << input_filename << " in " << elapsed_seconds.count() << " seconds." << std::endl;
+        std::cout << "Minimum value: " << sf.get_min() << std::endl;
+        std::cout << "Maximum value: " << sf.get_max() << std::endl;
         std::cout << std::endl;
 
         //**************************************
@@ -215,7 +234,7 @@ int main(int argc, char *argv[]) {
         PlaneProjector pp(&sf, negative_values ? -1 : -7, negative_values ? 1 : 1, color_scheme_id);
         pp.extract(v, w, p, scale, li, hi, lj, hj, negative_values);
         pp.plot();
-        pp.isolines(6, negative_values);
+        pp.isolines(10, negative_values);
         if(print_legend) {
             pp.draw_legend(negative_values);
         }

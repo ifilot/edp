@@ -37,6 +37,7 @@
 #include <glm/glm.hpp>
 
 #include "float_parser.h"
+#include "periodic_table.h"
 
 class ScalarField{
 private:
@@ -49,7 +50,13 @@ private:
 
     unsigned int grid_dimensions[3];
     std::vector<unsigned int> nrat;
+
     std::vector<glm::vec3> atom_pos;
+    std::vector<unsigned int> atom_charges;
+
+    std::vector<glm::vec3> atom_pos_exp;
+    std::vector<unsigned int> atom_charges_exp;
+
     std::string gridline;
     std::vector<float> gridptr;  //!< grid to first pos of float array
     std::vector<float> gridptr2; //!< grid to first pos of float array
@@ -58,9 +65,18 @@ private:
     bool has_read;
     bool header_read;
     std::ifstream infile;
+    bool flag_is_locpot;         //!< whether scalar field is in LOCPOT style
 
 public:
-    ScalarField(const std::string &_filename);
+
+    /**
+     * @brief      constructor
+     *
+     * @param[in]  _filename   url to filename
+     * @param[in]  _flag_is_locpot  whether this file is a locpot
+     */
+    ScalarField(const std::string &_filename, bool _flag_is_locpot);
+
     void output() const;
 
     glm::mat3 get_unitcell_matrix() {
@@ -72,6 +88,15 @@ public:
         }
 
         return out;
+    }
+
+    /**
+     * @brief      determines if this Scalarfield is in LOCPOT-style
+     *
+     * @return     True if locpot, False otherwise.
+     */
+    inline bool is_locpot() const {
+        return this->flag_is_locpot;
     }
 
     void read();
@@ -91,6 +116,18 @@ public:
      *
      */
     float get_value_interp(float x, float y, float z) const;
+
+
+    /**
+     * @brief      Gets the external potential
+     *
+     * @param[in]  x     x position
+     * @param[in]  y     y position
+     * @param[in]  z     z position
+     *
+     * @return     external potential V_ion
+     */
+    float get_vion(float x, float y, float z) const;
 
     /**
      * @brief      test whether point is inside unit cell
@@ -142,6 +179,12 @@ private:
     void read_grid_dimensions();
     void read_nr_atoms();
     void read_atom_positions();
+
+    /**
+     * @brief      expand atoms for periodic unit cells
+     */
+    void expand_atoms();
+
     void read_grid();
     float get_max_direction(unsigned int dim);
     void calculate_inverse();

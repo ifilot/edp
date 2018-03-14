@@ -34,6 +34,7 @@ private:
     Plotter* plt;
 
     float* planegrid_log;
+    float* planegrid_linear;
     float* planegrid_real;
     bool* planegrid_box;
     float min, max;
@@ -41,6 +42,19 @@ private:
     int ix, iy;
     float scale;
     unsigned int color_scheme_id;
+
+    // scaling settings
+    static constexpr float locpot_min_log = -3;
+    static constexpr float locpot_max_log = 1;
+
+    static constexpr float locpot_min_log_p = 0;
+    static constexpr float locpot_max_log_p = 3;
+
+    static constexpr float locpot_min_linear = -100;
+    static constexpr float locpot_max_linear = 100;
+
+    static constexpr float chgcar_min_linear = -100;
+    static constexpr float chgcar_max_linear = 100;
 
 public:
 
@@ -135,6 +149,28 @@ private:
      * @return     True if crossing, False otherwise.
      */
     bool is_crossing(unsigned int i, unsigned int j, float val);
+
+    /**
+     * @brief      Calculates the scaled value on a linear scale
+     *
+     * @param[in]  input  input value
+     * @param[in]  min    The minimum
+     * @param[in]  max    The maximum
+     *
+     * @return     The scaled value.
+     */
+    float calculate_scaled_value_linear(float input, float min, float max);
+
+    /**
+     * @brief      Calculates the scaled value using a logarithmic scale.
+     *
+     * @param[in]  input  input value
+     * @param[in]  min    The minimum
+     * @param[in]  max    The maximum
+     *
+     * @return     The scaled value.
+     */
+    float calculate_scaled_value_log(float input, float min, float max);
 };
 
 #endif

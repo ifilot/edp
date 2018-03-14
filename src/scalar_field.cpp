@@ -20,20 +20,19 @@
 
 #include "scalar_field.h"
 
-/*
- * Default constructor
+/**
+ * @brief      constructor
  *
- * Usage: ScalarField sf("CHGCAR");
- *
- * Constructs a ScalarField by pointing it at a file on the HD.
- * The existence of the file is *not* being checked
+ * @param[in]  _filename   url to filename
+ * @param[in]  _flag_is_locpot  whether this file is a locpot
  */
-ScalarField::ScalarField(const std::string &_filename) {
+ScalarField::ScalarField(const std::string &_filename, bool _flag_is_locpot) {
     this->filename = _filename;
     this->scalar = -1;
     this->vasp5_input = false;
     this->has_read = false;
     this->header_read = false;
+    this->flag_is_locpot = _flag_is_locpot;
 
     // test existence of file, else throw an error
     if (!boost::filesystem::exists(this->filename)) {
@@ -230,9 +229,23 @@ void ScalarField::read_matrix() {
 void ScalarField::read_nr_atoms() {
     std::ifstream infile(this->filename.c_str());
     std::string line;
-    for(unsigned int i=0; i < (this->vasp5_input ? 7 : 6); i++) { // discard first two lines
+    for(unsigned int i=0; i<5; i++) {
         std::getline(infile, line);
     }
+
+    // store atom types
+    if(this->vasp5_input) {
+        std::getline(infile, line);
+        std::vector<std::string> pieces;
+        boost::trim(line);
+        boost::split(pieces, line, boost::is_any_of("\t "), boost::token_compress_on);
+        for(const auto piece: pieces) {
+            this->atom_charges.push_back(PeriodicTable::get().get_elnr(piece));
+        }
+    }
+
+    // skip another line
+    std::getline(infile, line);
 
     std::vector<std::string> pieces;
     boost::trim(line);
@@ -264,6 +277,26 @@ void ScalarField::read_atom_positions() {
     }
 
     infile.close();
+
+    this->expand_atoms();
+}
+
+/**
+ * @brief      expand atoms for periodic unit cells
+ */
+void ScalarField::expand_atoms() {
+    static const int eb = 3; // maximum amount of expansions
+
+    for(int i=-eb; i<=eb; i++) {
+        for(int j=-eb; j<=eb; j++) {
+            for(int k=-eb; k<=eb; k++) {
+                for(unsigned int l=0; l<this->atom_charges.size(); l++) {
+                    this->atom_charges_exp.push_back(this->atom_charges[l]);
+                    this->atom_pos_exp.push_back(this->atom_pos[l] + glm::vec3((float)i, (float)j, (float)k));
+                }
+            }
+        }
+    }
 }
 
 /*
@@ -368,9 +401,19 @@ void ScalarField::read_grid() {
         unsigned int cursize = this->gridptr.size();
         this->gridptr.resize(cursize + floats.size());
 
-        // set the number of threads equal to the size of the pieces on the line
-        for(unsigned int j=0; j<floats.size(); j++) {
-            this->gridptr[cursize + j] = floats[j] / this->volume;
+        // For CHGCAR type files, the electron density is multiplied by the cell volume
+        // as described by the link below:
+        // https://cms.mpi.univie.ac.at/vasp/vasp/CHGCAR_file.html#file-chgcar
+        // Hence, for these files, we have to divide the value at the grid point by the
+        // cell volume. For LOCPOT files, we should *not* do this.
+        if(this->flag_is_locpot) {      // LOCPOT type files
+            for(unsigned int j=0; j<floats.size(); j++) {
+                this->gridptr[cursize + j] = floats[j];
+            }
+        } else {    // CHGCAR type files
+            for(unsigned int j=0; j<floats.size(); j++) {
+                this->gridptr[cursize + j] = floats[j] / this->volume;
+            }
         }
 
         linecounter++;
@@ -429,6 +472,31 @@ float ScalarField::get_value_interp(float x, float y, float z) const {
     this->get_value(x0, y1, z1) * (1.0 - xd) * yd                 * zd                 +
     this->get_value(x1, y1, z0) * xd                 * yd                 * (1.0 - zd) +
     this->get_value(x1, y1, z1) * xd                 * yd                 * zd;
+}
+
+/**
+ * @brief      Gets the external potential
+ *
+ * @param[in]  x     x position
+ * @param[in]  y     y position
+ * @param[in]  z     z position
+ *
+ * @return     external potential V_ion
+ */
+float ScalarField::get_vion(float x, float y, float z) const {
+    static constexpr float ht2ev = 27.211399f; // hartee to eV
+    static constexpr float a2b = 1.889725989f; // angstrom to Bohr
+
+    const glm::vec3 pos(x,y,z);
+    float vion = 0.0;
+
+    for(unsigned int i=0; i<this->atom_charges_exp.size(); i++) {
+        const glm::vec3 atpos = this->mat33 * this->atom_pos_exp[i];
+        const float dist = glm::distance(pos, atpos);
+        vion -= (float)this->atom_charges_exp[i] / (dist * a2b) * ht2ev;
+    }
+
+    return vion;
 }
 
 /**
