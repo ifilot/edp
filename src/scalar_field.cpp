@@ -20,20 +20,19 @@
 
 #include "scalar_field.h"
 
-/*
- * Default constructor
+/**
+ * @brief      constructor
  *
- * Usage: ScalarField sf("CHGCAR");
- *
- * Constructs a ScalarField by pointing it at a file on the HD.
- * The existence of the file is *not* being checked
+ * @param[in]  _filename   url to filename
+ * @param[in]  _flag_is_locpot  whether this file is a locpot
  */
-ScalarField::ScalarField(const std::string &_filename) {
+ScalarField::ScalarField(const std::string &_filename, bool _flag_is_locpot) {
     this->filename = _filename;
     this->scalar = -1;
     this->vasp5_input = false;
     this->has_read = false;
     this->header_read = false;
+    this->flag_is_locpot = _flag_is_locpot;
 
     // test existence of file, else throw an error
     if (!boost::filesystem::exists(this->filename)) {
@@ -230,9 +229,23 @@ void ScalarField::read_matrix() {
 void ScalarField::read_nr_atoms() {
     std::ifstream infile(this->filename.c_str());
     std::string line;
-    for(unsigned int i=0; i < (this->vasp5_input ? 7 : 6); i++) { // discard first two lines
+    for(unsigned int i=0; i<5; i++) {
         std::getline(infile, line);
     }
+
+    // store atom types
+    if(this->vasp5_input) {
+        std::getline(infile, line);
+        std::vector<std::string> pieces;
+        boost::trim(line);
+        boost::split(pieces, line, boost::is_any_of("\t "), boost::token_compress_on);
+        for(const auto piece: pieces) {
+            this->atom_charges.push_back(PeriodicTable::get().get_elnr(piece));
+        }
+    }
+
+    // skip another line
+    std::getline(infile, line);
 
     std::vector<std::string> pieces;
     boost::trim(line);
@@ -368,9 +381,19 @@ void ScalarField::read_grid() {
         unsigned int cursize = this->gridptr.size();
         this->gridptr.resize(cursize + floats.size());
 
-        // set the number of threads equal to the size of the pieces on the line
-        for(unsigned int j=0; j<floats.size(); j++) {
-            this->gridptr[cursize + j] = floats[j] / this->volume;
+        // For CHGCAR type files, the electron density is multiplied by the cell volume
+        // as described by the link below:
+        // https://cms.mpi.univie.ac.at/vasp/vasp/CHGCAR_file.html#file-chgcar
+        // Hence, for these files, we have to divide the value at the grid point by the
+        // cell volume. For LOCPOT files, we should *not* do this.
+        if(this->flag_is_locpot) {      // LOCPOT type files
+            for(unsigned int j=0; j<floats.size(); j++) {
+                this->gridptr[cursize + j] = floats[j];
+            }
+        } else {    // CHGCAR type files
+            for(unsigned int j=0; j<floats.size(); j++) {
+                this->gridptr[cursize + j] = floats[j] / this->volume;
+            }
         }
 
         linecounter++;
