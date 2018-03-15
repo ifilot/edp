@@ -45,7 +45,10 @@ private:
     float scalar;
     float mat[3][3];            //!< matrix dimensions
     float imat[3][3];           //!< inverse of matrix
+
     glm::mat3 mat33;            //!< glm version of the matrix
+    glm::mat3 imat33;            //!< glm version of the inverse matrix
+
     float volume;               //!< unit cell volume
 
     unsigned int grid_dimensions[3];
@@ -146,6 +149,10 @@ public:
 
     inline const glm::mat3& get_mat_unitcell() const {
         return this->mat33;
+    }
+
+    inline const glm::mat3& get_mat_unitcell_inverse() const {
+        return this->imat33;
     }
 
     inline const float* get_grid_ptr() const {

@@ -92,6 +92,10 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<std::string> arg_ext("e","extraction","Line extraction vector",false, "", "two atoms ids");
         cmd.add(arg_ext);
 
+        // whether to perform radial extraction
+        TCLAP::ValueArg<std::string> arg_r("r","radius","Extraction at radius on atom",false, "", "Atom and radius");
+        cmd.add(arg_r);
+
         // whether or not to write out a z-average extraction
         TCLAP::SwitchArg arg_z("z","zaverage","Averaging over z", cmd, false);
 
@@ -144,6 +148,7 @@ int main(int argc, char *argv[]) {
         const boost::regex re_vec3("^([0-9.-]+),([0-9.-]+),([0-9.-]+)$");     // 3-vector
         const boost::regex re_vec2("^([0-9-]+),([0-9-]+)$");                  // 2-vector
         const boost::regex re_scalar("^([0-9]+)$");                           // single atom
+        const boost::regex re_scalar_radius("^([0-9]+),([0-9.]+)$");          // single atom and radius
         const boost::regex re_scalar_2("^([0-9]+)-([0-9]+)$");                // two atoms
 
         // get position for the point
@@ -300,7 +305,20 @@ int main(int argc, char *argv[]) {
         // Performing optional z-axis averaging
         //**************************************
         if(arg_z.getValue()) {
-            pp.extract_average();
+            pp.extract_plane_average();
+        }
+
+        //**************************************
+        // Performing optional radial extraction
+        //**************************************
+        std::string re_str = arg_r.getValue();
+        if(boost::regex_match(re_str, what, re_scalar_radius)) {
+            const unsigned int atid = boost::lexical_cast<unsigned int>(what[1]);
+            glm::vec3 pr = sf.get_atom_position(atid-1);
+            const float radius = boost::lexical_cast<float>(what[2]);
+
+            std::cout << "Averaging sphere surface for atom " << atid << " at radius: " << radius << std::endl;
+            pp.extract_sphere_average(pr, radius);
         }
 
         std::cout << "Done" << std::endl << std::endl;

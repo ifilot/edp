@@ -529,6 +529,8 @@ void ScalarField::calculate_volume() {
         }
     }
 
+    this->imat33 = glm::inverse(mat33);
+
     this->volume = glm::dot(glm::cross(this->mat33[0], this->mat33[1]), this->mat33[2]);
 }
 

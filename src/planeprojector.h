@@ -26,6 +26,7 @@
 
 #include "plotter.h"
 #include "scalar_field.h"
+#include "quadrature.h"
 
 class PlaneProjector {
 private:
@@ -99,7 +100,16 @@ public:
     /**
      * @brief      calculate the average density (electron or potential) and store it as function of z-height
      */
-    void extract_average();
+    void extract_plane_average();
+
+    /**
+     * @brief      calculate the average density projected on a sphere of a
+     *             specified radius
+     *
+     * @param[in]  p       position of the sphere
+     * @param[in]  radius  radius of the sphere
+     */
+    void extract_sphere_average(const glm::vec3& p, float radius);
 
     /**
      * @brief      draw isolines

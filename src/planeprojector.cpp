@@ -175,7 +175,7 @@ void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale,
 /**
  * @brief      calculate the average density (electron or potential) and store it as function of z-height
  */
-void PlaneProjector::extract_average() {
+void PlaneProjector::extract_plane_average() {
     unsigned int dimensions[3];
     this->sf->copy_grid_dimensions(dimensions);
 
@@ -204,6 +204,57 @@ void PlaneProjector::extract_average() {
     std::ofstream out("z_extraction.txt");
     for(unsigned int i=0; i<avg.size(); i++) {
         out << boost::format("%12.6f  %12.6f\n") % z[i] % avg[i];
+    }
+
+    out.close();
+}
+
+/**
+ * @brief      calculate the average density projected on a sphere of a
+ *             specified radius
+ *
+ * @param[in]  p       position of the sphere
+ * @param[in]  radius  radius of the sphere
+ */
+void PlaneProjector::extract_sphere_average(const glm::vec3& p, float radius) {
+    // use Lebedev quadrature points
+    unsigned int level = Quadrature::LEBEDEV_194;
+    unsigned int start_idx = 0;
+    for(unsigned int i=0; i<level-1; i++) {
+        start_idx += Quadrature::num_lebedev_points[i];
+    }
+
+    // build vectors
+    std::vector<float> radii;
+    std::vector<float> values;
+
+    // integrate over points
+    for(float r = 0.0; r <= radius; r += 0.01f) {
+        float sum = 0.0f;
+        #pragma omp parallel for reduction(+:sum)
+        for(unsigned int i=0; i<Quadrature::num_lebedev_points[level]; i++) {
+            glm::vec3 pp = p + glm::vec3(Quadrature::lebedev_coefficients[i][0],
+                                         Quadrature::lebedev_coefficients[i][1],
+                                         Quadrature::lebedev_coefficients[i][2]) * r;
+
+            // align point to unit cell when crossing periodic boundary conditions
+            glm::vec3 pd = this->sf->get_mat_unitcell_inverse() * pp;
+            pd = glm::fract(pd);
+            pp = this->sf->get_mat_unitcell() * pd;
+
+            const float val = this->sf->get_value_interp(pp[0], pp[1], pp[2]);
+
+            sum += val;
+        }
+        radii.push_back(r);
+        values.push_back(sum / (float)Quadrature::num_lebedev_points[level]);
+    }
+
+    // write to file
+    // open file and output results
+    std::ofstream out("spherical_average.txt");
+    for(unsigned int i=0; i<radii.size(); i++) {
+        out << boost::format("%12.6f  %12.6f\n") % radii[i] % values[i];
     }
 
     out.close();
