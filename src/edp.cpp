@@ -92,6 +92,13 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<std::string> arg_ext("e","extraction","Line extraction vector",false, "", "two atoms ids");
         cmd.add(arg_ext);
 
+        // whether or not to write out a z-average extraction
+        TCLAP::SwitchArg arg_z("z","zaverage","Averaging over z", cmd, false);
+
+        // graph value bounds (for coloring purposes)
+        TCLAP::ValueArg<std::string> arg_b("b","bounds","Lower and upper bounds",false, "", "-3,2");
+        cmd.add(arg_b);
+
         cmd.parse(argc, argv);
 
         //**************************************
@@ -134,9 +141,10 @@ int main(int argc, char *argv[]) {
         //**************************************
         // determine vector and positions
         //**************************************
-        boost::regex re_vec3("^([0-9.-]+),([0-9.-]+),([0-9.-]+)$");     // 3-vector
-        boost::regex re_scalar("^([0-9]+)$");                           // single atom
-        boost::regex re_scalar_2("^([0-9]+)-([0-9]+)$");                // two atoms
+        const boost::regex re_vec3("^([0-9.-]+),([0-9.-]+),([0-9.-]+)$");     // 3-vector
+        const boost::regex re_vec2("^([0-9-]+),([0-9-]+)$");                  // 2-vector
+        const boost::regex re_scalar("^([0-9]+)$");                           // single atom
+        const boost::regex re_scalar_2("^([0-9]+)-([0-9]+)$");                // two atoms
 
         // get position for the point
         std::string sp = arg_sp.getValue();
@@ -221,22 +229,47 @@ int main(int argc, char *argv[]) {
         std::cout << std::endl;
 
         // define intervals in Angstrom
-        const float interval = 20.0;
-        const float li = -interval;
-        const float hi = interval;
-        const float lj = -interval;
-        const float hj = interval;
+        static const float interval = 20.0;
+        static const float li = -interval;
+        static const float hi = interval;
+        static const float lj = -interval;
+        static const float hj = interval;
 
         //**************************************
         // construct plane
         //**************************************
         start = std::chrono::system_clock::now();
-        PlaneProjector pp(&sf, negative_values ? -1 : -7, negative_values ? 1 : 1, color_scheme_id);
-        pp.extract(v, w, p, scale, li, hi, lj, hj, negative_values);
+        PlaneProjector pp(&sf, color_scheme_id);
+
+        //**************************************
+        // set bounds for legend
+        //**************************************
+        int bounds[2];
+        const std::string bound_str = arg_b.getValue();
+        if(boost::regex_match(bound_str, what, re_vec2)) {
+            bounds[0] = boost::lexical_cast<int>(what[1]);
+            bounds[1] = boost::lexical_cast<int>(what[2]);
+            if(bounds[0] == bounds[1]) {
+                throw std::runtime_error("Supplied bounds (-b) should be different.");
+            }
+            if(bounds[0] > bounds[1]) {
+                throw std::runtime_error("Lower bound should be supplied before upper bound (-b).");
+            }
+            std::cout << "Using specified bounds: [log10(" << bounds[0] << "), log10(" << bounds[1] << ")]." << std::endl;
+            pp.set_scaling(negative_values, bounds[0], bounds[1]);
+        } else {
+            if(sf.is_locpot()) {
+                pp.set_scaling(negative_values, -3, 1);
+            } else {
+                pp.set_scaling(negative_values, -7, 1);
+            }
+        }
+
+        pp.extract(v, w, p, scale, li, hi, lj, hj);
         pp.plot();
-        pp.isolines(10, negative_values);
+        pp.isolines(10);
         if(print_legend) {
-            pp.draw_legend(negative_values);
+            pp.draw_legend();
         }
         pp.write(output_filename);
         end = std::chrono::system_clock::now();
@@ -261,6 +294,13 @@ int main(int argc, char *argv[]) {
                 sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
             );
             pp.extract_line(e, p, scale, li, hi);
+        }
+
+        //**************************************
+        // Performing optional z-axis averaging
+        //**************************************
+        if(arg_z.getValue()) {
+            pp.extract_average();
         }
 
         std::cout << "Done" << std::endl << std::endl;

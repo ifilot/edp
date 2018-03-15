@@ -34,27 +34,15 @@ private:
     Plotter* plt;
 
     float* planegrid_log;
-    float* planegrid_linear;
     float* planegrid_real;
     bool* planegrid_box;
-    float min, max;
+    float log_min, log_max;
 
     int ix, iy;
     float scale;
     unsigned int color_scheme_id;
 
-    // scaling settings
-    static constexpr float locpot_min_log = -3;
-    static constexpr float locpot_max_log = 1;
-
-    static constexpr float locpot_min_log_p = 0;
-    static constexpr float locpot_max_log_p = 3;
-
-    static constexpr float locpot_min_linear = -100;
-    static constexpr float locpot_max_linear = 100;
-
-    static constexpr float chgcar_min_linear = -100;
-    static constexpr float chgcar_max_linear = 100;
+    bool flag_negative;
 
 public:
 
@@ -66,7 +54,16 @@ public:
      * @param[in]  _max             maximum value
      * @param[in]  color_scheme_id  The color scheme identifier
      */
-    PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int _color_scheme_id);
+    PlaneProjector(ScalarField* _sf, unsigned int _color_scheme_id);
+
+    /**
+     * @brief      set the scaling for the graph
+     *
+     * @param[in]  allow_negative  whether to allow negative values
+     * @param[in]  _min            minimum values
+     * @param[in]  _max            maximum values
+     */
+    void set_scaling(bool allow_negative, float _min, float _max);
 
     /**
      * @brief      plot contour plane
@@ -86,7 +83,7 @@ public:
      * @param[in]  hj               extend in +v2 direction in Angstrom
      * @param[in]  negative_values  whether there are negative values in the plot
      */
-    void extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj, bool negative_values);
+    void extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj);
 
     /**
      * @brief      extract line
@@ -100,19 +97,24 @@ public:
     void extract_line(glm::vec3 e, const glm::vec3& p, float _scale, float li, float hi);
 
     /**
+     * @brief      calculate the average density (electron or potential) and store it as function of z-height
+     */
+    void extract_average();
+
+    /**
      * @brief      draw isolines
      *
      * @param[in]  bins             number of bins
      * @param[in]  negative_values  whether there are negative values in the plot
      */
-    void isolines(unsigned int bins, bool negative_values);
+    void isolines(unsigned int bins);
 
     /**
      * @brief      Draws a legend.
      *
      * @param[in]  negative_values  whether there are negative values in the plot
      */
-    void draw_legend(bool negative_values);
+    void draw_legend();
 
     /**
      * @brief      write contour plane to file
@@ -151,26 +153,26 @@ private:
     bool is_crossing(unsigned int i, unsigned int j, float val);
 
     /**
-     * @brief      Calculates the scaled value on a linear scale
-     *
-     * @param[in]  input  input value
-     * @param[in]  min    The minimum
-     * @param[in]  max    The maximum
-     *
-     * @return     The scaled value.
-     */
-    float calculate_scaled_value_linear(float input, float min, float max);
-
-    /**
      * @brief      Calculates the scaled value using a logarithmic scale.
      *
      * @param[in]  input  input value
-     * @param[in]  min    The minimum
-     * @param[in]  max    The maximum
      *
      * @return     The scaled value.
      */
-    float calculate_scaled_value_log(float input, float min, float max);
+    float calculate_scaled_value_log(float input);
 };
+
+/**
+ * @brief      get sign
+ *
+ * @param[in]  val   input value
+ *
+ * @tparam     T     sign type
+ *
+ * @return     sign of value
+ */
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 
 #endif

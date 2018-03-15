@@ -277,26 +277,6 @@ void ScalarField::read_atom_positions() {
     }
 
     infile.close();
-
-    this->expand_atoms();
-}
-
-/**
- * @brief      expand atoms for periodic unit cells
- */
-void ScalarField::expand_atoms() {
-    static const int eb = 3; // maximum amount of expansions
-
-    for(int i=-eb; i<=eb; i++) {
-        for(int j=-eb; j<=eb; j++) {
-            for(int k=-eb; k<=eb; k++) {
-                for(unsigned int l=0; l<this->atom_charges.size(); l++) {
-                    this->atom_charges_exp.push_back(this->atom_charges[l]);
-                    this->atom_pos_exp.push_back(this->atom_pos[l] + glm::vec3((float)i, (float)j, (float)k));
-                }
-            }
-        }
-    }
 }
 
 /*
@@ -472,31 +452,6 @@ float ScalarField::get_value_interp(float x, float y, float z) const {
     this->get_value(x0, y1, z1) * (1.0 - xd) * yd                 * zd                 +
     this->get_value(x1, y1, z0) * xd                 * yd                 * (1.0 - zd) +
     this->get_value(x1, y1, z1) * xd                 * yd                 * zd;
-}
-
-/**
- * @brief      Gets the external potential
- *
- * @param[in]  x     x position
- * @param[in]  y     y position
- * @param[in]  z     z position
- *
- * @return     external potential V_ion
- */
-float ScalarField::get_vion(float x, float y, float z) const {
-    static constexpr float ht2ev = 27.211399f; // hartee to eV
-    static constexpr float a2b = 1.889725989f; // angstrom to Bohr
-
-    const glm::vec3 pos(x,y,z);
-    float vion = 0.0;
-
-    for(unsigned int i=0; i<this->atom_charges_exp.size(); i++) {
-        const glm::vec3 atpos = this->mat33 * this->atom_pos_exp[i];
-        const float dist = glm::distance(pos, atpos);
-        vion -= (float)this->atom_charges_exp[i] / (dist * a2b) * ht2ev;
-    }
-
-    return vion;
 }
 
 /**

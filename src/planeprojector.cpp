@@ -28,12 +28,28 @@
  * @param[in]  _max              maximum value
  * @param[in]  _color_scheme_id  The color scheme identifier
  */
-PlaneProjector::PlaneProjector(ScalarField* _sf, float _min, float _max, unsigned int _color_scheme_id) {
-    this->min = _min;
-    this->max = _max;
-    this->scheme = new ColorScheme(_min, _max, _color_scheme_id);
+PlaneProjector::PlaneProjector(ScalarField* _sf, unsigned int _color_scheme_id) {
     this->sf = _sf;
     this->color_scheme_id = _color_scheme_id;
+}
+
+/**
+ * @brief      set the scaling for the graph
+ *
+ * @param[in]  allow_negative  whether to allow negative values
+ * @param[in]  _min            minimum values
+ * @param[in]  _max            maximum values
+ */
+void PlaneProjector::set_scaling(bool allow_negative, float _min, float _max) {
+    this->flag_negative = allow_negative;
+    this->log_min = _min;
+    this->log_max = _max;
+
+    if(this->flag_negative) {
+        this->scheme = new ColorScheme(-1, 1, this->color_scheme_id);
+    } else {
+        this->scheme = new ColorScheme(0, 1, this->color_scheme_id);
+    }
 }
 
 /**
@@ -64,9 +80,8 @@ void PlaneProjector::plot() {
  * @param[in]  hi               extend in +v1 direction in Angstrom
  * @param[in]  lj               extend in -v2 direction in Angstrom
  * @param[in]  hj               extend in +v2 direction in Angstrom
- * @param[in]  negative_values  whether there are negative values in the plot
  */
-void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj, bool negative_values) {
+void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj) {
 
     // use normalized vectors
     _v1 = glm::normalize(_v1);
@@ -79,14 +94,8 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, 
     std::cout << "Creating " << this->ix << "x" << this->iy << "px image..." << std::endl;
 
     this->planegrid_log =       new float[this->ix * this->iy];
-    this->planegrid_linear =    new float[this->ix * this->iy];
     this->planegrid_real =      new float[this->ix * this->iy];
     this->planegrid_box =       new bool[this->ix * this->iy];
-
-    // scaling settings
-    static const float neg_scale = (this->locpot_max_log - this->locpot_min_log + 1.0f);
-    static const float lcmind = std::pow(10.0f, locpot_min_log);
-    static const float lcmaxd = std::pow(10.0f, locpot_max_log);
 
     #pragma omp parallel for collapse(2)
     for(int i=0; i<this->ix; i++) {
@@ -107,38 +116,13 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, 
                 this->planegrid_box[j * this->ix + i] = true;
             }
 
-            if(negative_values) {
-                if(val < 0) {
-                    if(this->sf->is_locpot()) {
-                        this->planegrid_log[j * this->ix + i] = -this->calculate_scaled_value_log(-val, this->locpot_min_log, this->locpot_max_log);
-                    } else {
-                        this->planegrid_log[j * this->ix + i] = -std::min(-1e-4, (-log10(-val) - 5.0) / 5.0);
-                    }
-                } else {
-                    if(this->sf->is_locpot()) {
-                        this->planegrid_log[j * this->ix + i] = this->calculate_scaled_value_log(val, this->locpot_min_log, this->locpot_max_log);
-                    } else {
-                        this->planegrid_log[j * this->ix + i] = -std::max(1e-4, (log10(val) + 5.0) / 5.0);
-                    }
-                }
-                if(this->sf->is_locpot()) {
-                    this->planegrid_linear[j * this->ix + i] = this->calculate_scaled_value_linear(val, this->locpot_min_linear, this->locpot_max_linear);
-                } else {
-                    this->planegrid_linear[j * this->ix + i] = this->calculate_scaled_value_linear(val, this->chgcar_min_linear, this->chgcar_max_linear);
-                }
+            if(this->flag_negative) {
+                this->planegrid_log[j * this->ix + i] = this->calculate_scaled_value_log(val);
             } else {
-                if(this->sf->is_locpot()) {
-                    if(val > 0) {
-                        this->planegrid_log[j * this->ix + i] = this->calculate_scaled_value_log(val, this->locpot_min_log_p, this->locpot_max_log_p);
-                    } else {
-                        this->planegrid_log[j * this->ix + i] = -12;
-                    }
+                if(val > 0) {
+                    this->planegrid_log[j * this->ix + i] = this->calculate_scaled_value_log(val);
                 } else {
-                    if(val > 0) {
-                        this->planegrid_log[j * this->ix + i] = log10(val);
-                    } else {
-                        this->planegrid_log[j * this->ix + i] = -12;
-                    }
+                    this->planegrid_log[j * this->ix + i] = -12;
                 }
             }
             this->planegrid_real[j * this->ix + i] = val;
@@ -189,29 +173,57 @@ void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale,
 }
 
 /**
+ * @brief      calculate the average density (electron or potential) and store it as function of z-height
+ */
+void PlaneProjector::extract_average() {
+    unsigned int dimensions[3];
+    this->sf->copy_grid_dimensions(dimensions);
+
+    const float* grid = this->sf->get_grid_ptr();
+    std::vector<float> avg;
+    std::vector<float> z;
+
+    const float sz = (float)(dimensions[0] * dimensions[1]);
+
+    for(unsigned int i=0; i<dimensions[2]; i++) {   // loop over z-axis
+        float sum = 0.0f;
+        #pragma omp parallel for collapse(2) reduction(+:sum)
+        for(unsigned int j=0; j<dimensions[1]; j++) {   // loop over y-axis
+            for(unsigned int k=0; k<dimensions[0]; k++) {   // loop over x-axis
+                sum += grid[i * dimensions[0] * dimensions[1] +   // z
+                            j * dimensions[0] +                   // y
+                            k];                                   // x
+            }
+        }
+        avg.push_back(sum / sz);
+        z.push_back(i / (float)dimensions[2]);
+    }
+
+    // write to file
+    // open file and output results
+    std::ofstream out("z_extraction.txt");
+    for(unsigned int i=0; i<avg.size(); i++) {
+        out << boost::format("%12.6f  %12.6f\n") % z[i] % avg[i];
+    }
+
+    out.close();
+}
+
+/**
  * @brief      draw isolines
  *
  * @param[in]  bins             number of bins
- * @param[in]  negative_values  whether there are negative values in the plot
  */
-void PlaneProjector::isolines(unsigned int bins, bool negative_values) {
-    if(negative_values) {
-        if(this->sf->is_locpot()) {
-            for(float val = this->locpot_min_log; val <= this->locpot_max_log; val += 1) {
-                this->draw_isoline(-pow(10.0, val));
-                this->draw_isoline(pow(10.0, val));
-            }
-            this->draw_isoline(0);
-        } else {
-            for(float val = -5; val <= 1; val += 1) {
-                this->draw_isoline(-pow(10.0, val));
-                this->draw_isoline(pow(10.0, val));
-            }
-            this->draw_isoline(0);
-         }
+void PlaneProjector::isolines(unsigned int bins) {
+    if(this->flag_negative) {
+        for(float val = this->log_min; val <= this->log_max; val += 1) {
+            this->draw_isoline(-pow(10.0, val));
+            this->draw_isoline(pow(10.0, val));
+        }
+        this->draw_isoline(0);
     } else {
-        float binsize = (this->max - this->min) / float(bins + 1);
-        for(float val = this->min; val <= this->max; val += binsize) {
+        float binsize = (this->log_max - this->log_min) / float(bins + 1);
+        for(float val = this->log_min; val <= this->log_max; val += binsize) {
             this->draw_isoline(pow(10.0,val));
         }
         this->draw_isoline(0);
@@ -223,7 +235,7 @@ void PlaneProjector::isolines(unsigned int bins, bool negative_values) {
  *
  * @param[in]  negative_values  whether there are negative values in the plot
  */
-void PlaneProjector::draw_legend(bool negative_values) {
+void PlaneProjector::draw_legend() {
     // set sizes
     const float size = this->scale * 1.2;
     const float fontsize = 24.f / 100.f * this->scale;
@@ -235,7 +247,7 @@ void PlaneProjector::draw_legend(bool negative_values) {
     if(this->sf->is_locpot()) { // draw legend for LOCPOT
         const std::string units = "eV";
         auto bounds = this->plt->get_text_bounds(fontsize, units);
-        float txpos = this->ix - 0.6 * size - bounds.height;
+        float txpos = this->ix - 0.6 * size - bounds.height * 1.2;
         float typos = size / 4.0f + bounds.width;
         this->plt->type(txpos + shade_offset, typos + shade_offset, fontsize, -90, Color(0,0,0), units);
         this->plt->type(txpos, typos, fontsize, -90, Color(255, 255, 255), units);
@@ -257,33 +269,27 @@ void PlaneProjector::draw_legend(bool negative_values) {
     float yy = 0;
     float val = 0;
 
-    const float locpot_scale = ((negative_values ? this->locpot_max_log : this->locpot_max_log_p) - (negative_values ? this->locpot_min_log : this->locpot_min_log_p) + 1.0f);
-    const float mmax = negative_values ? locpot_scale : this->max;
-    const float mmin = negative_values ? -locpot_scale : this->min;
+    const float locpot_scale = (this->log_max - this->log_min) + 1.0f;
+    const float mmax = this->flag_negative ? locpot_scale : this->log_max;
+    const float mmin = this->flag_negative ? -locpot_scale : this->log_min;
 
     for(int i=mmax; i >= mmin; i--) {
 
-        if(negative_values) {
-
+        if(this->flag_negative) {
             if(i > 0) {
-                val = pow(10, (i + this->locpot_min_log - 1));
+                val = pow(10, (i + this->log_min - 1));
             } else if(i < 0) {
-                val = -pow(10, -(i - this->locpot_min_log + 1));
+                val = -pow(10, -(i - this->log_min + 1));
             } else { // i == 0
                 val = 0;
             }
 
         } else {
-            val = (float)i;
+            val = pow(10, i);
         }
 
         // set legend colors
-        Color lcol(255,255,255);
-        if(negative_values) {
-            lcol = this->scheme->get_color(i / locpot_scale);
-        } else {
-            lcol = this->scheme->get_color(val);
-        }
+        const Color lcol = this->scheme->get_color(this->calculate_scaled_value_log(val));
 
         // calculate xpos and ypos for the rectangles
         const float xpos = this->ix - 3.f / 4.f * size;
@@ -296,7 +302,7 @@ void PlaneProjector::draw_legend(bool negative_values) {
 
         // determine text for base
         std::string textbase;
-        if(negative_values) {
+        if(this->flag_negative) {
             if(i != 0) {
                 textbase = i >= 0 ? "10" : "-10";
             } else {
@@ -308,14 +314,10 @@ void PlaneProjector::draw_legend(bool negative_values) {
 
         // determine text for power
         std::string textpower;
-        if(negative_values) {
-            if(i != 0) {
-                textpower = (boost::format("%i") % log10(std::abs(val))).str();
-            } else {
-                textpower = "  ";
-            }
+        if(i != 0) {
+            textpower = (boost::format("%i") % log10(std::abs(val))).str();
         } else {
-            textpower = (boost::format("%i") % val).str();
+            textpower = "  ";
         }
 
         // calculate bounds
@@ -355,7 +357,6 @@ void PlaneProjector::write(std::string filename) {
  */
 PlaneProjector::~PlaneProjector() {
     delete[] this->planegrid_log;
-    delete[] this->planegrid_linear;
     delete[] this->planegrid_real;
     delete[] this->planegrid_box;
 }
@@ -441,7 +442,6 @@ void PlaneProjector::cut_and_recast_plane() {
 
     // recasting
     float* newgrid_log = new float[nx * ny];
-    float* newgrid_linear = new float[nx * ny];
     float* newgrid_real = new float[nx * ny];
     bool* newgrid_box = new bool[nx * ny];
 
@@ -449,7 +449,6 @@ void PlaneProjector::cut_and_recast_plane() {
     for(unsigned int i=0; i<nx; i++) {
         for(unsigned int j=0; j<ny; j++) {
             newgrid_log[j * nx + i] = this->planegrid_log[(j + min_y) * this->ix + (i + min_x)];
-            newgrid_linear[j * nx + i] = this->planegrid_linear[(j + min_y) * this->ix + (i + min_x)];
             newgrid_real[j * nx + i] = this->planegrid_real[(j + min_y) * this->ix + (i + min_x)];
             newgrid_box[j * nx + i] = this->planegrid_box[(j + min_y) * this->ix + (i + min_x)];
         }
@@ -457,12 +456,10 @@ void PlaneProjector::cut_and_recast_plane() {
 
     delete[] this->planegrid_real;
     delete[] this->planegrid_log;
-    delete[] this->planegrid_linear;
     delete[] this->planegrid_box;
 
     this->planegrid_real = newgrid_real;
     this->planegrid_log = newgrid_log;
-    this->planegrid_linear = newgrid_linear;
     this->planegrid_box = newgrid_box;
 
     this->ix = nx;
@@ -510,27 +507,14 @@ bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, float val) {
 }
 
 /**
- * @brief      Calculates the scaled value on interval [0,1]
- *
- * @param[in]  input  input value
- *
- * @return     The scaled value.
- */
-float PlaneProjector::calculate_scaled_value_linear(float input, float min, float max) {
-    static const float scale = max - min;
-    const float val = std::min(std::max(input, min), max);
-    return (val - min)/scale;
-}
-
-/**
  * @brief      Calculates the scaled value using a logarithmic scale.
  *
  * @param[in]  input  input value
  *
  * @return     The scaled value.
  */
-float PlaneProjector::calculate_scaled_value_log(float input, float min, float max) {
-    static const float scale = (max - min + 1.0f);
-    const float logval = std::min(std::max(log10(input), min), max);
-    return (logval - min)/scale;
+float PlaneProjector::calculate_scaled_value_log(float input) {
+    const float scale = (this->log_max - this->log_min + 1.0f);
+    const float logval = std::min(std::max(log10(std::fabs(input)), this->log_min), this->log_max);
+    return sgn(input) * (logval - this->log_min) / scale;
 }

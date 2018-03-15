@@ -117,18 +117,6 @@ public:
      */
     float get_value_interp(float x, float y, float z) const;
 
-
-    /**
-     * @brief      Gets the external potential
-     *
-     * @param[in]  x     x position
-     * @param[in]  y     y position
-     * @param[in]  z     z position
-     *
-     * @return     external potential V_ion
-     */
-    float get_vion(float x, float y, float z) const;
-
     /**
      * @brief      test whether point is inside unit cell
      *
@@ -179,12 +167,6 @@ private:
     void read_grid_dimensions();
     void read_nr_atoms();
     void read_atom_positions();
-
-    /**
-     * @brief      expand atoms for periodic unit cells
-     */
-    void expand_atoms();
-
     void read_grid();
     float get_max_direction(unsigned int dim);
     void calculate_inverse();
