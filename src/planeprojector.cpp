@@ -421,69 +421,69 @@ void PlaneProjector::cut_and_recast_plane() {
     unsigned int min_y = 0;
     unsigned int max_y = this->iy;
 
-    // // determine min_x
-    // for(unsigned int i=0; i<uint(this->ix); i++) {
-    //     bool line = false;
+    // determine min_x
+    for(unsigned int i=0; i<uint(this->ix); i++) {
+        bool line = false;
 
-    //     #pragma omp parallel for
-    //     for(unsigned int j=0; j<uint(this->iy); j++) {
-    //         if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
-    //             line = true;
-    //         }
-    //     }
-    //     if(line) {
-    //         min_x = i;
-    //         break;
-    //     }
-    // }
+        #pragma omp parallel for
+        for(unsigned int j=0; j<uint(this->iy); j++) {
+            if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
+                line = true;
+            }
+        }
+        if(line) {
+            min_x = i;
+            break;
+        }
+    }
 
-    // // determine max_x
-    // for(unsigned int i=uint(this->ix); i>0; i--) {
-    //     bool line = false;
+    // determine max_x
+    for(unsigned int i=uint(this->ix); i>0; i--) {
+        bool line = false;
 
-    //     #pragma omp parallel for
-    //     for(unsigned int j=0; j<uint(this->iy); j++) {
-    //         if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
-    //             line = true;
-    //         }
-    //     }
-    //     if(line) {
-    //         max_x = i;
-    //         break;
-    //     }
-    // }
+        #pragma omp parallel for
+        for(unsigned int j=0; j<uint(this->iy); j++) {
+            if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
+                line = true;
+            }
+        }
+        if(line) {
+            max_x = i;
+            break;
+        }
+    }
 
-    // // determine min_y
-    // for(unsigned int j=0; j<uint(this->iy); j++) {
-    //     bool line = false;
+    // determine min_y
+    for(unsigned int j=0; j<uint(this->iy); j++) {
+        bool line = false;
 
-    //     #pragma omp parallel for
-    //     for(unsigned int i=0; i<uint(this->ix); i++) {
-    //         if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
-    //             line = true;
-    //         }
-    //     }
-    //     if(line) {
-    //         min_y = j;
-    //         break;
-    //     }
-    // }
+        #pragma omp parallel for
+        for(unsigned int i=0; i<uint(this->ix); i++) {
+            if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
+                line = true;
+            }
+        }
+        if(line) {
+            min_y = j;
+            break;
+        }
+    }
 
-    // // determine max_y
-    // for(unsigned int j=uint(this->iy-1); j>0; j--) {
-    //     bool line = false;
+    // determine max_y
+    for(unsigned int j=uint(this->iy-1); j>0; j--) {
+        bool line = false;
 
-    //     #pragma omp parallel for
-    //     for(unsigned int i=0; i<uint(this->ix); i++) {
-    //         if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
-    //             line = true;
-    //         }
-    //     }
-    //     if(line) {
-    //         max_y = j;
-    //         break;
-    //     }
-    // }
+        #pragma omp parallel for
+        for(unsigned int i=0; i<uint(this->ix); i++) {
+            if(this->planegrid_real[(j) * this->ix + i] != 0.0) {
+                line = true;
+            }
+        }
+        if(line) {
+            max_y = j;
+            break;
+        }
+    }
 
     unsigned int nx = max_x - min_x;
     unsigned int ny = max_y - min_y;
