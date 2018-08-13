@@ -423,25 +423,29 @@ float ScalarField::get_value_interp(float x, float y, float z) const {
         return 0.0f;
     }
 
-    // cast the input to the nearest grid point
-    glm::vec3 r = this->realspace_to_grid(x,y,z);
-    glm::vec3 d = this->realspace_to_direct(x,y,z);
+    // cast the input to grid space
+    glm::vec3 r = this->realspace_to_grid(x,y,z) - glm::vec3(0.5f, 0.5f, 0.5f);
+
+    // recast
+    if(r[0] < 0) r[0] += (float)this->grid_dimensions[0];
+    if(r[1] < 0) r[1] += (float)this->grid_dimensions[1];
+    if(r[2] < 0) r[2] += (float)this->grid_dimensions[2];
 
     // calculate value using trilinear interpolation
     float xd = remainderf(r[0], 1.0);
     float yd = remainderf(r[1], 1.0);
     float zd = remainderf(r[2], 1.0);
 
-    if(xd < 0) xd += 1.0;
-    if(yd < 0) yd += 1.0;
-    if(zd < 0) zd += 1.0;
+    if(xd < 0.0f) xd += 1.0f;
+    if(yd < 0.0f) yd += 1.0f;
+    if(zd < 0.0f) zd += 1.0f;
 
-    float x0 = floor(r[0]);
-    float x1 = ceil(r[0]);
-    float y0 = floor(r[1]);
-    float y1 = ceil(r[1]);
-    float z0 = floor(r[2]);
-    float z1 = ceil(r[2]);
+    float x0 = fmod(floor(r[0]), this->grid_dimensions[0]);
+    float x1 = fmod(ceil(r[0]), this->grid_dimensions[0]);
+    float y0 = fmod(floor(r[1]), this->grid_dimensions[1]);
+    float y1 = fmod(ceil(r[1]), this->grid_dimensions[1]);
+    float z0 = fmod(floor(r[2]), this->grid_dimensions[2]);
+    float z1 = fmod(ceil(r[2]), this->grid_dimensions[2]);
 
     return
     this->get_value(x0, y0, z0) * (1.0 - xd) * (1.0 - yd) * (1.0 - zd) +
@@ -579,14 +583,11 @@ glm::vec3 ScalarField::grid_to_realspace(float i, float j, float k) const {
  *
  */
 glm::vec3 ScalarField::realspace_to_grid(float i, float j, float k) const {
-    glm::vec3 r;
-    r[0] = imat[0][0] * i + imat[0][1] * j + imat[0][2] * k;
-    r[1] = imat[1][0] * i + imat[1][1] * j + imat[1][2] * k;
-    r[2] = imat[2][0] * i + imat[2][1] * j + imat[2][2] * k;
+    glm::vec3 r = this->realspace_to_direct(i,j,k);
 
-    r[0] *= float(this->grid_dimensions[0]-1);
-    r[1] *= float(this->grid_dimensions[1]-1);
-    r[2] *= float(this->grid_dimensions[2]-1);
+    r[0] *= float(this->grid_dimensions[0]);
+    r[1] *= float(this->grid_dimensions[1]);
+    r[2] *= float(this->grid_dimensions[2]);
 
     return r;
 }
