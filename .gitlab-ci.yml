@@ -8,7 +8,7 @@ stages:
 build_debian:
   stage: build
   tags:
-    - debian
+    - debian-build
   before_script:
     - apt update && apt -y install build-essential libboost-all-dev cmake libtclap-dev pkg-config libcairo2-dev libglm-dev
   script:
