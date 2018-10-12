@@ -55,7 +55,7 @@ repository_tue:
       - chmod 700 ~/.ssh
       - ssh-keyscan -H ${HOST_URL} >> ~/.ssh/known_hosts
     script:
-      - scp edp*.deb ${HOST_URL}:/scratch/ivo/repos
+      - scp edp*.deb ivo@${HOST_URL}:/scratch/ivo/repos
 
 repository_zuidcoach:
     stage: deploy
@@ -76,4 +76,4 @@ repository_zuidcoach:
       - chmod 700 ~/.ssh
       - ssh-keyscan -H ${HOST_URL} >> ~/.ssh/known_hosts
     script:
-      - scp edp*.deb ${HOST_URL}:/scratch/ivo/repos
+      - scp edp*.deb ivo@${HOST_URL}:/scratch/ivo/repos
