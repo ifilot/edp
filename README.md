@@ -1,5 +1,7 @@
 # EDP
 
+[![pipeline status](https://gitlab.tue.nl/ifilot/edp/badges/master/pipeline.svg)](https://gitlab.tue.nl/ifilot/edp/commits/master)
+
 ## Introduction
 Electron density plotter is a tiny tool for generating electron density plots from VASP output.
 
