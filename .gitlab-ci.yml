@@ -2,7 +2,7 @@ image: generic-package-build-debian:v1
 
 stages:
   - build
-  - test
+  - package
   - deploy
 
 build_debian:
@@ -23,7 +23,7 @@ build_debian:
     expire_in: 2 hours
 
 deploy_debian:
-  stage: deploy
+  stage: package
   tags:
     - debian-build
   before_script:
@@ -39,11 +39,16 @@ deploy_debian:
 repository:
     stage: deploy
     dependencies:
-      - deploy_debian
+      - build_debian
     variables:
-      DEPLOYKEY: "$DeployKey"
+      SSH_PRIVATE_KEY: "$SSH_PRIVATE_KEY"
     tags:
       - debian-build
+    before_script:
+      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+      - eval $(ssh-agent -s)
+      - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
     script:
-      - echo "-----BEGIN RSA PRIVATE KEY-----\n${DEPLOYKEY}\n-----END RSA PRIVATE KEY-----" > key
       - scp -i key edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
