@@ -50,8 +50,6 @@ repository_tue:
       - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
       - mkdir -p ~/.ssh
       - chmod 700 ~/.ssh
-      - file=$(mktemp)
-      - ssh-keyscan st-a1960.chem.tue.nl > $file 2> /dev/null
-      - ssh-keygen -l -f $file
+      - ssh-keyscan -H st-a1960.chem.tue.nl >> ~/.ssh/known_hosts
     script:
       - scp edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
