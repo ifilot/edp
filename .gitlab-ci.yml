@@ -1,4 +1,4 @@
-image: debian:stable
+image: generic-package-build-debian:v1
 
 stages:
   - build
@@ -16,3 +16,8 @@ build_debian:
     - cd build
     - cmake ../src
     - make -j3
+  artifacts:
+    when: on_success
+    paths:
+      - edp
+    expire_in: 2 hours
