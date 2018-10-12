@@ -42,10 +42,9 @@ repository_tue:
     stage: deploy
     dependencies:
       - package_debian
-    only:
-      - tags
     variables:
       SSH_PRIVATE_KEY: "$SSH_PRIVATE_KEY"
+      HOST_URL: "st-a1960.chem.tue.nl"
     tags:
       - debian-build
     before_script:
@@ -54,6 +53,27 @@ repository_tue:
       - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
       - mkdir -p ~/.ssh
       - chmod 700 ~/.ssh
-      - ssh-keyscan -H st-a1960.chem.tue.nl >> ~/.ssh/known_hosts
+      - ssh-keyscan -H ${HOST_URL} >> ~/.ssh/known_hosts
     script:
-      - scp edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
+      - scp edp*.deb ${HOST_URL}:/scratch/ivo/repos
+
+repository_zuidcoach:
+    stage: deploy
+    dependencies:
+      - package_debian
+    only:
+      - tags
+    variables:
+      SSH_PRIVATE_KEY: "$SSH_PRIVATE_KEY"
+      HOST_URL: "zuidcoach.nl"
+    tags:
+      - debian-build
+    before_script:
+      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+      - eval $(ssh-agent -s)
+      - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
+      - ssh-keyscan -H ${HOST_URL} >> ~/.ssh/known_hosts
+    script:
+      - scp edp*.deb ${HOST_URL}:/scratch/ivo/repos
