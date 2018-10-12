@@ -5,7 +5,7 @@ stages:
   - package
   - deploy
 
-package_debian:
+build-debian:
   stage: build
   tags:
     - debian-build
@@ -22,8 +22,10 @@ package_debian:
       - build/edp
     expire_in: 2 hours
 
-deploy_debian:
+package_debian:
   stage: package
+  dependencies:
+    - build-debian
   tags:
     - debian-build
   before_script:
