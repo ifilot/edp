@@ -42,6 +42,8 @@ repository_tue:
     stage: deploy
     dependencies:
       - package_debian
+    only:
+      - tags
     variables:
       SSH_PRIVATE_KEY: "$SSH_PRIVATE_KEY"
     tags:
