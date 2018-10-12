@@ -1,0 +1,18 @@
+image: debian:stable
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_debian:
+  stage: build
+  tags:
+    - debian
+  before_script:
+    - apt update && apt -y install build-essential libboost-all-dev cmake libtclap-dev pkg-config libcairo2-dev libglm-dev
+  script:
+    - mkdir build
+    - cd build
+    - cmake ../src
+    - make -j3
