@@ -38,6 +38,8 @@ deploy_debian:
 
 repository:
     stage: deploy
+    dependencies:
+      - deploy_debian
     variables:
       DEPLOYKEY: "$DeployKey"
     tags:
