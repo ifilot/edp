@@ -14,6 +14,7 @@ mkdir -pv deb/${DISTPATH}/{DEBIAN,usr/bin,usr/share/doc/edp}
 # copy files
 sed -e "2 s/$/ ${PACKAGE_NAME}-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}/" package/copyright > deb/${DISTPATH}/usr/share/doc/edp/copyright
 sed -e "1 s/$/ ${PACKAGE_NAME}-${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}/" package/control > deb/${DISTPATH}/DEBIAN/control
+sed -i "9 s/$/ ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}/" deb/${DISTPATH}/DEBIAN/control
 objcopy --strip-debug --strip-unneeded ./build/edp deb/${DISTPATH}/usr/bin/edp
 
 # build package

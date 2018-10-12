@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.8
 Homepage: http://www.ivofilot.nl
 Package: edp
-Version: 1.2
+Version:
 Architecture: amd64
 Depends: libcairo2 (>= 1.14.8-1), libgomp1 (>=6.3.0-18), libc6 (>= 2.24)
 Description: Electronic Density Plotter
