@@ -19,5 +19,19 @@ build_debian:
   artifacts:
     when: on_success
     paths:
-      - edp
+      - build/edp
+    expire_in: 2 hours
+
+deploy_debian:
+  stage: deploy
+  tags:
+    - debian-build
+  before_script:
+    - apt update && apt -y install build-essential libboost-all-dev cmake libtclap-dev pkg-config libcairo2-dev libglm-dev binutils
+  script:
+    - bash build_deb.sh
+  artifacts:
+    when: on_success
+    paths:
+      - "edp*.deb"
     expire_in: 2 hours
