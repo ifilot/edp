@@ -5,7 +5,7 @@ stages:
   - package
   - deploy
 
-build_debian:
+package_debian:
   stage: build
   tags:
     - debian-build
@@ -36,10 +36,10 @@ deploy_debian:
       - "edp*.deb"
     expire_in: 2 hours
 
-repository:
+repository_tue:
     stage: deploy
     dependencies:
-      - build_debian
+      - package_debian
     variables:
       SSH_PRIVATE_KEY: "$SSH_PRIVATE_KEY"
     tags:
@@ -51,4 +51,4 @@ repository:
       - mkdir -p ~/.ssh
       - chmod 700 ~/.ssh
     script:
-      - scp -i key edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
+      - scp edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
