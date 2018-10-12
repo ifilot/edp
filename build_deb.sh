@@ -24,6 +24,3 @@ popd
 
 # clean-up folder
 rm -rvf deb
-
-# perform lintian
-lintian ${DISTPATH}.deb
