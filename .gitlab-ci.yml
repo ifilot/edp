@@ -27,7 +27,7 @@ deploy_debian:
   tags:
     - debian-build
   before_script:
-    - apt update && apt -y install build-essential libboost-all-dev cmake libtclap-dev pkg-config libcairo2-dev libglm-dev binutils
+    - apt update && apt -y install build-essential libboost-all-dev cmake libtclap-dev pkg-config libcairo2-dev libglm-dev binutils lintian
   script:
     - bash build_deb.sh
   artifacts:
