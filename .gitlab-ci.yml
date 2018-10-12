@@ -43,5 +43,5 @@ repository:
     tags:
       - debian-build
     script:
-      - echo "-----BEGIN RSA PRIVATE KEY-----\n{DEPLOYKEY}\n-----END RSA PRIVATE KEY-----" > key
+      - echo "-----BEGIN RSA PRIVATE KEY-----\n${DEPLOYKEY}\n-----END RSA PRIVATE KEY-----" > key
       - scp -i key edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
