@@ -35,3 +35,13 @@ deploy_debian:
     paths:
       - "edp*.deb"
     expire_in: 2 hours
+
+repository:
+    stage: deploy
+    variables:
+      DEPLOYKEY: "$DeployKey"
+    tags:
+      - debian-build
+    script:
+      - echo "-----BEGIN RSA PRIVATE KEY-----\n{DEPLOYKEY}\n-----END RSA PRIVATE KEY-----" > key
+      - scp edp*.deb ivo@st-a1960.chem.tue.nl:/home/ivo/mydebs
