@@ -1,0 +1,26 @@
+.\" Manpage for edp.
+.\" Contact i.a.w.filot@tue.nl to correct errors or typos.
+.TH man 1 "14 October 2018" "1.8.0" "edp man page"
+.SH NAME
+edp \- Electronic Density Plotter
+.SH SYNOPSIS
+edp -i [chgcar] -v [v1,v2,v3] -w [w1,w2,w3] -p [p1,p2,p3] -o [plot.png]
+.SH DESCRIPTION
+Electron density plotter is a tiny tool for generating electron density plots from VASP output.
+.SH OPTIONS
+.IP "-i chgcar"
+Input file (chgcar)
+.IP "-v v1,v2,v3"
+Direction vector 1
+.IP "-w w1,w2,w3"
+Direction vector 2
+.IP "-p p1,p2,p3"
+3D vector for a point in the unit cell or a single number for an atom position
+.IP "-o plot.png"
+Output file
+.SH EXAMPLE
+edp -i CHGCAR -v 1-2 -w 0,0,1 -p 1 -o plot.png
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Ivo Filot (i.a.w.filot@tue.nl)
