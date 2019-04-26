@@ -40,6 +40,7 @@
 
 #include "scalar_field.h"
 #include "planeprojector.h"
+#include "raytracer.h"
 #include "config.h"
 
 int main(int argc, char *argv[]) {
@@ -320,6 +321,12 @@ int main(int argc, char *argv[]) {
             std::cout << "Averaging sphere surface for atom " << atid << " at radius: " << radius << std::endl;
             pp.extract_sphere_average(pr, radius);
         }
+
+        // test raytracing
+        std::cout << "Performing ray trace" << std::endl;
+        RayTracer rt(&sf, color_scheme_id);
+        rt.trace();
+        std::cout << "Done ray tracing" << std::endl;
 
         std::cout << "Done" << std::endl << std::endl;
 

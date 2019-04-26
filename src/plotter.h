@@ -87,6 +87,8 @@ public:
     return this->cr;
   }
 
+  ~Plotter();
+
 private:
 
 };

@@ -18,7 +18,34 @@
  *                                                                        *
  **************************************************************************/
 
-#include "quadrature.h"
+#ifndef _RAYTRACER_H
+#define _RAYTRACER_H
 
-constexpr unsigned int Quadrature::num_lebedev_points[11];
-constexpr double Quadrature::lebedev_coefficients[][4];
+#include <memory>
+
+#include "plotter.h"
+#include "scalar_field.h"
+
+class RayTracer {
+private:
+    ScalarField* sf;
+    std::unique_ptr<Plotter> plt;
+    ColorScheme* scheme;
+
+    int ix = 1024;
+    int iy = 1024;
+
+    float minval, maxval;
+
+    unsigned int color_scheme_id;
+
+public:
+    RayTracer(ScalarField* _sf, unsigned int _color_scheme_id);
+
+    void trace();
+
+private:
+
+};
+
+#endif // _RAYTRACER_H

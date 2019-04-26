@@ -401,6 +401,7 @@ void PlaneProjector::draw_legend() {
 void PlaneProjector::write(std::string filename) {
     plt->write(filename.c_str());
     std::cout << "Writing " << filename << std::endl;
+    delete this->plt;
 }
 
 /**
