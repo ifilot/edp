@@ -22,6 +22,7 @@
 #define _RAYTRACER_H
 
 #include <memory>
+#include <array>
 
 #include "plotter.h"
 #include "scalar_field.h"
@@ -32,17 +33,42 @@ private:
     std::unique_ptr<Plotter> plt;
     ColorScheme* scheme;
 
-    int ix = 1024;
-    int iy = 1024;
+    int ix = 512;
+    int iy = 512;
 
     float minval, maxval;
 
+    // whether to sample front to back or back to front
+    bool front_to_back = false;
+
+    // implement density scaling
+    float density_scaling = 0.3f;
+
     unsigned int color_scheme_id;
 
+    // store colors
+    std::vector<std::array<float, 4>> pixels;
+
 public:
+    /**
+     * @brief      Constructs the object.
+     *
+     * @param      _sf               Pointer to scalar field
+     * @param[in]  _color_scheme_id  The color scheme identifier
+     */
     RayTracer(ScalarField* _sf, unsigned int _color_scheme_id);
 
+    /**
+     * @brief      Perform volumetric ray tracing
+     */
     void trace();
+
+    /**
+     * @brief      Write to png file
+     *
+     * @param[in]  filename  The filename
+     */
+    void write(const std::string& filename);
 
 private:
 

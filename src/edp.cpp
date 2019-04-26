@@ -322,11 +322,18 @@ int main(int argc, char *argv[]) {
             pp.extract_sphere_average(pr, radius);
         }
 
-        // test raytracing
+        //**************************************
+        // Ray Tracing
+        //**************************************
         std::cout << "Performing ray trace" << std::endl;
+        start = std::chrono::system_clock::now();
         RayTracer rt(&sf, color_scheme_id);
         rt.trace();
-        std::cout << "Done ray tracing" << std::endl;
+        rt.write("raytrace.png");
+        end = std::chrono::system_clock::now();
+        elapsed_seconds = end-start;
+        std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;
+        std::cout << "--------------------------------------------------------------" << std::endl;
 
         std::cout << "Done" << std::endl << std::endl;
 

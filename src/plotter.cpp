@@ -430,6 +430,15 @@ Color::Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a)
     b(_b),
     a(_a) {}
 
+Color::Color(const std::array<float, 4>& _colors) :
+r(_colors[0] * 255),
+g(_colors[1] * 255),
+b(_colors[2] * 255),
+a(_colors[3] * 255)
+{
+
+}
+
 /**
  *
  * Return the integer value for red (divide by 255 because we want on the [0,1] interval)
