@@ -40,7 +40,7 @@
 
 #include "scalar_field.h"
 #include "planeprojector.h"
-#include "raytracer.h"
+#include "raycaster.h"
 #include "config.h"
 
 int main(int argc, char *argv[]) {
@@ -325,11 +325,13 @@ int main(int argc, char *argv[]) {
         //**************************************
         // Ray Tracing
         //**************************************
-        std::cout << "Performing ray trace" << std::endl;
+        std::cout << "Performing ray casting" << std::endl;
+        std::string outputrayfile = "raytrace.png";
         start = std::chrono::system_clock::now();
-        RayTracer rt(&sf, color_scheme_id);
-        rt.trace();
-        rt.write("raytrace.png");
+        RayCaster rc(&sf, color_scheme_id);
+        rc.cast();
+        rc.write(outputrayfile);
+        std::cout << "Writing output to " << outputrayfile << std::endl;
         end = std::chrono::system_clock::now();
         elapsed_seconds = end-start;
         std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;

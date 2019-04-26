@@ -18,7 +18,7 @@
  *                                                                        *
  **************************************************************************/
 
-#include "raytracer.h"
+#include "raycaster.h"
 
 /**
  * @brief      constructor
@@ -26,7 +26,7 @@
  * @param      _sf              pointer to ScalarField
  * @param[in]  color_scheme_id  The color scheme identifier
  */
-RayTracer::RayTracer(ScalarField* _sf, unsigned int _color_scheme_id) {
+RayCaster::RayCaster(ScalarField* _sf, unsigned int _color_scheme_id) {
     this->sf = _sf;
     this->color_scheme_id = _color_scheme_id;
 
@@ -36,9 +36,8 @@ RayTracer::RayTracer(ScalarField* _sf, unsigned int _color_scheme_id) {
     this->scheme = new ColorScheme(0, 1, this->color_scheme_id);
 }
 
-void RayTracer::trace() {
+void RayCaster::cast() {
     this->plt = std::make_unique<Plotter>(this->ix, this->iy);
-    const unsigned int samples = 64;
 
     // set background
     this->plt->draw_filled_rectangle(0, 0, this->ix, this->iy, this->scheme->get_color(0));
@@ -63,27 +62,21 @@ void RayTracer::trace() {
             float cum_alpha = 0.0f;
             std::array<float, 4> color = {0.0f, 0.0f, 0.0f, 0.0f};
 
-            for(unsigned int d=0; d<samples; d++) {
+            for(unsigned int d=0; d<this->raysamples; d++) {
                 // get intensity and density
-                float dd = (float)d /(float)samples * unitcell[1][1];
+                float dd = (float)d /(float)this->raysamples * unitcell[1][1];
                 float val = std::log10(1.0 + std::fabs(this->sf->get_value_interp(xx, dd, yy)));
+
+                // calculate alpha value
                 float alpha = (val - this->minval) / (this->maxval - this->minval);
                 color[3] = std::pow(alpha, density_scaling);
 
                 // calculate base color
                 auto col = this->scheme->get_color(color[3]);
 
-                // calculate normal and diffuse
-                auto normal = this->calculate_normal(xx, dd, yy);
-                float cosTheta = glm::clamp(glm::dot(normal, light), 0.8f, 1.0f);
-
-                // calculate specular
-                glm::vec3 reflec = glm::reflect(-light, normal);
-                float cosAlpha = std::pow(glm::clamp(glm::dot(eye, reflec), 0.0f, 1.0f), 32.0f);
-
-                color[0] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_r() + cosAlpha);
-                color[1] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_g() + cosAlpha);
-                color[2] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_b() + cosAlpha);
+                color[0] += color[3] * col.get_r();
+                color[1] += color[3] * col.get_g();
+                color[2] += color[3] * col.get_b();
 
                 // accumulate alpha
                 cum_alpha += color[3];
@@ -114,7 +107,7 @@ void RayTracer::trace() {
  *
  * @param[in]  filename  The filename
  */
-void RayTracer::write(const std::string& filename) {
+void RayCaster::write(const std::string& filename) {
     for(int y=0; y<this->iy; y++) {
         for(int x=0; x<this->ix; x++) {
             this->plt->draw_filled_rectangle(x, y, 1, 1, Color(this->pixels[y * this->ix + x]));
@@ -134,7 +127,7 @@ void RayTracer::write(const std::string& filename) {
  *
  * @return     The normal.
  */
-glm::vec3 RayTracer::calculate_normal(float x, float y, float z) const {
+glm::vec3 RayCaster::calculate_normal(float x, float y, float z) const {
     static const float dev = 0.05f;
 
     double dx0 = sf->get_value_interp(x - dev, y, z);

@@ -18,8 +18,8 @@
  *                                                                        *
  **************************************************************************/
 
-#ifndef _RAYTRACER_H
-#define _RAYTRACER_H
+#ifndef _RAY_CASTER_H
+#define _RAY_CASTER_H
 
 #include <memory>
 #include <array>
@@ -28,7 +28,7 @@
 #include "plotter.h"
 #include "scalar_field.h"
 
-class RayTracer {
+class RayCaster {
 private:
     ScalarField* sf;
     std::unique_ptr<Plotter> plt;
@@ -43,7 +43,8 @@ private:
     bool front_to_back = false;
 
     // implement density scaling
-    float density_scaling = 1.0f;
+    float density_scaling = 0.5f;
+    unsigned int raysamples = 16;
 
     unsigned int color_scheme_id;
 
@@ -57,12 +58,12 @@ public:
      * @param      _sf               Pointer to scalar field
      * @param[in]  _color_scheme_id  The color scheme identifier
      */
-    RayTracer(ScalarField* _sf, unsigned int _color_scheme_id);
+    RayCaster(ScalarField* _sf, unsigned int _color_scheme_id);
 
     /**
-     * @brief      Perform volumetric ray tracing
+     * @brief      Perform volumetric ray casting
      */
-    void trace();
+    void cast();
 
     /**
      * @brief      Write to png file
@@ -85,4 +86,4 @@ private:
 
 };
 
-#endif // _RAYTRACER_H
+#endif // _RAY_CASTER_H
