@@ -23,6 +23,7 @@
 
 #include <memory>
 #include <array>
+#include <glm/glm.hpp>
 
 #include "plotter.h"
 #include "scalar_field.h"
@@ -42,7 +43,7 @@ private:
     bool front_to_back = false;
 
     // implement density scaling
-    float density_scaling = 0.3f;
+    float density_scaling = 1.0f;
 
     unsigned int color_scheme_id;
 
@@ -71,6 +72,16 @@ public:
     void write(const std::string& filename);
 
 private:
+    /**
+     * @brief      Calculate the normal vector at some point
+     *
+     * @param[in]  x     x coordinate
+     * @param[in]  y     y coordinate
+     * @param[in]  z     z coordinate
+     *
+     * @return     The normal.
+     */
+    glm::vec3 calculate_normal(float x, float y, float z) const;
 
 };
 

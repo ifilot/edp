@@ -49,6 +49,10 @@ void RayTracer::trace() {
     // expand pixel canvas
     this->pixels.resize(this->iy * this->ix);
 
+    // settings
+    const auto light = glm::normalize(glm::vec3(1.0f, 1.0f, 0.0f));
+    const auto eye = glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f));
+
     #pragma omp parallel for
     for(int y=0; y<this->iy; y++) {
         float yy = (float)y/(float)this->iy * unitcell[2][2];
@@ -60,16 +64,29 @@ void RayTracer::trace() {
             std::array<float, 4> color = {0.0f, 0.0f, 0.0f, 0.0f};
 
             for(unsigned int d=0; d<samples; d++) {
+                // get intensity and density
                 float dd = (float)d /(float)samples * unitcell[1][1];
                 float val = std::log10(1.0 + std::fabs(this->sf->get_value_interp(xx, dd, yy)));
                 float alpha = (val - this->minval) / (this->maxval - this->minval);
                 color[3] = std::pow(alpha, density_scaling);
-                auto col = this->scheme->get_color(color[3]);
-                cum_alpha += color[3];
 
-                color[0] += color[3] * col.get_r();
-                color[1] += color[3] * col.get_g();
-                color[2] += color[3] * col.get_b();
+                // calculate base color
+                auto col = this->scheme->get_color(color[3]);
+
+                // calculate normal and diffuse
+                auto normal = this->calculate_normal(xx, dd, yy);
+                float cosTheta = glm::clamp(glm::dot(normal, light), 0.8f, 1.0f);
+
+                // calculate specular
+                glm::vec3 reflec = glm::reflect(-light, normal);
+                float cosAlpha = std::pow(glm::clamp(glm::dot(eye, reflec), 0.0f, 1.0f), 32.0f);
+
+                color[0] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_r() + cosAlpha);
+                color[1] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_g() + cosAlpha);
+                color[2] += cosTheta * color[3] * ((1.0 - cosAlpha) * col.get_b() + cosAlpha);
+
+                // accumulate alpha
+                cum_alpha += color[3];
 
                 if(this->front_to_back) {
                     if(cum_alpha >= 1.0f) {
@@ -106,4 +123,32 @@ void RayTracer::write(const std::string& filename) {
 
     this->plt->write(filename.c_str());
     this->plt.release();
+}
+
+/**
+ * @brief      Calculate the normal vector at some point
+ *
+ * @param[in]  x     x coordinate
+ * @param[in]  y     y coordinate
+ * @param[in]  z     z coordinate
+ *
+ * @return     The normal.
+ */
+glm::vec3 RayTracer::calculate_normal(float x, float y, float z) const {
+    static const float dev = 0.05f;
+
+    double dx0 = sf->get_value_interp(x - dev, y, z);
+    double dx1 = sf->get_value_interp(x + dev, y, z);
+
+    double dy0 = sf->get_value_interp(x, y - dev, z);
+    double dy1 = sf->get_value_interp(x, y + dev, z);
+
+    double dz0 = sf->get_value_interp(x, y, z - dev);
+    double dz1 = sf->get_value_interp(x, y, z + dev);
+
+    glm::vec3 normal((dx1 - dx0) / (2.0 * dev),
+                     (dy1 - dy0) / (2.0 * dev),
+                     (dz1 - dz0) / (2.0 * dev));
+
+    return glm::normalize(normal);
 }
