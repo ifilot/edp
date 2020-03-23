@@ -66,7 +66,7 @@ set (BOOST_ALL_DYN_LINK OFF)
 # Include libraries
 find_package(PkgConfig REQUIRED)
 find_package(GLM REQUIRED)
-find_package(Boost COMPONENTS regex iostreams filesystem REQUIRED)
+find_package(Boost COMPONENTS regex iostreams filesystem system REQUIRED)
 pkg_check_modules(TCLAP tclap REQUIRED)
 pkg_check_modules(CAIRO cairo REQUIRED)
 
