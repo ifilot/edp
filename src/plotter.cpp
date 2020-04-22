@@ -118,6 +118,12 @@ cairo_text_extents_t Plotter::get_text_bounds(float fontsize, const std::string&
     return te;
 }
 
+Plotter::~Plotter() {
+    cairo_destroy(this->cr);
+    cairo_surface_destroy(this->surface);
+    delete this->scheme;
+}
+
 /**************************************************************************
  *                                                                        *
  *   Color scheme and colors                                              *
@@ -423,6 +429,15 @@ Color::Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a)
     g(_g),
     b(_b),
     a(_a) {}
+
+Color::Color(const std::array<float, 4>& _colors) :
+r(_colors[0] * 255),
+g(_colors[1] * 255),
+b(_colors[2] * 255),
+a(_colors[3] * 255)
+{
+
+}
 
 /**
  *

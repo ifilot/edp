@@ -40,6 +40,7 @@
 
 #include "scalar_field.h"
 #include "planeprojector.h"
+#include "raycaster.h"
 #include "config.h"
 
 int main(int argc, char *argv[]) {
@@ -320,6 +321,21 @@ int main(int argc, char *argv[]) {
             std::cout << "Averaging sphere surface for atom " << atid << " at radius: " << radius << std::endl;
             pp.extract_sphere_average(pr, radius);
         }
+
+        //**************************************
+        // Ray Tracing
+        //**************************************
+        std::cout << "Performing ray casting" << std::endl;
+        std::string outputrayfile = "raytrace.png";
+        start = std::chrono::system_clock::now();
+        RayCaster rc(&sf, color_scheme_id);
+        rc.cast();
+        rc.write(outputrayfile);
+        std::cout << "Writing output to " << outputrayfile << std::endl;
+        end = std::chrono::system_clock::now();
+        elapsed_seconds = end-start;
+        std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;
+        std::cout << "--------------------------------------------------------------" << std::endl;
 
         std::cout << "Done" << std::endl << std::endl;
 

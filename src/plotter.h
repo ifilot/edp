@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <array>
 #include <math.h>
 
 class Color {
@@ -35,6 +36,9 @@ public:
     Color(unsigned int _r, unsigned int _g, unsigned int _b);
 
     Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a);
+
+    Color(const std::array<float, 4>& _colors);
+
     float get_r() const;
     float get_g() const;
     float get_b() const;
@@ -86,6 +90,8 @@ public:
   inline auto get_cairo_ptr() {
     return this->cr;
   }
+
+  ~Plotter();
 
 private:
 

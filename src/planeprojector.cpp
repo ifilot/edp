@@ -401,6 +401,7 @@ void PlaneProjector::draw_legend() {
 void PlaneProjector::write(std::string filename) {
     plt->write(filename.c_str());
     std::cout << "Writing " << filename << std::endl;
+    delete this->plt;
 }
 
 /**
@@ -566,6 +567,6 @@ bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, float val) {
  */
 float PlaneProjector::calculate_scaled_value_log(float input) {
     const float scale = (this->log_max - this->log_min + 1.0f);
-    const float logval = std::min(std::max(log10(std::fabs(input)), this->log_min), this->log_max);
+    const float logval = std::min(std::max((float)log10(std::fabs(input)), (float)this->log_min), (float)this->log_max);
     return sgn(input) * (logval - this->log_min) / scale;
 }
