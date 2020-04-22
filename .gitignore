@@ -31,3 +31,6 @@ build/*
 CHGCAR*
 *.png
 src/config.h
+
+# debian packages
+*.deb
