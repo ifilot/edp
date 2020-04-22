@@ -1,5 +1,7 @@
 # EDP
 
+<img src="https://badgen.zuidserver.nl/badge/edp/v.1.9.0/blue?icon=github" />
+
 ## Introduction
 Electron density plotter is a tiny tool for generating electron density plots from VASP output.
 
@@ -58,10 +60,6 @@ To obtain an meaningful plane projection, the vectors `v` and `w` should be orth
 ## Line extraction
 
 A recently requested feature was to not only construct contour planes from a scalar field, but also allow to project the scalar values onto a line to make a simple graph. To do so, you can use the `-e` command line parameter followed by either two atoms or a vector. On the line as indicated by the vector and the point supplied by `p`, the scalar field will be projected and written to the textfile `line_extraction.txt` which you can then plot. In the file `line_extraction.txt`, there are four columns which are the Cartesian x,y,z positions and the value at that point.
-
-Below, an example graph is provided which shows the electron density of the 5 sigma orbital of CO projected on the line that crosses both atoms. The x-axis presents the z-position in the unit cell. The C and O atoms are placed at `z = 5.00A` and `z = 6.15A`, respectively.
-
-![Electron density graph of 5 sigma orbital of CO](https://raw.githubusercontent.com/ifilot/edp/master/examples/co_density.png)
 
 ## References
 
