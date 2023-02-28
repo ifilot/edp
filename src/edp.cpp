@@ -104,6 +104,9 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<std::string> arg_b("b","bounds","Lower and upper bounds",false, "", "-3,2");
         cmd.add(arg_b);
 
+        // whether or not to print a legend
+        TCLAP::SwitchArg arg_raytrace("t","raytrace","Whether to perform raytracing", cmd, false);
+
         cmd.parse(argc, argv);
 
         //**************************************
@@ -150,7 +153,7 @@ int main(int argc, char *argv[]) {
         const boost::regex re_vec2("^([0-9-]+),([0-9-]+)$");                  // 2-vector
         const boost::regex re_scalar("^([0-9]+)$");                           // single atom
         const boost::regex re_scalar_radius("^([0-9]+),([0-9.]+)$");          // single atom and radius
-        const boost::regex re_scalar_2("^([0-9]+)-([0-9]+)$");                // two atoms
+        const boost::regex re_scalar_2("^([0-9]+)-([0-9]+)(:?[xyz]*)$");      // two atoms + xyz directives
 
         // get position for the point
         std::string sp = arg_sp.getValue();
@@ -178,6 +181,26 @@ int main(int argc, char *argv[]) {
                     sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
                     sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
                 );
+
+            // if the user has supplied a "xyz" directives, check which of these
+            // vector components should be retained
+            std::string str = boost::lexical_cast<std::string>(what[3]);
+            if(str.size() > 0 && str[0] == ':') {
+                //std::cout << "Extracting components" << boost::lexical_cast<std::string>(what[3]) << std::endl;
+
+                if(str.find('x') == std::string::npos) {
+                    v[0] = 0.0;
+                }
+
+                if(str.find('y') == std::string::npos) {
+                    v[1] = 0.0;
+                }
+
+                if(str.find('z') == std::string::npos) {
+                    v[2] = 0.0;
+                }
+            }
+
         } else {
             std::runtime_error("Could not obtain a vector v");
         }
@@ -325,17 +348,19 @@ int main(int argc, char *argv[]) {
         //**************************************
         // Ray Tracing
         //**************************************
-        std::cout << "Performing ray casting" << std::endl;
-        std::string outputrayfile = "raytrace.png";
-        start = std::chrono::system_clock::now();
-        RayCaster rc(&sf, color_scheme_id);
-        rc.cast();
-        rc.write(outputrayfile);
-        std::cout << "Writing output to " << outputrayfile << std::endl;
-        end = std::chrono::system_clock::now();
-        elapsed_seconds = end-start;
-        std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;
-        std::cout << "--------------------------------------------------------------" << std::endl;
+        if(arg_raytrace.getValue()) {
+            std::cout << "Performing ray casting" << std::endl;
+            std::string outputrayfile = "raytrace.png";
+            start = std::chrono::system_clock::now();
+            RayCaster rc(&sf, color_scheme_id);
+            rc.cast();
+            rc.write(outputrayfile);
+            std::cout << "Writing output to " << outputrayfile << std::endl;
+            end = std::chrono::system_clock::now();
+            elapsed_seconds = end-start;
+            std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;
+            std::cout << "--------------------------------------------------------------" << std::endl;
+        }
 
         std::cout << "Done" << std::endl << std::endl;
 

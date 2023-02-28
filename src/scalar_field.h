@@ -47,7 +47,7 @@ private:
     float imat[3][3];           //!< inverse of matrix
 
     glm::mat3 mat33;            //!< glm version of the matrix
-    glm::mat3 imat33;            //!< glm version of the inverse matrix
+    glm::mat3 imat33;           //!< glm version of the inverse matrix
 
     float volume;               //!< unit cell volume
 
@@ -102,6 +102,14 @@ public:
         return this->flag_is_locpot;
     }
 
+    /*
+     * void read()
+     *
+     * Wrapper function that reads in the OUTCAR file
+     *
+     * Usage: sf.read(true);
+     *
+     */
     void read();
 
     void read_header_and_atoms();
@@ -168,15 +176,117 @@ public:
     }
 
 private:
+    /*
+     * void test_vasp5()
+     *
+     * Test if the input file is a VASP5 output file
+     *
+     */
     void test_vasp5();
+
+    /*
+     * void read_scalar()
+     *
+     * Read the scalar value from the 2nd line of the
+     * CHGCAR file. Note that all read_* functions can
+     * be used seperately, although they may depend
+     * on each other and have to be used in some
+     * consecutive order as is done in the read()
+     * wrapper function.
+     *
+     */
     void read_scalar();
+
+    /*
+     * void read_matrix()
+     *
+     * Reads the matrix that defines the unit cell
+     * in the CHGCAR file. The inverse of that matrix
+     * is automatically constructed.
+     *
+     * Note that all read_* functions can
+     * be used seperately, although they may depend
+     * on each other and have to be used in some
+     * consecutive order as is done in the read()
+     * wrapper function.
+     *
+     */
     void read_matrix();
+
+    /*
+     * void read_grid_dimensions()
+     *
+     * Read the number of gridpoints in each
+     * direction.
+     *
+     * Note that all read_* functions can
+     * be used seperately, although they may depend
+     * on each other and have to be used in some
+     * consecutive order as is done in the read()
+     * wrapper function.
+     *
+     */
     void read_grid_dimensions();
+
+    /*
+     * void read_nr_atoms()
+     *
+     * Read the number of atoms of each element. These
+     * numbers are used to skip the required amount of
+     * lines.
+     *
+     * Note that all read_* functions can
+     * be used seperately, although they may depend
+     * on each other and have to be used in some
+     * consecutive order as is done in the read()
+     * wrapper function.
+     *
+     */
     void read_nr_atoms();
+
     void read_atom_positions();
+
+    /*
+     * void read_grid()
+     *
+     * Read all the grid points. This function depends
+     * on the the gridsize being set via the
+     * read_grid_dimensions() function.
+     *
+     * Note that all read_* functions can
+     * be used seperately, although they may depend
+     * on each other and have to be used in some
+     * consecutive order as is done in the read()
+     * wrapper function.
+     *
+     */
     void read_grid();
+
+    /*
+     * float get_max_direction(dim)
+     *
+     * Get the maximum value in a particular dimension. This is a convenience
+     * function for the get_value_interp() function.
+     *
+     */
     float get_max_direction(unsigned int dim);
+
+    /*
+     * void calculate_inverse()
+     *
+     * Calculates the inverse of a 3x3 matrix. This is a convenience
+     * function for the read_matrix() function.
+     *
+     */
     void calculate_inverse();
+
+    /*
+     * void calculate_volume()
+     *
+     * Calculates the inverse of a 3x3 matrix. This is a convenience
+     * function for the read_matrix() function.
+     *
+     */
     void calculate_volume();
 };
 

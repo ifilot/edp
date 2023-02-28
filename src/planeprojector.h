@@ -170,6 +170,10 @@ private:
      * @return     The scaled value.
      */
     float calculate_scaled_value_log(float input);
+
+    void store_field(const std::string& filename, float* field, uint32_t nx, uint32_t ny);
+
+    void store_field_uin8t(const std::string& filename, uint8_t* field, uint32_t nx, uint32_t ny);
 };
 
 /**

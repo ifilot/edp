@@ -496,6 +496,7 @@ void PlaneProjector::cut_and_recast_plane() {
     float* newgrid_log = new float[nx * ny];
     float* newgrid_real = new float[nx * ny];
     bool* newgrid_box = new bool[nx * ny];
+    uint8_t* store_bool = new uint8_t[nx * ny];
 
     #pragma omp parallel for collapse(2)
     for(unsigned int i=0; i<nx; i++) {
@@ -503,9 +504,16 @@ void PlaneProjector::cut_and_recast_plane() {
             newgrid_log[j * nx + i] = this->planegrid_log[(j + min_y) * this->ix + (i + min_x)];
             newgrid_real[j * nx + i] = this->planegrid_real[(j + min_y) * this->ix + (i + min_x)];
             newgrid_box[j * nx + i] = this->planegrid_box[(j + min_y) * this->ix + (i + min_x)];
+            store_bool[j * nx + i] = this->planegrid_box[(j + min_y) * this->ix + (i + min_x)] == false ? 0.0f : 1.0f;
         }
     }
 
+    // store the raw data so that it can potentially be used later on
+    // in other visualization programs, e.g. Python scripts
+    this->store_field("planedata-real.bin", newgrid_real, nx, ny);
+    this->store_field_uin8t("planedata-bool.bin", store_bool, nx, ny);
+
+    delete[] store_bool;
     delete[] this->planegrid_real;
     delete[] this->planegrid_log;
     delete[] this->planegrid_box;
@@ -569,4 +577,28 @@ float PlaneProjector::calculate_scaled_value_log(float input) {
     const float scale = (this->log_max - this->log_min + 1.0f);
     const float logval = std::min(std::max((float)log10(std::fabs(input)), (float)this->log_min), (float)this->log_max);
     return sgn(input) * (logval - this->log_min) / scale;
+}
+
+void PlaneProjector::store_field(const std::string& filename, float* field, uint32_t nx, uint32_t ny) {
+    std::ofstream out(filename, std::ios::out | std::ios::binary);
+    if (out.is_open()) {
+        out.write((const char*)&nx, sizeof(uint32_t));
+        out.write((const char*)&ny, sizeof(uint32_t));
+        out.write((const char*)field, nx * ny * sizeof(float));
+    } else {
+        throw std::runtime_error("Cannot open file for writing.");
+    }
+    out.close();
+}
+
+void PlaneProjector::store_field_uin8t(const std::string& filename, uint8_t* field, uint32_t nx, uint32_t ny) {
+    std::ofstream out(filename, std::ios::out | std::ios::binary);
+    if (out.is_open()) {
+        out.write((const char*)&nx, sizeof(uint32_t));
+        out.write((const char*)&ny, sizeof(uint32_t));
+        out.write((const char*)field, nx * ny * sizeof(uint8_t));
+    } else {
+        throw std::runtime_error("Cannot open file for writing.");
+    }
+    out.close();
 }

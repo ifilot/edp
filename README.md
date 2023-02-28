@@ -1,6 +1,6 @@
 # EDP
 
-<img src="https://badgen.zuidserver.nl/badge/edp/v.1.9.0/blue?icon=github" />
+<img src="https://badgen.zuidserver.nl/badge/edp/v.1.10.0/blue?icon=github" />
 
 ## Introduction
 Electron density plotter is a tiny tool for generating electron density plots from VASP output.
@@ -25,17 +25,32 @@ make -j5
 ```
 
 ## Usage
+
+### Basic usage
+
 To run EDP to construct a contour plane, use something like the command below
 
 ```
 ./edp -i <PATH_TO_CHGCAR> -v <v1,v2,v3> -w <w1,w2,w3> -p <p1,p2,p3> -o plot.png
 ```
 
-where `v` and `w` correspond to two vectors that will span the plane and `p` corresponds to a position on that plane. Additionally, you can supply `-s` to indicate a scaling in pixels/angstrom. Instead of supplying vectors, you can also supply *two* atoms for the vectors `v` and `w` and a *single* atom for the position `p`. For example:
+where `v` and `w` correspond to two vectors that will span the plane and `p` corresponds to a position on that plane. Additionally, you can supply `-s` to indicate a scaling in pixels/angstrom.
+
+### Atom-based vector definition
+
+Instead of supplying vectors, you can also supply *two* atoms for the vectors `v` and `w` and a *single* atom for the position `p`. For example:
 
 ```
 ./edp -i CHGCAR -v 1-2 -w 0,0,1 -p 1 -o plot.png
 ```
+
+Often, one only likes to use specific components of the (normalized) vector between atoms. For example, suppose one only needs the `x` and `y` components, the command would be:
+
+```
+./edp -i CHGCAR -v 1-2:xy -w 0,0,1 -p 1 -o plot.png
+```
+
+### Color schemes
 
 There are 16 different color schemes built into EDP, which you can choose using the `-c` directive. If there are negative values in the density file, use the `-n` directive. Finally, to create a legend, use the `-l` directive.
 
@@ -44,6 +59,10 @@ To obtain a concise overview of all the command line directives, you can run
 ```
 ./edp --help
 ```
+
+### Additional directives
+
+* There is an **experimental feature** to perform a raytracing of the density field by supplying the tag `-t`.
 
 ## Color schemes
 
@@ -60,6 +79,12 @@ To obtain an meaningful plane projection, the vectors `v` and `w` should be orth
 ## Line extraction
 
 A recently requested feature was to not only construct contour planes from a scalar field, but also allow to project the scalar values onto a line to make a simple graph. To do so, you can use the `-e` command line parameter followed by either two atoms or a vector. On the line as indicated by the vector and the point supplied by `p`, the scalar field will be projected and written to the textfile `line_extraction.txt` which you can then plot. In the file `line_extraction.txt`, there are four columns which are the Cartesian x,y,z positions and the value at that point.
+
+## Processing results in different software
+
+`edp` construct a graph of the results using the Cairo library. Instead of using these graphs, there is the possiblity
+to read the raw data from a binary file and perform the visualization in a different program. An example of this is
+given in a [Python script](scripts/vis_matplotlib.py).
 
 ## References
 
