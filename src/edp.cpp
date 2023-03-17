@@ -239,6 +239,14 @@ int main(int argc, char *argv[]) {
         std::cout << "Maximum value: " << sf.get_max() << std::endl;
         std::cout << std::endl;
 
+        if(sf.get_min() < 1e-4 && !arg_negative.getValue()) {
+            std::cout << "------------------- NOTE -------------------" << std::endl;
+            std::cout << "Significant negative values are encountered." << std::endl;
+            std::cout << "If you want to parse these, consider setting" << std::endl;
+            std::cout << "the `-n` argument." << std::endl;
+            std::cout << "------------------- NOTE -------------------" << std::endl;
+        }
+
         //**************************************
         // determine size and colors
         //**************************************
@@ -300,7 +308,7 @@ int main(int argc, char *argv[]) {
         if(print_legend) {
             pp.draw_legend();
         }
-        pp.write(output_filename);
+        pp.write(output_filename);  // write graph to file
         end = std::chrono::system_clock::now();
         elapsed_seconds = end-start;
         std::cout << "Constructed contour plot in " << elapsed_seconds.count() << " seconds." << std::endl;

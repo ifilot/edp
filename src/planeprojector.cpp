@@ -400,7 +400,7 @@ void PlaneProjector::draw_legend() {
  */
 void PlaneProjector::write(std::string filename) {
     plt->write(filename.c_str());
-    std::cout << "Writing " << filename << std::endl;
+    std::cout << "Storing contour plot in " << filename << std::endl;
     delete this->plt;
 }
 
@@ -580,6 +580,7 @@ float PlaneProjector::calculate_scaled_value_log(float input) {
 }
 
 void PlaneProjector::store_field(const std::string& filename, float* field, uint32_t nx, uint32_t ny) {
+    std::cout << "Storing field in " << filename << std::endl;
     std::ofstream out(filename, std::ios::out | std::ios::binary);
     if (out.is_open()) {
         out.write((const char*)&nx, sizeof(uint32_t));
@@ -592,6 +593,7 @@ void PlaneProjector::store_field(const std::string& filename, float* field, uint
 }
 
 void PlaneProjector::store_field_uin8t(const std::string& filename, uint8_t* field, uint32_t nx, uint32_t ny) {
+    std::cout << "Storing field in " << filename << std::endl;
     std::ofstream out(filename, std::ios::out | std::ios::binary);
     if (out.is_open()) {
         out.write((const char*)&nx, sizeof(uint32_t));

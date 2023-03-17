@@ -95,11 +95,48 @@ void ScalarField::read_header_and_atoms() {
     }
 
     this->test_vasp5();
-    this->read_scalar();
-    this->read_matrix();
-    this->read_nr_atoms();
-    this->read_atom_positions();
-    this->read_grid_dimensions();
+
+    // read scalar multiplication value
+    try {
+        this->read_scalar();
+    } catch(const std::exception& e) {
+        std::cout << "Error encountered in reading scalar value from CHGCAR" << std::endl;
+        throw e;
+    }
+
+    // read matrix
+    try {
+        this->read_matrix();
+    } catch(const std::exception& e) {
+        std::cout << "Error encountered in reading unitcell matrix from CHGCAR" << std::endl;
+        throw e;
+    }
+
+    // read number of atoms
+    try {
+        this->read_nr_atoms();
+    } catch(const std::exception& e) {
+        std::cout << "Error encountered in reading number of atoms from CHGCAR" << std::endl;
+        throw e;
+    }
+
+    // read atomic positions
+    try {
+        this->read_atom_positions();
+    } catch(const std::exception& e) {
+        std::cout << "Error encountered in reading atomic positions from CHGCAR" << std::endl;
+        std::cout << "ERROR: " << e.what() << std::endl;
+        throw e;
+    }
+
+    // read grid dimensions
+    try {
+        this->read_grid_dimensions();
+    } catch(const std::exception& e) {
+        std::cout << "Error encountered in reading grid dimensions from CHGCAR" << std::endl;
+        throw e;
+    }
+
 }
 
 /*
@@ -269,10 +306,20 @@ void ScalarField::read_atom_positions() {
     // read the atom positions
     for(unsigned int i=0; i<this->nrat.size(); i++) {
         for(unsigned int j=0; j<this->nrat[i]; j++) {
-                std::getline(infile, line);
-                std::vector<std::string> pieces;
-                boost::split(pieces, line, boost::is_any_of("\t "), boost::token_compress_on);
-                this->atom_pos.push_back(glm::vec3(boost::lexical_cast<float>(pieces[1]), boost::lexical_cast<float>(pieces[2]), boost::lexical_cast<float>(pieces[3])));
+            std::getline(infile, line);
+            boost::trim(line);
+            // std::cout << line << std::endl;
+            std::vector<std::string> pieces;
+            boost::split(pieces, line, boost::is_any_of("\t "), boost::token_compress_on);
+            // std::cout << pieces[0] << std::endl;
+            // std::cout << pieces[1] << std::endl;
+            // std::cout << pieces[2] << std::endl;
+
+            float x = boost::lexical_cast<float>(pieces[0]);
+            float y = boost::lexical_cast<float>(pieces[1]);
+            float z = boost::lexical_cast<float>(pieces[2]);
+
+            this->atom_pos.push_back(glm::vec3(x,y,z));
         }
     }
 

@@ -1,6 +1,6 @@
 # EDP
 
-<img src="https://badgen.zuidserver.nl/badge/edp/v.1.10.0/blue?icon=github" />
+<img src="https://badgen.zuidserver.nl/badge/edp/v.1.10.1/blue?icon=github" />
 
 ## Introduction
 Electron density plotter is a tiny tool for generating electron density plots from VASP output.
