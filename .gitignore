@@ -34,3 +34,7 @@ src/config.h
 
 # debian packages
 *.deb
+
+docs/_build/
+docs/userguide/build*
+
