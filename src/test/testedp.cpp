@@ -28,8 +28,8 @@ void TestEDP::setUp() {
 void TestEDP::tearDown() {
 }
 
-void TestEDP::testConstructor() {
-    // build object
+void TestEDP::testReading() {
+    // create scalar field
     ScalarField sf("CHGCAR", false);
     CPPUNIT_ASSERT_EQUAL( (uint)0, sf.get_size() );
 
@@ -44,4 +44,64 @@ void TestEDP::testConstructor() {
     // read scalar field and test this
     sf.read();
     CPPUNIT_ASSERT_EQUAL( (uint)1000000, sf.get_size() );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( -0.276298f / 1e3f, sf.get_min(), 1e-8 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2047.064424f / 1e3f, sf.get_max(), 1e-4 );
+}
+
+void TestEDP::testProjection() {
+    // create scalar field
+    ScalarField sf("CHGCAR", false);
+    sf.read_header_and_atoms();
+    sf.read();
+
+    const float ref = 42478.9375;
+
+    // xz
+    this->test_plane(&sf,
+                     glm::vec3(1,0,0),
+                     glm::vec3(0,0,1),
+                     glm::vec3(5,5,5),
+                     ref);
+
+    // yz
+    this->test_plane(&sf,
+                     glm::vec3(0,1,0),
+                     glm::vec3(0,0,1),
+                     glm::vec3(5,5,5),
+                     ref);
+
+    // xy
+    this->test_plane(&sf,
+                     glm::vec3(1,0,0),
+                     glm::vec3(0,1,0),
+                     glm::vec3(5,5,5),
+                     ref);  
+}
+
+void TestEDP::test_plane(ScalarField* sf, glm::vec3 v, glm::vec3 w, glm::vec3 p, float ref) {
+    // create plane projector
+    PlaneProjector pp(sf, 0);
+
+    // produce xz plane
+    float scale = 100;
+    float li = -20, lj = -20;
+    float hi = 20, hj = 20;
+    pp.extract(v, w, p, scale, li, hi, lj, hj);
+    pp.set_scaling(false, -3, 2);
+    pp.plot();
+    pp.isolines(10);
+
+    // // verify that the dimensions are correct
+    auto dim = pp.get_dimensions();
+    // CPPUNIT_ASSERT_EQUAL( (uint)1000, dim.first );
+    // CPPUNIT_ASSERT_EQUAL( (uint)1000, dim.second );
+
+    // check that the sum of elements is correct
+    float sum = 0;
+    const float* data = pp.get_planegrid_real();
+    for(unsigned int i=0; i<dim.first * dim.second; i++) {
+        sum += data[i];
+    }
+    std::string str = (boost::format("Value equal to: %f") % sum).str();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(str.c_str(), ref, sum, 1e-4);
 }

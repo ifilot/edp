@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
             std::cout << input_filename << " is identified as a LOCPOT file. This means that we use scalar field as is and perform *no* volume correction on it." << std::endl;
         } else {
             std::cout << input_filename << " is identified as a CHGCAR/PARCHG file. This means that we perform a volume correction on it as described in the link below:" << std::endl;
-            std::cout << "https://cms.mpi.univie.ac.at/vasp/vasp/CHGCAR_file.html#file-chgcar." << std::endl;
+            std::cout << "https://www.vasp.at/wiki/index.php/CHGCAR" << std::endl;
         }
         std::cout << std::endl;
 

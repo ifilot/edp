@@ -25,6 +25,14 @@ cmake ../src
 make -j5
 ```
 
+### Testing
+
+To test `EDP`, run
+
+```
+CTEST_OUTPUT_ON_FAILURE=TRUE make test
+```
+
 ## Usage
 
 ### Basic usage

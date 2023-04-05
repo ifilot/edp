@@ -58,6 +58,20 @@ public:
     PlaneProjector(ScalarField* _sf, unsigned int _color_scheme_id);
 
     /**
+     * Get a pointer to the planegrid container
+     */
+    const float* get_planegrid_real() const {
+        return this->planegrid_real;
+    }
+
+    /**
+     * Get the dimensions of the plane
+     */
+    std::pair<uint,uint> get_dimensions() const {
+        return std::make_pair<uint,uint>(this->ix, this->iy);
+    }
+
+    /**
      * @brief      set the scaling for the graph
      *
      * @param[in]  allow_negative  whether to allow negative values
