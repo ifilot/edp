@@ -4,7 +4,13 @@
 Installation
 ************
 
-Compiling on Linux
-==================
+Compilation
+===========
+
+Testing
+=======
+
+Modules environment
+===================
 
 

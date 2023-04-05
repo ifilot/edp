@@ -4,7 +4,6 @@
 Examples
 ********
 
-Electron density of molecular orbitals of CO
-============================================
-
+Electron density of CH4
+=======================
 
