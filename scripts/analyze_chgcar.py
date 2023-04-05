@@ -2,12 +2,10 @@
 
 import os
 import numpy as np
-import csv
-import matplotlib.pyplot as plt
 
 def main():
     fname = os.path.join(os.path.dirname(__file__),
-                         '..', 'src', 'test', 'testinput', 'CHGCAR')
+                         '..', 'src', 'test', 'testinput', 'CHGCAR_CH4')
     data = read_charge_file(fname)
     
     print('Min: %f' % np.min(data))

@@ -61,9 +61,9 @@ void PlaneProjector::plot() {
     for(unsigned int i=0; i<uint(this->iy); i++) {
         for(unsigned int j=0; j<uint(this->ix); j++) {
             if(this->planegrid_box[i * this->ix + j]) {
-                this->plt->draw_filled_rectangle(j,i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
+                this->plt->draw_filled_rectangle(j, this->iy-i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
             } else {
-                this->plt->draw_filled_rectangle(j,i, 1, 1, Color(0,0,0,0));
+                this->plt->draw_filled_rectangle(j, this->iy-i, 1, 1, Color(0,0,0,0));
             }
         }
     }
@@ -535,7 +535,7 @@ void PlaneProjector::draw_isoline(float val) {
     for(unsigned int i=1; i<uint(this->ix-1); i++) {
         for(unsigned int j=1; j<uint(this->iy-1); j++) {
             if(this->is_crossing(i,j,val)) {
-                this->plt->draw_filled_rectangle(i,j, 1, 1, Color(0,0,0));
+                this->plt->draw_filled_rectangle(i, this->iy-j, 1, 1, Color(0,0,0));
             }
         }
     }

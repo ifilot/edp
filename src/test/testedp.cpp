@@ -30,7 +30,7 @@ void TestEDP::tearDown() {
 
 void TestEDP::testReading() {
     // create scalar field
-    ScalarField sf("CHGCAR", false);
+    ScalarField sf("CHGCAR_CH4", false);
     CPPUNIT_ASSERT_EQUAL( (uint)0, sf.get_size() );
 
     // read atoms and check this
@@ -50,7 +50,7 @@ void TestEDP::testReading() {
 
 void TestEDP::testProjection() {
     // create scalar field
-    ScalarField sf("CHGCAR", false);
+    ScalarField sf("CHGCAR_CH4", false);
     sf.read_header_and_atoms();
     sf.read();
 
