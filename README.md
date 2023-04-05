@@ -15,6 +15,7 @@ EDP depends on a couple of libraries, which are normally directly available by y
 * GLM
 * Cairo
 * TCLAP
+* CPPUnit
 
 Compilation is done using CMake
 ```

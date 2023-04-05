@@ -67,6 +67,7 @@ set (BOOST_ALL_DYN_LINK OFF)
 find_package(PkgConfig REQUIRED)
 find_package(GLM REQUIRED)
 find_package(Boost COMPONENTS regex iostreams filesystem system REQUIRED)
+find_package(CPPUNIT REQUIRED) # for unit tests
 pkg_check_modules(TCLAP tclap REQUIRED)
 pkg_check_modules(CAIRO cairo REQUIRED)
 
@@ -76,11 +77,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${GLM_INCLUDE_DIRS}
                     ${TCLAP_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIR}
-                    ${Boost_INCLUDE_DIRS})
+                    ${Boost_INCLUDE_DIRS}
+                    ${CPPUNIT_INCLUDE_DIR})
 
 # Add sources
-file(GLOB_RECURSE SOURCES "*.cpp")
+file(GLOB SOURCES "*.cpp")
 add_executable(edp ${SOURCES})
+add_library(edpsources STATIC ${SOURCES})
 
 # Set C++14
 add_definitions(-std=c++14)
@@ -99,6 +102,16 @@ endif()
 
 # add Wno-literal-suffix to suppress warning messages
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
+
+
+if(NOT DISABLE_TEST)
+    message("[USER] Performing unit tests")
+    enable_testing ()
+    add_subdirectory("test")
+else()
+    message("[USER] Testing routine disabled")
+endif()
+
 
 ###
 # Installing
