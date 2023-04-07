@@ -24,4 +24,4 @@ add_test(NAME "TestEDP" COMMAND TestEDP)
 #######################################################
 # add testinput files
 #######################################################
-configure_file(testinput/CHGCAR CHGCAR COPYONLY)
+configure_file(testinput/CHGCAR_CH4 CHGCAR_CH4 COPYONLY)
