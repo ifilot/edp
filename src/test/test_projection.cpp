@@ -34,7 +34,7 @@ void TestProjection::testProjection() {
     sf.read_header_and_atoms();
     sf.read();
 
-    const float ref = 42478.9375;
+    const float ref = 42350.35546875;
 
     // xz
     this->test_plane(&sf,

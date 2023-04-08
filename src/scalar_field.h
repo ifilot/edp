@@ -80,7 +80,23 @@ public:
      */
     ScalarField(const std::string &_filename, bool _flag_is_locpot);
 
+    /*
+     * @brief output()
+     *
+     * Outputs a summary of the ScalarField to std::cout.
+     * Mainly used for debugging purposes.
+     *
+     */
     void output() const;
+
+    /**
+     * @brief Get the volume of the unit cell
+     *
+     * @return volume of the unit cell
+     */
+    inline double get_volume() const {
+        return this->volume;
+    }
 
     glm::mat3 get_unitcell_matrix() {
         glm::mat3 out;

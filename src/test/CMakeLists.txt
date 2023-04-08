@@ -20,7 +20,7 @@ endif()
 
 # configure common settings for test executables
 foreach(testexec ${EXECUTABLES})
-    target_link_libraries(${testexec} unittest edpsources ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CPPUNIT_LIB} -lgcov --coverage)
+    target_link_libraries(${testexec} unittest edpsources ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CPPUNIT_LIB} -lgcov)
     set_target_properties(${testexec} PROPERTIES COMPILE_FLAGS "--coverage")
     add_test(NAME ${testexec} COMMAND ${testexec})
 endforeach()

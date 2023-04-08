@@ -43,7 +43,41 @@ void TestScalarField::testReading() {
 
     // read scalar field and test this
     sf.read();
+    double V = sf.get_volume();
     CPPUNIT_ASSERT_EQUAL( (uint)1000000, sf.get_size() );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( -0.276298f / 1e3f, sf.get_min(), 1e-8 );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2047.064424f / 1e3f, sf.get_max(), 1e-4 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( -0.276298f / V, sf.get_min(), 1e-8 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2047.064424f / V, sf.get_max(), 1e-4 );
+
+    // read specific values from the scalar field
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,0.0,0.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,10.0,0.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,10.0,10.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(10.0,10.0,10.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[1], sf.get_value_interp(0.1,0.0,0.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[100], sf.get_value_interp(0.0,0.1,0.0), 1e-12 );
+
+    // also test some false values
+    CPPUNIT_ASSERT( std::abs(sf.get_grid_ptr()[50*100*100 + 50 * 100 + 49] - sf.get_value_interp(5.0,5.0,5.0)) > 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50], sf.get_value_interp(5.0,5.0,5.0), 1e-12 );
+    CPPUNIT_ASSERT( std::abs(sf.get_grid_ptr()[50*100*100 + 50 * 100 + 51] - sf.get_value_interp(5.0,5.0,5.0)) > 1e-12 );
+
+    // test some averaging
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 49] +
+                                  0.5 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50],
+                                  sf.get_value_interp(4.95,5.0,5.0), 1e-5);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5 * sf.get_grid_ptr()[50*100*100 + 49 * 100 + 50] +
+                                  0.5 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50],
+                                  sf.get_value_interp(5.0,4.95,5.0), 1e-5);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5 * sf.get_grid_ptr()[49*100*100 + 50 * 100 + 50] +
+                                  0.5 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50],
+                                  sf.get_value_interp(5.0,5.0,4.95), 1e-5);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.125 * sf.get_grid_ptr()[49*100*100 + 49 * 100 + 49] +
+                                  0.125 * sf.get_grid_ptr()[49*100*100 + 49 * 100 + 50] +
+                                  0.125 * sf.get_grid_ptr()[49*100*100 + 50 * 100 + 49] +
+                                  0.125 * sf.get_grid_ptr()[49*100*100 + 50 * 100 + 50] +
+                                  0.125 * sf.get_grid_ptr()[50*100*100 + 49 * 100 + 49] +
+                                  0.125 * sf.get_grid_ptr()[50*100*100 + 49 * 100 + 50] +
+                                  0.125 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 49] +
+                                  0.125 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50],
+                                  sf.get_value_interp(4.95,4.95,4.95), 1e-5);
 }

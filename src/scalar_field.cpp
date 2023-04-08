@@ -471,7 +471,7 @@ float ScalarField::get_value_interp(float x, float y, float z) const {
     }
 
     // cast the input to grid space
-    glm::vec3 r = this->realspace_to_grid(x,y,z) - glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::vec3 r = this->realspace_to_grid(x,y,z);// - glm::vec3(0.5f, 0.5f, 0.5f);
 
     // recast
     if(r[0] < 0) r[0] += (float)this->grid_dimensions[0];
