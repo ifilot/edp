@@ -13,6 +13,9 @@ BOUNDS="-3,1"
 # create temporary folder for testing if it does not exist
 mkdir -pv $TEMPTARGET
 
+# unpack dataset
+tar -xvjf dataset.tar.bz2
+
 #
 # CH4 in cubic unit cell
 #
@@ -78,3 +81,9 @@ $EXEC -i $SRC -v 1,0,0 -w 0,1,0 -s $SCALE -p 25 -o $TARGET/al_fcc111_xy.png -b -
 
 # xz image
 $EXEC -i $SRC -v 1,0,0 -w 0,0,1 -s $SCALE -p 28 -o $TARGET/al_fcc111_xz.png -b -5,0 -l
+
+# remove dataset files
+rm -rvf CHGCAR_* PARCHG* planedata-*.bin
+
+# DONE
+echo "--done--"
