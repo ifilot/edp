@@ -18,14 +18,21 @@ else()
     SET(CPPUNIT_LIB ${CPPUNIT_LIBRARY})
 endif()
 
+# add unpacking of dataset to the test suite
+add_test(NAME DatasetSetup COMMAND tar -xvjf dataset.tar.bz2)
+add_test(NAME DatasetCleanup COMMAND rm -rvf CHGCAR_* PARCHG_*)
+set_tests_properties(DatasetSetup PROPERTIES FIXTURES_SETUP Dataset)
+set_tests_properties(DatasetCleanup PROPERTIES FIXTURES_CLEANUP Dataset)
+
 # configure common settings for test executables
 foreach(testexec ${EXECUTABLES})
     target_link_libraries(${testexec} unittest edpsources ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CPPUNIT_LIB} -lgcov)
     set_target_properties(${testexec} PROPERTIES COMPILE_FLAGS "--coverage")
     add_test(NAME ${testexec} COMMAND ${testexec})
+    set_tests_properties(${testexec} PROPERTIES FIXTURES_REQUIRED Dataset)
 endforeach()
 
 #######################################################
 # add testinput files
 #######################################################
-configure_file(testinput/CHGCAR_CH4 CHGCAR_CH4 COPYONLY)
+configure_file(testinput/dataset.tar.bz2 dataset.tar.bz2 COPYONLY)

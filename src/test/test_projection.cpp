@@ -34,51 +34,53 @@ void TestProjection::testProjection() {
     sf.read_header_and_atoms();
     sf.read();
 
-    const float ref = 42350.35546875;
+    const fpt ref = 42350.35546875;
 
     // xz
     this->test_plane(&sf,
-                     glm::vec3(1,0,0),
-                     glm::vec3(0,0,1),
-                     glm::vec3(5,5,5),
+                     Vec3(1,0,0),
+                     Vec3(0,0,1),
+                     Vec3(5,5,5),
                      ref);
 
     // yz
     this->test_plane(&sf,
-                     glm::vec3(0,1,0),
-                     glm::vec3(0,0,1),
-                     glm::vec3(5,5,5),
+                     Vec3(0,1,0),
+                     Vec3(0,0,1),
+                     Vec3(5,5,5),
                      ref);
 
     // xy
     this->test_plane(&sf,
-                     glm::vec3(1,0,0),
-                     glm::vec3(0,1,0),
-                     glm::vec3(5,5,5),
+                     Vec3(1,0,0),
+                     Vec3(0,1,0),
+                     Vec3(5,5,5),
                      ref);
 }
 
-void TestProjection::test_plane(ScalarField* sf, glm::vec3 v, glm::vec3 w, glm::vec3 p, float ref) {
+void TestProjection::test_plane(ScalarField* sf, const Vec3& v, const Vec3& w, const Vec3& p, fpt ref) {
     // create plane projector
     PlaneProjector pp(sf, 0);
 
     // produce xz plane
-    float scale = 100;
-    float li = -20, lj = -20;
-    float hi = 20, hj = 20;
+    fpt scale = 100;
+    fpt li = -20, lj = -20;
+    fpt hi = 20, hj = 20;
     pp.extract(v, w, p, scale, li, hi, lj, hj);
     pp.set_scaling(false, -3, 2);
     pp.plot();
     pp.isolines(10);
 
-    // // verify that the dimensions are correct
+    // get the dimensions
     auto dim = pp.get_dimensions();
+
+    // check whether dimensions are correct (only use for debugging purposes)
     // CPPUNIT_ASSERT_EQUAL( (uint)1000, dim.first );
     // CPPUNIT_ASSERT_EQUAL( (uint)1000, dim.second );
 
     // check that the sum of elements is correct
-    float sum = 0;
-    const float* data = pp.get_planegrid_real();
+    fpt sum = 0;
+    const fpt* data = pp.get_planegrid_real();
     for(unsigned int i=0; i<dim.first * dim.second; i++) {
         sum += data[i];
     }

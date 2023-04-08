@@ -39,7 +39,7 @@ public:
   void testProjection();
 
 private:
-  void test_plane(ScalarField* sf, glm::vec3 v, glm::vec3 w, glm::vec3 p, float ref);
+  void test_plane(ScalarField* sf, const Vec3& v, const Vec3& w, const Vec3& p, fpt ref);
 };
 
 #endif  // _TEST_PROJECTION

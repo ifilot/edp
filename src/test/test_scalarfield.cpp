@@ -37,24 +37,22 @@ void TestScalarField::testReading() {
     sf.read_header_and_atoms();
     CPPUNIT_ASSERT_EQUAL( (uint)0, sf.get_size() );
     auto p = sf.get_atom_position(0);
-    CPPUNIT_ASSERT_EQUAL( (float)5.0, p[0] );
-    CPPUNIT_ASSERT_EQUAL( (float)5.0, p[1] );
-    CPPUNIT_ASSERT_EQUAL( (float)5.0, p[2] );
+    CPPUNIT_ASSERT_EQUAL( (fpt)5.0, p(0) );
+    CPPUNIT_ASSERT_EQUAL( (fpt)5.0, p(1) );
+    CPPUNIT_ASSERT_EQUAL( (fpt)5.0, p(2) );
 
     // read scalar field and test this
     sf.read();
-    double V = sf.get_volume();
+    fpt V = sf.get_volume();
     CPPUNIT_ASSERT_EQUAL( (uint)1000000, sf.get_size() );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( -0.276298f / V, sf.get_min(), 1e-8 );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2047.064424f / V, sf.get_max(), 1e-4 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( (fpt)-0.276298 / V, sf.get_min(), 1e-8 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( (fpt)2047.064424 / V, sf.get_max(), 1e-4 );
 
     // read specific values from the scalar field
     CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,0.0,0.0), 1e-12 );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,10.0,0.0), 1e-12 );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(0.0,10.0,10.0), 1e-12 );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[0], sf.get_value_interp(10.0,10.0,10.0), 1e-12 );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[1], sf.get_value_interp(0.1,0.0,0.0), 1e-12 );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[100], sf.get_value_interp(0.0,0.1,0.0), 1e-12 );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_grid_ptr()[100*100], sf.get_value_interp(0.0,0.0,0.1), 1e-12 );
 
     // also test some false values
     CPPUNIT_ASSERT( std::abs(sf.get_grid_ptr()[50*100*100 + 50 * 100 + 49] - sf.get_value_interp(5.0,5.0,5.0)) > 1e-12 );
@@ -80,4 +78,15 @@ void TestScalarField::testReading() {
                                   0.125 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 49] +
                                   0.125 * sf.get_grid_ptr()[50*100*100 + 50 * 100 + 50],
                                   sf.get_value_interp(4.95,4.95,4.95), 1e-5);
+
+    // periodic boundary conditions
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_value_interp(0.0,0.0,0.0),
+                                  sf.get_value_interp(10.0,10.0,10.0),
+                                  1e-12);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_value_interp(0.0,0.0,0.0),
+                                  sf.get_value_interp(0.0,10.0,10.0),
+                                  1e-12);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( sf.get_value_interp(0.0,0.0,0.0),
+                                  sf.get_value_interp(0.0,0.0,10.0),
+                                  1e-12);
 }

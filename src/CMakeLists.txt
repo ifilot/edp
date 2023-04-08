@@ -26,9 +26,9 @@ project (edp)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules )
 
 # prepare configuration file
-SET(VERSION_MAJOR "1")
-SET(VERSION_MINOR "10")
-SET(VERSION_MICRO "2")
+SET(VERSION_MAJOR "2")
+SET(VERSION_MINOR "0")
+SET(VERSION_MICRO "0")
 configure_file(config.h.in ../src/config.h @ONLY)
 
 # Enable release build
@@ -65,16 +65,16 @@ set (BOOST_ALL_DYN_LINK OFF)
 
 # Include libraries
 find_package(PkgConfig REQUIRED)
-find_package(GLM REQUIRED)
 find_package(Boost COMPONENTS regex iostreams filesystem system REQUIRED)
 find_package(CPPUNIT REQUIRED) # for unit tests
 pkg_check_modules(TCLAP tclap REQUIRED)
 pkg_check_modules(CAIRO cairo REQUIRED)
+pkg_check_modules(EIGEN eigen3 REQUIRED)
 
 # Set include folders
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_BINARY_DIR}
-                    ${GLM_INCLUDE_DIRS}
+                    ${EIGEN_INCLUDE_DIRS}
                     ${TCLAP_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIR}
                     ${Boost_INCLUDE_DIRS}

@@ -34,41 +34,39 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
-#include <glm/glm.hpp>
 
+#include "math.h"
 #include "float_parser.h"
 #include "periodic_table.h"
 
 class ScalarField{
 private:
     std::string filename;
-    float scalar;
-    float mat[3][3];            //!< matrix dimensions
-    float imat[3][3];           //!< inverse of matrix
+    fpt scalar;
 
-    glm::mat3 mat33;            //!< glm version of the matrix
-    glm::mat3 imat33;           //!< glm version of the inverse matrix
+    MatrixUnitcell mat;
+    MatrixUnitcell imat;
 
-    float volume;               //!< unit cell volume
+    fpt volume;
 
-    unsigned int grid_dimensions[3];
+    std::array<unsigned int, 3> grid_dimensions;
     std::vector<unsigned int> nrat;
 
-    std::vector<glm::vec3> atom_pos;
+    std::vector<Vec3> atom_pos;
     std::vector<unsigned int> atom_charges;
 
-    std::vector<glm::vec3> atom_pos_exp;
+    std::vector<Vec3> atom_pos_exp;
     std::vector<unsigned int> atom_charges_exp;
 
     std::string gridline;
-    std::vector<float> gridptr;  //!< grid to first pos of float array
-    std::vector<float> gridptr2; //!< grid to first pos of float array
+    std::vector<fpt> gridptr;
+    std::vector<fpt> gridptr2;
     unsigned int gridsize;
     bool vasp5_input;
     bool has_read;
     bool header_read;
     std::ifstream infile;
-    bool flag_is_locpot;         //!< whether scalar field is in LOCPOT style
+    bool flag_is_locpot;
 
 public:
 
@@ -89,24 +87,21 @@ public:
      */
     void output() const;
 
+    inline const auto& get_grid_dimensions() const {
+        return this->grid_dimensions;
+    }
+
     /**
      * @brief Get the volume of the unit cell
      *
      * @return volume of the unit cell
      */
-    inline double get_volume() const {
+    inline fpt get_volume() const {
         return this->volume;
     }
 
-    glm::mat3 get_unitcell_matrix() {
-        glm::mat3 out;
-        for(unsigned int i=0; i<3; i++) {
-            for(unsigned int j=0; j<3; j++) {
-                out[i][j] = mat[i][j];
-            }
-        }
-
-        return out;
+    MatrixUnitcell get_unitcell_matrix() const {
+        return this->mat;
     }
 
     /**
@@ -131,7 +126,7 @@ public:
     void read_header_and_atoms();
 
     /*
-     * float get_value_interp(x,y,z)
+     * fpt get_value_interp(x,y,z)
      *
      * Grabs a value from the 3D scalar field. Calculate the value
      * by using a trilinear interpolation.
@@ -142,7 +137,7 @@ public:
      * Future algorithm can make use of a cubic interpolation.
      *
      */
-    float get_value_interp(float x, float y, float z) const;
+    fpt get_value_interp(fpt x, fpt y, fpt z) const;
 
     /**
      * @brief      test whether point is inside unit cell
@@ -153,33 +148,31 @@ public:
      *
      * @return     True if inside, False otherwise.
      */
-    bool is_inside(float x, float y, float z) const;
+    bool is_inside(fpt x, fpt y, fpt z) const;
 
-    float get_value(unsigned int i, unsigned int j, unsigned int k) const;
+    fpt get_value(unsigned int i, unsigned int j, unsigned int k) const;
 
-    glm::vec3 grid_to_realspace(float i, float j, float k) const;
+    Vec3 grid_to_realspace(fpt i, fpt j, fpt k) const;
 
-    glm::vec3 realspace_to_grid(float i, float j, float k) const;
+    Vec3 realspace_to_grid(fpt i, fpt j, fpt k) const;
 
-    glm::vec3 realspace_to_direct(float i, float j, float k) const;
+    Vec3 realspace_to_direct(fpt i, fpt j, fpt k) const;
 
-    void copy_grid_dimensions(unsigned int _grid_dimensions[]) const;
+    fpt get_max() const;
 
-    float get_max() const;
+    fpt get_min() const;
 
-    float get_min() const;
+    Vec3 get_atom_position(unsigned int atid) const;
 
-    glm::vec3 get_atom_position(unsigned int atid) const;
-
-    inline const glm::mat3& get_mat_unitcell() const {
-        return this->mat33;
+    inline const MatrixUnitcell& get_mat_unitcell() const {
+        return this->mat;
     }
 
-    inline const glm::mat3& get_mat_unitcell_inverse() const {
-        return this->imat33;
+    inline const MatrixUnitcell& get_mat_unitcell_inverse() const {
+        return this->imat;
     }
 
-    inline const float* get_grid_ptr() const {
+    inline const fpt* get_grid_ptr() const {
         return &this->gridptr[0];
     }
 
@@ -279,31 +272,13 @@ private:
     void read_grid();
 
     /*
-     * float get_max_direction(dim)
+     * fpt get_max_direction(dim)
      *
      * Get the maximum value in a particular dimension. This is a convenience
      * function for the get_value_interp() function.
      *
      */
-    float get_max_direction(unsigned int dim);
-
-    /*
-     * void calculate_inverse()
-     *
-     * Calculates the inverse of a 3x3 matrix. This is a convenience
-     * function for the read_matrix() function.
-     *
-     */
-    void calculate_inverse();
-
-    /*
-     * void calculate_volume()
-     *
-     * Calculates the inverse of a 3x3 matrix. This is a convenience
-     * function for the read_matrix() function.
-     *
-     */
-    void calculate_volume();
+    fpt get_max_direction(unsigned int dim);
 };
 
 #endif //_SCALAR_FIELD_H

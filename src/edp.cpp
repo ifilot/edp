@@ -40,7 +40,6 @@
 
 #include "scalar_field.h"
 #include "planeprojector.h"
-#include "raycaster.h"
 #include "config.h"
 
 int main(int argc, char *argv[]) {
@@ -104,9 +103,6 @@ int main(int argc, char *argv[]) {
         TCLAP::ValueArg<std::string> arg_b("b","bounds","Lower and upper bounds",false, "", "-3,2");
         cmd.add(arg_b);
 
-        // whether or not to print a legend
-        TCLAP::SwitchArg arg_raytrace("t","raytrace","Whether to perform raytracing", cmd, false);
-
         cmd.parse(argc, argv);
 
         //**************************************
@@ -158,11 +154,11 @@ int main(int argc, char *argv[]) {
         // get position for the point
         std::string sp = arg_sp.getValue();
         boost::smatch what;
-        glm::vec3 p;
+        Vec3 p;
         if(boost::regex_match(sp, what, re_vec3)) {
-            p[0] = boost::lexical_cast<float>(what[1]);
-            p[1] = boost::lexical_cast<float>(what[2]);
-            p[2] = boost::lexical_cast<float>(what[3]);
+            p[0] = boost::lexical_cast<double>(what[1]);
+            p[1] = boost::lexical_cast<double>(what[2]);
+            p[2] = boost::lexical_cast<double>(what[3]);
         } else if(boost::regex_match(sp, what, re_scalar)) {
             p = sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1);
         } else {
@@ -171,16 +167,14 @@ int main(int argc, char *argv[]) {
 
         // obtain first vector
         std::string v_str = arg_v.getValue();
-        glm::vec3 v;
+        Vec3 v;
         if(boost::regex_match(v_str, what, re_vec3)) {
-            v[0] = boost::lexical_cast<float>(what[1]);
-            v[1] = boost::lexical_cast<float>(what[2]);
-            v[2] = boost::lexical_cast<float>(what[3]);
+            v[0] = boost::lexical_cast<double>(what[1]);
+            v[1] = boost::lexical_cast<double>(what[2]);
+            v[2] = boost::lexical_cast<double>(what[3]);
         } else if(boost::regex_match(v_str, what, re_scalar_2)) {
-            v = glm::normalize(
-                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
-                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
-                );
+            v = ( sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                  sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)).normalized();
 
             // if the user has supplied a "xyz" directives, check which of these
             // vector components should be retained
@@ -207,23 +201,22 @@ int main(int argc, char *argv[]) {
 
         // obtain second vector
         std::string w_str = arg_w.getValue();
-        glm::vec3 w;
+        Vec3 w;
         if(boost::regex_match(w_str, what, re_vec3)) {
-            w[0] = boost::lexical_cast<float>(what[1]);
-            w[1] = boost::lexical_cast<float>(what[2]);
-            w[2] = boost::lexical_cast<float>(what[3]);
+            w[0] = boost::lexical_cast<double>(what[1]);
+            w[1] = boost::lexical_cast<double>(what[2]);
+            w[2] = boost::lexical_cast<double>(what[3]);
         } else if(boost::regex_match(w_str, what, re_scalar_2)) {
-            w = glm::normalize(
-                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
-                    sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
-                );
+            w = ( sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                  sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
+                ).normalized();
         } else {
             std::runtime_error("Could not obtain a vector w");
         }
 
         // check whether vectors need to be orthogonalized
         if(arg_gram_schmidt.getValue()) {
-            v = v - glm::dot(v, w) / glm::dot(w, w) * w;
+            v = v - v.dot(w) / w.dot(w) * w;
         }
 
         //**************************************
@@ -251,7 +244,7 @@ int main(int argc, char *argv[]) {
         // determine size and colors
         //**************************************
 
-        const float scale = arg_s.getValue();
+        const double scale = arg_s.getValue();
         const unsigned int color_scheme_id = arg_c.getValue();
         const bool negative_values = arg_negative.getValue();
         const bool print_legend = arg_legend.getValue();
@@ -266,11 +259,11 @@ int main(int argc, char *argv[]) {
         std::cout << std::endl;
 
         // define intervals in Angstrom
-        static const float interval = 20.0;
-        static const float li = -interval;
-        static const float hi = interval;
-        static const float lj = -interval;
-        static const float hj = interval;
+        static const double interval = 20.0;
+        static const double li = -interval;
+        static const double hi = interval;
+        static const double lj = -interval;
+        static const double hj = interval;
 
         //**************************************
         // construct plane
@@ -319,17 +312,16 @@ int main(int argc, char *argv[]) {
         // Performing optional 1D line extraction
         //**************************************
         std::string ex_str = arg_ext.getValue();
-        glm::vec3 e;
+        Vec3 e;
         if(boost::regex_match(ex_str, what, re_vec3)) {
-            e[0] = boost::lexical_cast<float>(what[1]);
-            e[1] = boost::lexical_cast<float>(what[2]);
-            e[2] = boost::lexical_cast<float>(what[3]);
+            e[0] = boost::lexical_cast<double>(what[1]);
+            e[1] = boost::lexical_cast<double>(what[2]);
+            e[2] = boost::lexical_cast<double>(what[3]);
             pp.extract_line(e, p, scale, li, hi);
         } else if(boost::regex_match(ex_str, what, re_scalar_2)) {
-            e = glm::normalize(
-                sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
-                sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
-            );
+            e = ( sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
+                  sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
+                ).normalized();
             pp.extract_line(e, p, scale, li, hi);
         }
 
@@ -346,28 +338,11 @@ int main(int argc, char *argv[]) {
         std::string re_str = arg_r.getValue();
         if(boost::regex_match(re_str, what, re_scalar_radius)) {
             const unsigned int atid = boost::lexical_cast<unsigned int>(what[1]);
-            glm::vec3 pr = sf.get_atom_position(atid-1);
-            const float radius = boost::lexical_cast<float>(what[2]);
+            Vec3 pr = sf.get_atom_position(atid-1);
+            const double radius = boost::lexical_cast<double>(what[2]);
 
             std::cout << "Averaging sphere surface for atom " << atid << " at radius: " << radius << std::endl;
             pp.extract_sphere_average(pr, radius);
-        }
-
-        //**************************************
-        // Ray Tracing
-        //**************************************
-        if(arg_raytrace.getValue()) {
-            std::cout << "Performing ray casting" << std::endl;
-            std::string outputrayfile = "raytrace.png";
-            start = std::chrono::system_clock::now();
-            RayCaster rc(&sf, color_scheme_id);
-            rc.cast();
-            rc.write(outputrayfile);
-            std::cout << "Writing output to " << outputrayfile << std::endl;
-            end = std::chrono::system_clock::now();
-            elapsed_seconds = end-start;
-            std::cout << "Done ray tracing in " << elapsed_seconds.count() << " seconds." << std::endl;
-            std::cout << "--------------------------------------------------------------" << std::endl;
         }
 
         std::cout << "Done" << std::endl << std::endl;
