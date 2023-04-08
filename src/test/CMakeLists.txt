@@ -1,9 +1,13 @@
 add_library(unittest STATIC unittest.cpp)
 
+# set executables
+SET(EXECUTABLES TestProjection TestScalarField)
+
 #######################################################
 # Add executables
 #######################################################
-add_executable(TestEDP testedp.cpp)
+add_executable(TestProjection test_projection.cpp)
+add_executable(TestScalarField test_scalarfield.cpp)
 
 #######################################################
 # Link mkmsources and other dependencies
@@ -13,13 +17,13 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 else()
     SET(CPPUNIT_LIB ${CPPUNIT_LIBRARY})
 endif()
-target_link_libraries(TestEDP unittest edpsources ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CPPUNIT_LIB} -lgcov --coverage)
-set_target_properties(TestEDP PROPERTIES COMPILE_FLAGS "--coverage")
 
-#######################################################
-# add tests to the set
-#######################################################
-add_test(NAME "TestEDP" COMMAND TestEDP)
+# configure common settings for test executables
+foreach(testexec ${EXECUTABLES})
+    target_link_libraries(${testexec} unittest edpsources ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CPPUNIT_LIB} -lgcov --coverage)
+    set_target_properties(${testexec} PROPERTIES COMPILE_FLAGS "--coverage")
+    add_test(NAME ${testexec} COMMAND ${testexec})
+endforeach()
 
 #######################################################
 # add testinput files

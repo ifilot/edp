@@ -18,18 +18,17 @@
  *                                                                        *
  **************************************************************************/
 
-#ifndef _TEST_EDP
-#define _TEST_EDP
+#ifndef _TEST_PROJECTION
+#define _TEST_PROJECTION
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "scalar_field.h"
 #include "planeprojector.h"
 
-class TestEDP : public CppUnit::TestFixture
+class TestProjection : public CppUnit::TestFixture
 {
-  CPPUNIT_TEST_SUITE( TestEDP );
-  CPPUNIT_TEST( testReading );
+  CPPUNIT_TEST_SUITE( TestProjection );
   CPPUNIT_TEST( testProjection );
   CPPUNIT_TEST_SUITE_END();
 
@@ -37,11 +36,10 @@ public:
   void setUp();
   void tearDown();
 
-  void testReading();
   void testProjection();
 
 private:
   void test_plane(ScalarField* sf, glm::vec3 v, glm::vec3 w, glm::vec3 p, float ref);
 };
 
-#endif  // _TEST_EDP
+#endif  // _TEST_PROJECTION
