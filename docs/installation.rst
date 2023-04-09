@@ -12,10 +12,12 @@ available to you:
 * `Cairo graphics <https://www.cairographics.org/>`_ (visualization)
 * `Boost <https://www.boost.org/>`_ (common routines)
 * `TCLAP <https://tclap.sourceforge.net/>`_ (command line instruction library)
+* `CPPUnit <https://sourceforge.net/projects/cppunit/>`_ (unit testing)
 
 On Debian-based operating systems, one can run the following::
 
-    sudo apt install libeigen3-dev build-essential libcairo2-dev libboost-all-dev libtclap-dev
+    sudo apt install libeigen3-dev build-essential libcairo2-dev \
+    libboost-all-dev libtclap-dev libcppunit-dev cmake
 
 .. note::
    If you are running Windows and would like to use :program:`EDP`, one option

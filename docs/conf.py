@@ -18,7 +18,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'Electron Density Plotter'
-copyright = '2023, Ivo Filot'
+copyright = '2023, Inorganic Materials and Catalysis'
 author = 'Ivo Filot'
 
 
@@ -28,7 +28,8 @@ author = 'Ivo Filot'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.mathjax'
+    'sphinx.ext.mathjax',
+    'sphinx.ext.autosectionlabel'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

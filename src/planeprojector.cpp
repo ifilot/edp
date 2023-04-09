@@ -173,7 +173,8 @@ void PlaneProjector::extract_line(Vec3 e, const Vec3& p, fpt _scale, fpt li, fpt
 }
 
 /**
- * @brief      calculate the average density (electron or potential) and store it as function of z-height
+ * @brief      calculate the average density (electron or potential) and store
+ *             it as function of z-height
  */
 void PlaneProjector::extract_plane_average() {
     const auto& dimensions = sf->get_grid_dimensions();
@@ -230,15 +231,15 @@ void PlaneProjector::extract_sphere_average(const Vec3& p, fpt radius) {
     // integrate over points
     for(fpt r = 0.0; r <= radius; r += 0.01f) {
         fpt sum = 0.0f;
-        #pragma omp parallel for reduction(+:sum)
+        //#pragma omp parallel for reduction(+:sum)
         for(unsigned int i=0; i<Quadrature::num_lebedev_points[level]; i++) {
             Vec3 pp = p + Vec3(Quadrature::lebedev_coefficients[i][0],
-                                         Quadrature::lebedev_coefficients[i][1],
-                                         Quadrature::lebedev_coefficients[i][2]) * r;
+                               Quadrature::lebedev_coefficients[i][1],
+                               Quadrature::lebedev_coefficients[i][2]) * r;
 
             // align point to unit cell when crossing periodic boundary conditions
             Vec3 pd = this->sf->get_mat_unitcell_inverse() * pp;
-            pd = pd.array().floor();
+            pd = pd - Vec3(pd.array().floor());
             pp = this->sf->get_mat_unitcell() * pd;
 
             const fpt val = this->sf->get_value_interp(pp[0], pp[1], pp[2]);
@@ -253,7 +254,7 @@ void PlaneProjector::extract_sphere_average(const Vec3& p, fpt radius) {
     // open file and output results
     std::ofstream out("spherical_average.txt");
     for(unsigned int i=0; i<radii.size(); i++) {
-        out << boost::format("%12.6f  %12.6f\n") % radii[i] % values[i];
+        out << boost::format("%12.2f  %12.6f\n") % radii[i] % values[i];
     }
 
     out.close();

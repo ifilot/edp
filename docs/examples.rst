@@ -14,3 +14,5 @@ source code.
 Electron density of CH4
 =======================
 
+Color schemes
+=============

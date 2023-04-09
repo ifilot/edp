@@ -317,11 +317,13 @@ int main(int argc, char *argv[]) {
             e[0] = boost::lexical_cast<double>(what[1]);
             e[1] = boost::lexical_cast<double>(what[2]);
             e[2] = boost::lexical_cast<double>(what[3]);
+            std::cout << "Performing 1D line extraction." << std::endl;
             pp.extract_line(e, p, scale, li, hi);
         } else if(boost::regex_match(ex_str, what, re_scalar_2)) {
             e = ( sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
                   sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)
                 ).normalized();
+            std::cout << "Performing 1D line extraction." << std::endl;
             pp.extract_line(e, p, scale, li, hi);
         }
 
@@ -329,6 +331,7 @@ int main(int argc, char *argv[]) {
         // Performing optional z-axis averaging
         //**************************************
         if(arg_z.getValue()) {
+            std::cout << "Performing plane averaging." << std::endl;
             pp.extract_plane_average();
         }
 
@@ -341,7 +344,8 @@ int main(int argc, char *argv[]) {
             Vec3 pr = sf.get_atom_position(atid-1);
             const double radius = boost::lexical_cast<double>(what[2]);
 
-            std::cout << "Averaging sphere surface for atom " << atid << " at radius: " << radius << std::endl;
+            std::cout << "Averaging sphere surface for atom " << atid
+                      << " for 0 < r < " << radius << "." << std::endl;
             pp.extract_sphere_average(pr, radius);
         }
 
