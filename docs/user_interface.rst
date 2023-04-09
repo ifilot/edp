@@ -7,8 +7,8 @@ User Interface
 .. note::
    There are two ways to specify vectors, either as "raw" vectors or by using atom pairs.
    Raw vectors are always written as ``x,y,z``, *without* spaces and are automatically
-   normalized. Atom pairs are written as ``id1-id2``. We use herein one-based
-   counting. In other words, the first atom has an id of 1, not 0.
+   normalized. Atom pairs are written as ``id1-id2`` wherein one-based indexing
+   is used. In other words, the first atom has an id of 1, not 0.
 
 Mandatory arguments
 ===================
@@ -113,6 +113,10 @@ are of course possible and will be plotted accordingly.
 Which color scheme to use. :ref:`See the overview of possible color schemes<color schemes>`.
 
 *Example*: ``-c 1``
+
+.. note::
+   For the color schemes, zero-based indexing is used. In other words, the first
+   color scheme is color scheme #0.
 
 *****
 

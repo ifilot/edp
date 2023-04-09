@@ -1,0 +1,5 @@
+Automatic Mesh
+0			! number of k-point=0 -> automatic generation scheme
+G
+7  7  1		! subdivisions N_1, N_2 and N_3 along recipr. l. vectors
+0  0  0

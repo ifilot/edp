@@ -30,6 +30,7 @@ requests are ideally submitted via the `github issue tracker
    background
    examples
    user_interface
+   publications
 
 Indices and tables
 ------------------
