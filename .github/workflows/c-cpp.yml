@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install-packages
+      run: sudo apt install -y libglm-dev libboost-all-dev libtclap-dev libcppunit-dev libcairo2-dev
     - name: configure
       run: mkdir build && cd build && cmake ../src
     - name: make
