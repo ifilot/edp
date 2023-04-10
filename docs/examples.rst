@@ -8,10 +8,8 @@ A series of typical usage scenarios are given, including the result and the
 source code.
 
 .. note::
-   * Three different model systems are used in the examples below. More information
-     on these model systems can be found under :ref:`Model systems<model systems>`.
-   * The examples below can be reproduced from the electron density files as
-     stored in ``dataset.tar.bz2`` which can be found under ``src/test/testinput``.
+   * Three different model systems are used in the examples below. More information on these model systems can be found under :ref:`Model systems<model systems>`.
+   * The examples below can be reproduced from the electron  density files as stored in ``dataset.tar.bz2`` which can be found under ``src/test/testinput``.
    * It is assumed that the executable ``edp`` is available from the ``$PATH``.
 
 Electron density projection
