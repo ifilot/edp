@@ -41,3 +41,8 @@ EDP supports 16 different color schemes.
 ## Documentation
 
 Detailed documentation can be found at https://edp.imc-tue.nl.
+
+## Contribute
+
+Bugs and feature requests are ideally submitted via the [gitlab issue tracker](https://github.com/ifilot/edp/issues).
+The development team can also be reached by email via i.a.w.filot@tue.nl.
