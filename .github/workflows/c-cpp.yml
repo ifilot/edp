@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: install-packages
+      run: sudo apt install -y libglm-dev libboost-all-dev libtclap-dev libcppunit-dev libcairo2-dev
+    - name: configure
+      run: mkdir build && cd build && cmake ../src
+    - name: make
+      run: cd build && make
