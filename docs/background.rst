@@ -18,6 +18,13 @@ The CHGCAR file primarily serves to store the electron density scalar field. To 
 
 There are various ways to define the plane onto which the electron density should be projected. The approach used in :program:`EDP` is to set two unit vectors :math:`\vec{v}` and :math:`\vec{w}` and a point :math:`\vec{p}`. Starting at the point :math:`\vec{p}`, a plane is then constructed by expanding in the two directions as given by the unit vectors :math:`\vec{v}` and :math:`\vec{w}`. In turn, :math:`\vec{v}` and :math:`\vec{w}` will serve as the horizontal and vertical coordinates of a corresponding canvas onto which the electron density is plotted. The dimensions of the canvas are determined by the resolution given in pixels / Å.
 
+.. tikz:: A plane is defined using two normal vectors and a point. The dashed lines indicate the edges of the unit cell.
+
+   \draw[->] (0,0) -- node[anchor=north]{$\vec{v}$} (1,0);
+   \draw[->] (0,0) -- node[anchor=south]{$\vec{w}$} (0.5,{1/sqrt(3)});
+   \draw[dashed] (-3,{-2/sqrt(3)}) -- (1,{-2/sqrt(3)}) -- (3,{2/sqrt(3)}) -- (-1,{2/sqrt(3)}) -- (-3,{-2/sqrt(3)});
+   \filldraw[red] (0,0) circle(1pt) node[anchor=north east,red]{$\vec{p}$};
+
 Since the electron density is only known at specific points, i.e. the mesh points of the fine FFT-grid, interpolation strategies are used to determine the electron density at the other points not coinciding with the mesh. :program:`EDP` uses `trilinear interpolation <https://en.wikipedia.org/wiki/Trilinear_interpolation>`_ to project the electron density onto the plane.
 
-Following the projection of the electron density onto a two-dimensional plane, the electron density values for every pixel on the canvas are established. Subsequently, visualization is executed in a straightforward manner. A color map is utilized to assign a distinct color to each numeric value, which is then allocated to the corresponding pixel on the plane. In addition, pixels on the canvas that correspond to positions beyond the unit cell are rendered transparent.
+Following the projection of the electron density onto a two-dimensional plane, the electron density values for every pixel on the canvas are established. Subsequently, visualization is executed in a straightforward manner. A color map is utilized to assign a distinct color to each numeric value, which is then allocated to the corresponding pixel on the plane. In addition, pixels on the canvas that correspond to positions outside the unit cell are rendered transparent.

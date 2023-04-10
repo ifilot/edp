@@ -30,7 +30,8 @@ author = 'Ivo Filot'
 extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.autosectionlabel',
-    'sphinx_rtd_theme'
+    'sphinx_rtd_theme',
+    'sphinxcontrib.tikz'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -57,6 +58,9 @@ html_static_path = ['_static']
 html_theme_options = {'display_version': True}
 html_logo = "_static/img/edp_logo_128.png"
 html_favicon = "_static/img/favicon.ico"
+html_css_files = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+]
 
 # other options
 html_show_sourcelink = False

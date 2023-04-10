@@ -145,10 +145,17 @@ The result is stored in `spherical_average.txt`.
 Model systems
 =============
 
+In the examples as shown on this page, three model systems have been used. The
+files to reproduce these calculations can be found
+`here <https://github.com/ifilot/edp/tree/master/examples/model_systems_input>`_.
+
 Benzene
 -------
 .. figure:: _static/img/model_systems/benzene_top.png
    :alt: Benzene molecule inside its unit cell.
+
+.. literalinclude:: ../examples/model_systems_input/benzene/POSCAR
+   :linenos:
 
 Methane
 -------
@@ -156,8 +163,14 @@ Methane
 .. figure:: _static/img/model_systems/ch4_top.png
    :alt: Methane molecule inside its unit cell.
 
+.. literalinclude:: ../examples/model_systems_input/CH4/POSCAR
+   :linenos:
+
 Aluminium FCC(111)
 ------------------
 
 .. figure:: _static/img/model_systems/Al111_top.png
    :alt: (111) termination of Al/FCC bulk.
+
+.. literalinclude:: ../examples/model_systems_input/Al111/POSCAR
+   :linenos:
