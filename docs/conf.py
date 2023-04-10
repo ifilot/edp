@@ -55,7 +55,10 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 master_doc = 'index'
 html_static_path = ['_static']
-html_theme_options = {'display_version': True}
+html_theme_options = {
+    'display_version': True,
+    'analytics_id': 'G-H71EPP6GVB'
+}
 html_logo = "_static/img/edp_logo_128.png"
 html_favicon = "_static/img/favicon.ico"
 html_css_files = [
