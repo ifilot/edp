@@ -10,6 +10,13 @@ User Interface
    normalized. Atom pairs are written as ``id1-id2`` wherein one-based indexing
    is used. In other words, the first atom has an id of 1, not 0.
 
+.. warning::
+   Note that some of the output files have generic names
+   (e.g. ``planedata-real.bin``). If files with the same name already exist
+   in the current working directory, these files will be overwritten. To avoid
+   this, you either need to rename these files or execute :program:`EDP` in
+   separate directories.
+
 Mandatory arguments
 ===================
 
