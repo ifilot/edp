@@ -24,10 +24,9 @@ The electron density is a scalar field, which means that it is a function that a
 
 # Statement of need
 
-EDP is a C++ based command line tool that carries out the projection of the electron density scalar field as stored in VASP CHGCAR or PARCHG file onto a plane and renders this plane using a color map. The user can efficiently define these planes based on the atom coordinates as provided in the structure block of these files.
+The visualization of scalar fields using contour plots or heat maps is ubiquitous in science and plenty of general purpose programs such as Open Data Explorer [@OpenDX] and ParaView [@ParaView] readily accomodate this task. There exist also programs that specifically cater to VASP, such as Vesta [@momma:2011] and sisl [@papior:2023]. These programs are typically designed for interactive use, sisl being the exception, and utilize a graphical user interface of some sort. In contrast, `EDP` is a C++ based command line tool that carries out the projection of the electron density scalar field as stored in VASP CHGCAR or PARCHG file onto a plane. This plane is then rendered onto a canvas using a color map and stored as a PNG file. `EDP` uses a minimal set of dependencies, all typically being readily available on modern Linux based operating systems. `EDP` is designed with ease of use in mind. The projection planes can be defined with respect to the atomic coordinates, which are available in the structure block of CHGCAR and PARCHG files.
 
-`EDP` was designed to be used by researchers working in computational materials modelling using the VASP software. It has already been
-used in a number of scientific publications[@zijlstra:2019; @vogt:2019; @filot:2016].
+`EDP` was designed to be used by researchers and students working in computational materials modelling using the VASP software. It has already been used in a number of scientific publications[@zijlstra:2019; @vogt:2019; @filot:2016].
 
 # Acknowledgements
 
