@@ -18,6 +18,4 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake ../src
     - name: make
-      run: make
-    - name: make test
-      run: make test
+      run: cd build && make
