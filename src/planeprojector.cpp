@@ -40,7 +40,7 @@ PlaneProjector::PlaneProjector(ScalarField* _sf, unsigned int _color_scheme_id) 
  * @param[in]  _min            minimum values
  * @param[in]  _max            maximum values
  */
-void PlaneProjector::set_scaling(bool allow_negative, float _min, float _max) {
+void PlaneProjector::set_scaling(bool allow_negative, fpt _min, fpt _max) {
     this->flag_negative = allow_negative;
     this->log_min = _min;
     this->log_max = _max;
@@ -61,9 +61,9 @@ void PlaneProjector::plot() {
     for(unsigned int i=0; i<uint(this->iy); i++) {
         for(unsigned int j=0; j<uint(this->ix); j++) {
             if(this->planegrid_box[i * this->ix + j]) {
-                this->plt->draw_filled_rectangle(j,i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
+                this->plt->draw_filled_rectangle(j, this->iy-i, 1, 1, this->scheme->get_color(this->planegrid_log[i * this->ix + j]));
             } else {
-                this->plt->draw_filled_rectangle(j,i, 1, 1, Color(0,0,0,0));
+                this->plt->draw_filled_rectangle(j, this->iy-i, 1, 1, Color(0,0,0,0));
             }
         }
     }
@@ -81,11 +81,11 @@ void PlaneProjector::plot() {
  * @param[in]  lj               extend in -v2 direction in Angstrom
  * @param[in]  hj               extend in +v2 direction in Angstrom
  */
-void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj) {
+void PlaneProjector::extract(Vec3 _v1, Vec3 _v2, const Vec3& _p, fpt _scale, fpt li, fpt hi, fpt lj, fpt hj) {
 
     // use normalized vectors
-    _v1 = glm::normalize(_v1);
-    _v2 = glm::normalize(_v2);
+    _v1.normalize();
+    _v2.normalize();
 
     this->scale = _scale;
     this->ix = int((hi - li) * _scale);
@@ -93,19 +93,19 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, 
 
     std::cout << "Creating " << this->ix << "x" << this->iy << "px image..." << std::endl;
 
-    this->planegrid_log =  new float[this->ix * this->iy];
-    this->planegrid_real = new float[this->ix * this->iy];
+    this->planegrid_log =  new fpt[this->ix * this->iy];
+    this->planegrid_real = new fpt[this->ix * this->iy];
     this->planegrid_box =  new bool[this->ix * this->iy];
 
     #pragma omp parallel for collapse(2)
     for(int i=0; i<this->ix; i++) {
         for(int j=0; j<this->iy; j++) {
-            const float x = _v1[0] * float(i - this->ix / 2) / _scale + _v2[0] * float(j - this->iy / 2) / _scale + _p[0];
-            const float y = _v1[1] * float(i - this->ix / 2) / _scale + _v2[1] * float(j - this->iy / 2) / _scale + _p[1];
-            const float z = _v1[2] * float(i - this->ix / 2) / _scale + _v2[2] * float(j - this->iy / 2) / _scale + _p[2];
+            const fpt x = _v1[0] * fpt(i - this->ix / 2) / _scale + _v2[0] * fpt(j - this->iy / 2) / _scale + _p[0];
+            const fpt y = _v1[1] * fpt(i - this->ix / 2) / _scale + _v2[1] * fpt(j - this->iy / 2) / _scale + _p[1];
+            const fpt z = _v1[2] * fpt(i - this->ix / 2) / _scale + _v2[2] * fpt(j - this->iy / 2) / _scale + _p[2];
 
             const bool is_inside = this->sf->is_inside(x,y,z);
-            const float val = this->sf->get_value_interp(x,y,z);
+            const fpt val = this->sf->get_value_interp(x,y,z);
 
             if(!is_inside) {
                 this->planegrid_box[j * this->ix + i] = false;
@@ -141,24 +141,24 @@ void PlaneProjector::extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, 
  * @param[in]  li      extend in -e direction
  * @param[in]  hi      extend in +e direction
  */
-void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale, float li, float hi) {
-    e = glm::normalize(e);
+void PlaneProjector::extract_line(Vec3 e, const Vec3& p, fpt _scale, fpt li, fpt hi) {
+    e.normalize();
 
     this->scale = _scale;
     this->ix = int((hi - li) * _scale);
 
-    std::vector<glm::vec3> pos;
-    std::vector<float> vals;
+    std::vector<Vec3> pos;
+    std::vector<fpt> vals;
 
     for(int i=0; i<this->ix; i++) {
-        float x = e[0] * float(i - this->ix / 2) / _scale + p[0];
-        float y = e[1] * float(i - this->ix / 2) / _scale + p[1];
-        float z = e[2] * float(i - this->ix / 2) / _scale + p[2];
+        fpt x = e[0] * fpt(i - this->ix / 2) / _scale + p[0];
+        fpt y = e[1] * fpt(i - this->ix / 2) / _scale + p[1];
+        fpt z = e[2] * fpt(i - this->ix / 2) / _scale + p[2];
 
-        float val = this->sf->get_value_interp(x,y,z);
+        fpt val = this->sf->get_value_interp(x,y,z);
 
         if(val != 0.0) {
-            pos.push_back(glm::vec3(x,y,z));
+            pos.push_back(Vec3(x,y,z));
             vals.push_back(val);
         }
     }
@@ -173,20 +173,20 @@ void PlaneProjector::extract_line(glm::vec3 e, const glm::vec3& p, float _scale,
 }
 
 /**
- * @brief      calculate the average density (electron or potential) and store it as function of z-height
+ * @brief      calculate the average density (electron or potential) and store
+ *             it as function of z-height
  */
 void PlaneProjector::extract_plane_average() {
-    unsigned int dimensions[3];
-    this->sf->copy_grid_dimensions(dimensions);
+    const auto& dimensions = sf->get_grid_dimensions();
 
-    const float* grid = this->sf->get_grid_ptr();
-    std::vector<float> avg;
-    std::vector<float> z;
+    const fpt* grid = this->sf->get_grid_ptr();
+    std::vector<fpt> avg;
+    std::vector<fpt> z;
 
-    const float sz = (float)(dimensions[0] * dimensions[1]);
+    const fpt sz = (fpt)(dimensions[0] * dimensions[1]);
 
     for(unsigned int i=0; i<dimensions[2]; i++) {   // loop over z-axis
-        float sum = 0.0f;
+        fpt sum = 0.0f;
         #pragma omp parallel for collapse(2) reduction(+:sum)
         for(unsigned int j=0; j<dimensions[1]; j++) {   // loop over y-axis
             for(unsigned int k=0; k<dimensions[0]; k++) {   // loop over x-axis
@@ -196,7 +196,7 @@ void PlaneProjector::extract_plane_average() {
             }
         }
         avg.push_back(sum / sz);
-        z.push_back(i / (float)dimensions[2]);
+        z.push_back(i / (fpt)dimensions[2]);
     }
 
     // write to file
@@ -216,7 +216,7 @@ void PlaneProjector::extract_plane_average() {
  * @param[in]  p       position of the sphere
  * @param[in]  radius  radius of the sphere
  */
-void PlaneProjector::extract_sphere_average(const glm::vec3& p, float radius) {
+void PlaneProjector::extract_sphere_average(const Vec3& p, fpt radius) {
     // use Lebedev quadrature points
     unsigned int level = Quadrature::LEBEDEV_194;
     unsigned int start_idx = 0;
@@ -225,36 +225,36 @@ void PlaneProjector::extract_sphere_average(const glm::vec3& p, float radius) {
     }
 
     // build vectors
-    std::vector<float> radii;
-    std::vector<float> values;
+    std::vector<fpt> radii;
+    std::vector<fpt> values;
 
     // integrate over points
-    for(float r = 0.0; r <= radius; r += 0.01f) {
-        float sum = 0.0f;
-        #pragma omp parallel for reduction(+:sum)
+    for(fpt r = 0.0; r <= radius; r += 0.01f) {
+        fpt sum = 0.0f;
+        //#pragma omp parallel for reduction(+:sum)
         for(unsigned int i=0; i<Quadrature::num_lebedev_points[level]; i++) {
-            glm::vec3 pp = p + glm::vec3(Quadrature::lebedev_coefficients[i][0],
-                                         Quadrature::lebedev_coefficients[i][1],
-                                         Quadrature::lebedev_coefficients[i][2]) * r;
+            Vec3 pp = p + Vec3(Quadrature::lebedev_coefficients[i][0],
+                               Quadrature::lebedev_coefficients[i][1],
+                               Quadrature::lebedev_coefficients[i][2]) * r;
 
             // align point to unit cell when crossing periodic boundary conditions
-            glm::vec3 pd = this->sf->get_mat_unitcell_inverse() * pp;
-            pd = glm::fract(pd);
+            Vec3 pd = this->sf->get_mat_unitcell_inverse() * pp;
+            pd = pd - Vec3(pd.array().floor());
             pp = this->sf->get_mat_unitcell() * pd;
 
-            const float val = this->sf->get_value_interp(pp[0], pp[1], pp[2]);
+            const fpt val = this->sf->get_value_interp(pp[0], pp[1], pp[2]);
 
             sum += val;
         }
         radii.push_back(r);
-        values.push_back(sum / (float)Quadrature::num_lebedev_points[level]);
+        values.push_back(sum / (fpt)Quadrature::num_lebedev_points[level]);
     }
 
     // write to file
     // open file and output results
     std::ofstream out("spherical_average.txt");
     for(unsigned int i=0; i<radii.size(); i++) {
-        out << boost::format("%12.6f  %12.6f\n") % radii[i] % values[i];
+        out << boost::format("%12.2f  %12.6f\n") % radii[i] % values[i];
     }
 
     out.close();
@@ -267,14 +267,14 @@ void PlaneProjector::extract_sphere_average(const glm::vec3& p, float radius) {
  */
 void PlaneProjector::isolines(unsigned int bins) {
     if(this->flag_negative) {
-        for(float val = this->log_min; val <= this->log_max; val += 1) {
+        for(fpt val = this->log_min; val <= this->log_max; val += 1) {
             this->draw_isoline(-pow(10.0, val));
             this->draw_isoline(pow(10.0, val));
         }
         this->draw_isoline(0);
     } else {
-        float binsize = (this->log_max - this->log_min) / float(bins + 1);
-        for(float val = this->log_min; val <= this->log_max; val += binsize) {
+        fpt binsize = (this->log_max - this->log_min) / fpt(bins + 1);
+        for(fpt val = this->log_min; val <= this->log_max; val += binsize) {
             this->draw_isoline(pow(10.0,val));
         }
         this->draw_isoline(0);
@@ -288,25 +288,25 @@ void PlaneProjector::isolines(unsigned int bins) {
  */
 void PlaneProjector::draw_legend() {
     // set sizes
-    const float size = this->scale * 1.2;
-    const float fontsize = 24.f / 100.f * this->scale;
-    const float offset = size / 10;
-    const float superscript = 20.f / 32.f * fontsize;
-    const float shade_offset = fontsize / 10.f;
-    const float shade_offset_sc = superscript / 10.f;
+    const fpt size = this->scale * 1.2;
+    const fpt fontsize = 24.f / 100.f * this->scale;
+    const fpt offset = size / 10;
+    const fpt superscript = 20.f / 32.f * fontsize;
+    const fpt shade_offset = fontsize / 10.f;
+    const fpt shade_offset_sc = superscript / 10.f;
 
     if(this->sf->is_locpot()) { // draw legend for LOCPOT
         const std::string units = "eV";
         auto bounds = this->plt->get_text_bounds(fontsize, units);
-        float txpos = this->ix - 0.6 * size - bounds.height * 1.2;
-        float typos = size / 4.0f + bounds.width;
+        fpt txpos = this->ix - 0.6 * size - bounds.height * 1.2;
+        fpt typos = size / 4.0f + bounds.width;
         this->plt->type(txpos + shade_offset, typos + shade_offset, fontsize, -90, Color(0,0,0), units);
         this->plt->type(txpos, typos, fontsize, -90, Color(255, 255, 255), units);
     } else {                    // draw legend for CHGCAR
         const std::string units = "electrons / Å";
         auto bounds = this->plt->get_text_bounds(fontsize, units);
-        float txpos = this->ix - 0.6 * size - bounds.height;
-        float typos = size / 4.0f + bounds.width;
+        fpt txpos = this->ix - 0.6 * size - bounds.height;
+        fpt typos = size / 4.0f + bounds.width;
 
         // draw black
         this->plt->type(txpos + shade_offset, typos + shade_offset, fontsize, -90, Color(0,0,0), units);
@@ -317,12 +317,12 @@ void PlaneProjector::draw_legend() {
         this->plt->type(txpos - bounds.height + fontsize / 2, typos - bounds.width, superscript, -90, Color(255, 255, 255), "3");
     }
 
-    float yy = 0;
-    float val = 0;
+    fpt yy = 0;
+    fpt val = 0;
 
-    const float locpot_scale = (this->log_max - this->log_min) + 1.0f;
-    const float mmax = this->flag_negative ? locpot_scale : this->log_max;
-    const float mmin = this->flag_negative ? -locpot_scale : this->log_min;
+    const fpt locpot_scale = (this->log_max - this->log_min) + 1.0f;
+    const fpt mmax = this->flag_negative ? locpot_scale : this->log_max;
+    const fpt mmin = this->flag_negative ? -locpot_scale : this->log_min;
 
     for(int i=mmax; i >= mmin; i--) {
 
@@ -343,10 +343,10 @@ void PlaneProjector::draw_legend() {
         const Color lcol = this->scheme->get_color(this->calculate_scaled_value_log(val));
 
         // calculate xpos and ypos for the rectangles
-        const float xpos = this->ix - 3.f / 4.f * size;
-        const float ypos = size / 4.0f + yy;
-        const float xc = xpos + size / 4.0f;
-        const float yc = ypos + size / 4.0f;
+        const fpt xpos = this->ix - 3.f / 4.f * size;
+        const fpt ypos = size / 4.0f + yy;
+        const fpt xc = xpos + size / 4.0f;
+        const fpt yc = ypos + size / 4.0f;
 
         this->plt->draw_filled_rectangle(xpos, ypos, size / 2.0f, size / 2.0f, lcol);
         this->plt->draw_empty_rectangle(xpos, ypos, size / 2.0f, size / 2.0f, Color(0,0,0), 1);
@@ -374,12 +374,12 @@ void PlaneProjector::draw_legend() {
         // calculate bounds
         auto bounds1 = this->plt->get_text_bounds(fontsize, textbase);
         auto bounds2 = this->plt->get_text_bounds(superscript, textpower);
-        const float tw = bounds1.width + bounds2.width;
-        const float th = bounds1.height + bounds2.height;
+        const fpt tw = bounds1.width + bounds2.width;
+        const fpt th = bounds1.height + bounds2.height;
 
         // type text
-        const float tx = xc - tw / 2;
-        const float ty = yc + th / 2;
+        const fpt tx = xc - tw / 2;
+        const fpt ty = yc + th / 2;
 
         // draw black
         this->plt->type(xc - tw / 2 + shade_offset, yc + th / 2 + shade_offset, fontsize, 0, Color(0,0,0), textbase);
@@ -493,8 +493,8 @@ void PlaneProjector::cut_and_recast_plane() {
               << "] x [" << min_y << ":" << max_y << "]" << std::endl;
 
     // recasting
-    float* newgrid_log = new float[nx * ny];
-    float* newgrid_real = new float[nx * ny];
+    fpt* newgrid_log = new fpt[nx * ny];
+    fpt* newgrid_real = new fpt[nx * ny];
     bool* newgrid_box = new bool[nx * ny];
     uint8_t* store_bool = new uint8_t[nx * ny];
 
@@ -531,11 +531,11 @@ void PlaneProjector::cut_and_recast_plane() {
  *
  * @param[in]  val   value of the isoline
  */
-void PlaneProjector::draw_isoline(float val) {
+void PlaneProjector::draw_isoline(fpt val) {
     for(unsigned int i=1; i<uint(this->ix-1); i++) {
         for(unsigned int j=1; j<uint(this->iy-1); j++) {
             if(this->is_crossing(i,j,val)) {
-                this->plt->draw_filled_rectangle(i,j, 1, 1, Color(0,0,0));
+                this->plt->draw_filled_rectangle(i, this->iy-j, 1, 1, Color(0,0,0));
             }
         }
     }
@@ -550,7 +550,7 @@ void PlaneProjector::draw_isoline(float val) {
  *
  * @return     True if crossing, False otherwise.
  */
-bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, float val) {
+bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, fpt val) {
     if(this->planegrid_real[(j-1) * this->ix + (i)] < val && this->planegrid_real[(j+1) * this->ix + (i)] > val) {
         return true;
     }
@@ -573,19 +573,19 @@ bool PlaneProjector::is_crossing(unsigned int i, unsigned int j, float val) {
  *
  * @return     The scaled value.
  */
-float PlaneProjector::calculate_scaled_value_log(float input) {
-    const float scale = (this->log_max - this->log_min + 1.0f);
-    const float logval = std::min(std::max((float)log10(std::fabs(input)), (float)this->log_min), (float)this->log_max);
+fpt PlaneProjector::calculate_scaled_value_log(fpt input) {
+    const fpt scale = (this->log_max - this->log_min + 1.0f);
+    const fpt logval = std::min(std::max((fpt)log10(std::fabs(input)), (fpt)this->log_min), (fpt)this->log_max);
     return sgn(input) * (logval - this->log_min) / scale;
 }
 
-void PlaneProjector::store_field(const std::string& filename, float* field, uint32_t nx, uint32_t ny) {
+void PlaneProjector::store_field(const std::string& filename, fpt* field, uint32_t nx, uint32_t ny) {
     std::cout << "Storing field in " << filename << std::endl;
     std::ofstream out(filename, std::ios::out | std::ios::binary);
     if (out.is_open()) {
         out.write((const char*)&nx, sizeof(uint32_t));
         out.write((const char*)&ny, sizeof(uint32_t));
-        out.write((const char*)field, nx * ny * sizeof(float));
+        out.write((const char*)field, nx * ny * sizeof(fpt));
     } else {
         throw std::runtime_error("Cannot open file for writing.");
     }

@@ -1,0 +1,8 @@
+POTCAR
+WAVECAR
+CHGCAR
+vasprun.xml
+vasp.submit
+CHG
+*.png
+*.bin

@@ -34,13 +34,13 @@ private:
     ScalarField* sf;
     Plotter* plt;
 
-    float* planegrid_log;
-    float* planegrid_real;
+    fpt* planegrid_log;
+    fpt* planegrid_real;
     bool* planegrid_box;
-    float log_min, log_max;
+    fpt log_min, log_max;
 
     int ix, iy;
-    float scale;
+    fpt scale;
     unsigned int color_scheme_id;
 
     bool flag_negative;
@@ -58,13 +58,27 @@ public:
     PlaneProjector(ScalarField* _sf, unsigned int _color_scheme_id);
 
     /**
+     * Get a pointer to the planegrid container
+     */
+    const fpt* get_planegrid_real() const {
+        return this->planegrid_real;
+    }
+
+    /**
+     * Get the dimensions of the plane
+     */
+    std::pair<uint,uint> get_dimensions() const {
+        return std::make_pair<uint,uint>(this->ix, this->iy);
+    }
+
+    /**
      * @brief      set the scaling for the graph
      *
      * @param[in]  allow_negative  whether to allow negative values
      * @param[in]  _min            minimum values
      * @param[in]  _max            maximum values
      */
-    void set_scaling(bool allow_negative, float _min, float _max);
+    void set_scaling(bool allow_negative, fpt _min, fpt _max);
 
     /**
      * @brief      plot contour plane
@@ -84,7 +98,7 @@ public:
      * @param[in]  hj               extend in +v2 direction in Angstrom
      * @param[in]  negative_values  whether there are negative values in the plot
      */
-    void extract(glm::vec3 _v1, glm::vec3 _v2, const glm::vec3& _p, float _scale, float li, float hi, float lj, float hj);
+    void extract(Vec3 _v1, Vec3 _v2, const Vec3& _p, fpt _scale, fpt li, fpt hi, fpt lj, fpt hj);
 
     /**
      * @brief      extract line
@@ -95,7 +109,7 @@ public:
      * @param[in]  li      extend in -e direction
      * @param[in]  hi      extend in +e direction
      */
-    void extract_line(glm::vec3 e, const glm::vec3& p, float _scale, float li, float hi);
+    void extract_line(Vec3 e, const Vec3& p, fpt _scale, fpt li, fpt hi);
 
     /**
      * @brief      calculate the average density (electron or potential) and store it as function of z-height
@@ -109,7 +123,7 @@ public:
      * @param[in]  p       position of the sphere
      * @param[in]  radius  radius of the sphere
      */
-    void extract_sphere_average(const glm::vec3& p, float radius);
+    void extract_sphere_average(const Vec3& p, fpt radius);
 
     /**
      * @brief      draw isolines
@@ -149,7 +163,7 @@ private:
      *
      * @param[in]  val   value of the isoline
      */
-    void draw_isoline(float val);
+    void draw_isoline(fpt val);
 
     /**
      * @brief      determines whether a value on the pixel the isovalue is crossing
@@ -160,7 +174,7 @@ private:
      *
      * @return     True if crossing, False otherwise.
      */
-    bool is_crossing(unsigned int i, unsigned int j, float val);
+    bool is_crossing(unsigned int i, unsigned int j, fpt val);
 
     /**
      * @brief      Calculates the scaled value using a logarithmic scale.
@@ -169,9 +183,9 @@ private:
      *
      * @return     The scaled value.
      */
-    float calculate_scaled_value_log(float input);
+    fpt calculate_scaled_value_log(fpt input);
 
-    void store_field(const std::string& filename, float* field, uint32_t nx, uint32_t ny);
+    void store_field(const std::string& filename, fpt* field, uint32_t nx, uint32_t ny);
 
     void store_field_uin8t(const std::string& filename, uint8_t* field, uint32_t nx, uint32_t ny);
 };

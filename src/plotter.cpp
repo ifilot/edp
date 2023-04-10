@@ -45,8 +45,8 @@ void Plotter::set_background(const Color &_color) {
  * Draws a line. The position xstop and ystop are the ending positions of the line
  * and *not* the direction of the line.
  */
-void Plotter::draw_line(float xstart, float ystart, float xstop, float ystop,
-                        const Color &_color, float line_width) {
+void Plotter::draw_line(double xstart, double ystart, double xstop, double ystop,
+                        const Color &_color, double line_width) {
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_move_to(this->cr, xstart, ystart);
     cairo_line_to(this->cr, xstop, ystop);
@@ -57,7 +57,7 @@ void Plotter::draw_line(float xstart, float ystart, float xstop, float ystop,
 /*
  * Create a filled rectangle. That is a rectangle without a border.
  */
-void Plotter::draw_filled_rectangle(float xstart, float ystart, float xstop, float ystop,
+void Plotter::draw_filled_rectangle(double xstart, double ystart, double xstop, double ystop,
                                     const Color &_color) {
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
@@ -67,8 +67,8 @@ void Plotter::draw_filled_rectangle(float xstart, float ystart, float xstop, flo
 /*
  * Create an empty rectangle. In other words, just the border of the rectangle.
  */
-void Plotter::draw_empty_rectangle(float xstart, float ystart, float xstop, float ystop,
-                                   const Color &_color, float line_width) {
+void Plotter::draw_empty_rectangle(double xstart, double ystart, double xstop, double ystop,
+                                   const Color &_color, double line_width) {
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_rectangle (this->cr, xstart, ystart, xstop, ystop);
     cairo_set_line_width(this->cr, line_width);
@@ -78,7 +78,7 @@ void Plotter::draw_empty_rectangle(float xstart, float ystart, float xstop, floa
 /*
  * Create a filled circle. That is a circle without a border.
  */
-void Plotter::draw_filled_circle(float cx, float cy, float radius,
+void Plotter::draw_filled_circle(double cx, double cy, double radius,
                                  const Color &_color) {
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
@@ -88,8 +88,8 @@ void Plotter::draw_filled_circle(float cx, float cy, float radius,
 /*
  * Create an empty circle. In other words, just the border of the circle.
  */
-void Plotter::draw_empty_circle(float cx, float cy, float radius,
-                                const Color &_color, float line_width) {
+void Plotter::draw_empty_circle(double cx, double cy, double radius,
+                                const Color &_color, double line_width) {
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_arc(this->cr, cx, cy, radius, 0.0, 2 * M_PI);
     cairo_set_line_width(this->cr, line_width);
@@ -100,7 +100,7 @@ void Plotter::write(const char* filename) {
   cairo_surface_write_to_png(this->surface, filename);
 }
 
-void Plotter::type(float x, float y, float fontsize, float rotation, const Color &_color, const std::string &_text) {
+void Plotter::type(double x, double y, double fontsize, double rotation, const Color &_color, const std::string &_text) {
     cairo_text_extents_t te;
     cairo_set_source_rgba(this->cr, _color.get_r(), _color.get_g(), _color.get_b(), _color.get_a());
     cairo_set_font_size(this->cr, fontsize);
@@ -111,7 +111,7 @@ void Plotter::type(float x, float y, float fontsize, float rotation, const Color
     cairo_rotate(this->cr, -rotation * M_PI / 180.); // rotate back
 }
 
-cairo_text_extents_t Plotter::get_text_bounds(float fontsize, const std::string& text) {
+cairo_text_extents_t Plotter::get_text_bounds(double fontsize, const std::string& text) {
     cairo_text_extents_t te;
     cairo_set_font_size(this->cr, fontsize);
     cairo_text_extents (this->cr, text.c_str(), &te);
@@ -379,16 +379,16 @@ Color ColorScheme::get_color(double _value) {
         return this->colors.front();
     }
 
-    float binsize = ((this->high - this->low)/(double)(this->colors.size()-1));
+    double binsize = ((this->high - this->low)/(double)(this->colors.size()-1));
     unsigned int bin = floor((_value - this->low) / binsize);
 
     // interpolate between the two colors
-    float residual = (_value - this->low - (float)bin * binsize) / binsize;
+    double residual = (_value - this->low - (double)bin * binsize) / binsize;
 
-    float r = residual * this->colors[bin+1].get_r() + (1.0-residual) * this->colors[bin].get_r();
-    float g = residual * this->colors[bin+1].get_g() + (1.0-residual) * this->colors[bin].get_g();
-    float b = residual * this->colors[bin+1].get_b() + (1.0-residual) * this->colors[bin].get_b();
-    float a = residual * this->colors[bin+1].get_a() + (1.0-residual) * this->colors[bin].get_a();
+    double r = residual * this->colors[bin+1].get_r() + (1.0-residual) * this->colors[bin].get_r();
+    double g = residual * this->colors[bin+1].get_g() + (1.0-residual) * this->colors[bin].get_g();
+    double b = residual * this->colors[bin+1].get_b() + (1.0-residual) * this->colors[bin].get_b();
+    double a = residual * this->colors[bin+1].get_a() + (1.0-residual) * this->colors[bin].get_a();
 
     return Color(r*255, g*255, b*255, a*255);
 }
@@ -430,7 +430,7 @@ Color::Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a)
     b(_b),
     a(_a) {}
 
-Color::Color(const std::array<float, 4>& _colors) :
+Color::Color(const std::array<double, 4>& _colors) :
 r(_colors[0] * 255),
 g(_colors[1] * 255),
 b(_colors[2] * 255),
@@ -444,7 +444,7 @@ a(_colors[3] * 255)
  * Return the integer value for red (divide by 255 because we want on the [0,1] interval)
  *
  */
-float Color::get_r() const {
+double Color::get_r() const {
     return this->r / 255.0f;
 }
 
@@ -453,7 +453,7 @@ float Color::get_r() const {
  * Return the integer value for green (divide by 255 because we want on the [0,1] interval)
  *
  */
-float Color::get_g() const {
+double Color::get_g() const {
     return this->g / 255.0f;
 }
 
@@ -462,7 +462,7 @@ float Color::get_g() const {
  * Return the integer value for blue (divide by 255 because we want on the [0,1] interval)
  *
  */
-float Color::get_b() const {
+double Color::get_b() const {
     return this->b / 255.0f;
 }
 
@@ -471,6 +471,6 @@ float Color::get_b() const {
  * Return the integer value for alpha (divide by 255 because we want on the [0,1] interval)
  *
  */
-float Color::get_a() const {
+double Color::get_a() const {
     return this->a / 255.0f;
 }

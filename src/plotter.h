@@ -37,12 +37,12 @@ public:
 
     Color(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a);
 
-    Color(const std::array<float, 4>& _colors);
+    Color(const std::array<double, 4>& _colors);
 
-    float get_r() const;
-    float get_g() const;
-    float get_b() const;
-    float get_a() const;
+    double get_r() const;
+    double get_g() const;
+    double get_b() const;
+    double get_a() const;
 };
 
 class ColorScheme {
@@ -72,20 +72,20 @@ public:
   Plotter(const unsigned int _width, const unsigned int _height);
   void set_background(const Color &_color);
   void write(const char* filename);
-  void draw_filled_rectangle(float xstart, float ystart, float xstop, float ystop,
+  void draw_filled_rectangle(double xstart, double ystart, double xstop, double ystop,
                              const Color &_color);
-  void draw_empty_rectangle(float xstart, float ystart, float xstop, float ystop,
-                            const Color &_color, float line_width);
-  void draw_line(float xstart, float ystart, float xstop, float ystop,
-                 const Color &_color, float line_width);
-  void draw_filled_circle(float cx, float cy, float radius,
+  void draw_empty_rectangle(double xstart, double ystart, double xstop, double ystop,
+                            const Color &_color, double line_width);
+  void draw_line(double xstart, double ystart, double xstop, double ystop,
+                 const Color &_color, double line_width);
+  void draw_filled_circle(double cx, double cy, double radius,
                           const Color &_color);
-  void draw_empty_circle(float cx, float cy, float radius,
-                         const Color &_color, float line_width);
+  void draw_empty_circle(double cx, double cy, double radius,
+                         const Color &_color, double line_width);
 
-  cairo_text_extents_t get_text_bounds(float fontsize, const std::string& text);
+  cairo_text_extents_t get_text_bounds(double fontsize, const std::string& text);
 
-  void type(float x, float y, float fontsize, float rotation, const Color &_color, const std::string &_text);
+  void type(double x, double y, double fontsize, double rotation, const Color &_color, const std::string &_text);
 
   inline auto get_cairo_ptr() {
     return this->cr;
