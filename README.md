@@ -1,6 +1,9 @@
 EDP – a program for projecting electron densities
 =================================================
 
+[![C/C++ CI](https://github.com/ifilot/edp/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/ifilot/edp/actions/workflows/c-cpp.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 EDP is a C++ program designed to project the electron density as stored in a
 [CHGCAR](https://www.vasp.at/wiki/index.php/CHGCAR) or
 [PARCHG](https://www.vasp.at/wiki/index.php/PARCHG) file
