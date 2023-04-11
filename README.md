@@ -3,7 +3,8 @@
 [![C/C++ CI](https://github.com/ifilot/edp/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/ifilot/edp/actions/workflows/c-cpp.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Detailed documentation can be found at https://edp.imc-tue.nl.
+* Detailed documentation can be found at https://edp.imc-tue.nl.
+* See [the contributing guide](CONTRIBUTING.md) for detailed instructions how to make contributions.
 
 ## Purpose
 
@@ -37,7 +38,3 @@ edp -i PARCHG_BENZENE_07 -o benzene_xy.png -p 1 -v 1,0,0 -w 0,1,0 -s 25 -b -5,0 
 EDP supports 16 different color schemes.
 
 ![molecular orbitals of benzene](docs/_static/img/color_schemes.jpg)
-
-## Documentation
-
-Detailed documentation can be found at https://edp.imc-tue.nl.
