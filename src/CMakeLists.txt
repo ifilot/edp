@@ -1,14 +1,14 @@
  #*************************************************************************
- #   CMakeLists.txt  --  This file is part of den2bin.                    *
+ #   CMakeLists.txt  --  This file is part of edp.                        *
  #                                                                        *
  #   Author: Ivo Filot <i.a.w.filot@tue.nl>                               *
  #                                                                        *
- #   den2bin is free software: you can redistribute it and/or modify      *
+ #   edp is free software: you can redistribute it and/or modify          *
  #   it under the terms of the GNU General Public License as published    *
  #   by the Free Software Foundation, either version 3 of the License,    *
  #   or (at your option) any later version.                               *
  #                                                                        *
- #   den2bin is distributed in the hope that it will be useful,           *
+ #   edp is distributed in the hope that it will be useful,               *
  #   but WITHOUT ANY WARRANTY; without even the implied warranty          *
  #   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.              *
  #   See the GNU General Public License for more details.                 *
