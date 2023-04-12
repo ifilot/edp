@@ -46,7 +46,7 @@ public:
     static constexpr unsigned int num_lebedev_points[11] = {6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194};
 
     /* total size of lebedev_coefficient matrix */
-    static constexpr unsigned int num_lebedev_coefficients = 6 + 14 + 26 + 38 + 50 +74 + 86 + 110 + 146 +170 +194;
+    static constexpr unsigned int num_lebedev_coefficients = 6 + 14 + 26 + 38 + 50 +74 + 86 + 110 + 146 + 170 + 194;
 
     /* define Lebedev coefficients */
     static constexpr double lebedev_coefficients[num_lebedev_coefficients][4] = {
