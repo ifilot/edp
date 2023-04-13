@@ -31,7 +31,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: html-docs
+        path: html-docs
     - name: Debug
-      run: pwd && ls -alh && ls -alh docs
+      run: pwd && ls -alh && ls -alh html-docs
     - name: Deploy
-      run: cp -v docs/_build/html/* ${{ secrets.DEPLOY_PATH }}
+      run: cp -v html-docs/* ${{ secrets.DEPLOY_PATH }}
