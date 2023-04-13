@@ -22,7 +22,7 @@ jobs:
       with:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         name: id_rsa # optional
-        known_hosts: ${{ secrets.KNOWN_HOST }}
+        known_hosts: ${{ secrets.SSH_HOST }}
         if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
     - name: Deploy
       run: scp ./docs/_build/html/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
