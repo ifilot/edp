@@ -1,5 +1,4 @@
 name: sphinx
-runs-on: [self-hosted, linux, x64]
 
 on:
   push:
@@ -9,7 +8,7 @@ on:
 
 jobs:
   docs:
-    runs-on: self-hosted
+    runs-on: [ubuntu-latest, self-hosted]
     steps:
     - uses: actions/checkout@v3
     - name: Install packages
