@@ -32,7 +32,5 @@ jobs:
       with:
         name: html-docs
         path: html-docs
-    - name: Debug
-      run: pwd && ls -alh && ls -alh html-docs
     - name: Deploy
-      run: cp -v html-docs/* ${{ secrets.DEPLOY_PATH }}
+      run: rm -rf ${{ secrets.DEPLOY_PATH }} && cp -rv html-docs/* ${{ secrets.DEPLOY_PATH }}
