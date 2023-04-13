@@ -25,6 +25,7 @@ jobs:
 
   deploy:
     runs-on: [self-hosted, linux, x64]
+    needs: build-docs
     steps:
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -32,7 +33,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         name: id_rsa # optional
         known_hosts: ${{ secrets.SSH_HOST }}
-        if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+        if_key_exists: ignore # replace / ignore / fail; optional (defaults to fail)
     - name: Download docs
       uses: actions/download-artifact@v3
       with:
