@@ -1,3 +1,5 @@
+name: paper
+
 on: [push]
 
 jobs:
