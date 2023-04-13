@@ -7,16 +7,25 @@ on:
     branches: [ "master" ]
 
 jobs:
-  docs:
-    runs-on: [linux, x64, self-hosted]
+  build-docs:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Install packages
-      run: sudo apt install -y git build-essential curl wget python3 python3-pip texlive texlive-pictures texlive-latex-extra pdf2svg poppler-utils netpbm imagemagick ghostscript
+      run: sudo apt update && sudo apt install -y git build-essential curl wget python3 python3-pip texlive texlive-pictures texlive-latex-extra pdf2svg poppler-utils netpbm imagemagick ghostscript
     - name: Install Python packages
       run: sudo pip install sphinx sphinx-rtd-theme sphinxcontrib-tikz
     - name: Build documentation
       run: cd docs && make html
+    - name: Upload math result for job 1
+      uses: actions/upload-artifact@v3
+      with:
+        name: html-docs
+        path: ./docs/_build/html
+
+  deploy:
+    runs-on: [self-hosted, linux, x64]
+    steps:
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -24,5 +33,9 @@ jobs:
         name: id_rsa # optional
         known_hosts: ${{ secrets.SSH_HOST }}
         if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+    - name: Download docs
+      uses: actions/download-artifact@v3
+      with:
+        name: html-docs
     - name: Deploy
       run: scp ./docs/_build/html/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
