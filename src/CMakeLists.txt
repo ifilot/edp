@@ -30,7 +30,7 @@ SET(VERSION_MAJOR "2")
 SET(VERSION_MINOR "0")
 SET(VERSION_MICRO "0")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
+               ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 # Enable release build
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -75,6 +75,7 @@ pkg_check_modules(EIGEN eigen3 REQUIRED)
 # Set include folders
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_BINARY_DIR}
+                    ${CMAKE_CURRENT_BINARY_DIR}
                     ${EIGEN_INCLUDE_DIRS}
                     ${TCLAP_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIR}
