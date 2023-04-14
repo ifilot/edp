@@ -1,0 +1,38 @@
+name = 'EDP'
+version = '2.0.1'
+
+homepage = 'https://edp.imc-tue.nl'
+description = "Electron Density Plotter"
+
+toolchain = {'name': 'GCC', 'version': '10.3.0'}
+
+sources = [{
+    'filename': 'edp.tar.gz',
+    'git_config': {
+        'url': 'https://github.com/ifilot',
+        'repo_name': 'edp',
+        'tag': 'v2.0.1',
+        'clone_into': 'edp',
+    },
+}]
+
+dependencies = [('Eigen', '3.3.9'), 
+                ('TCLAP', '1.2.5'), 
+                ('Boost', '1.76.0'), 
+                ('CppUnit', '1.15.1'), 
+                ('cairo', '1.16.0')]
+
+builddependencies = [('CMake', '3.20.1'),
+                     ('pkg-config', '0.29.2')]
+
+easyblock = 'CMakeMake'
+
+srcdir = 'src'
+separate_build_dir = True
+runtest = 'test'
+configopts = "-DCMAKE_BUILD_TYPE=Release"
+
+sanity_check_paths = {
+    'files': ["bin/edp"],
+    'dirs': [],
+}
