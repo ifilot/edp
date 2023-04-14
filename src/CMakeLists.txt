@@ -29,8 +29,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules )
 SET(VERSION_MAJOR "2")
 SET(VERSION_MINOR "0")
 SET(VERSION_MICRO "0")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
+configure_file(config.h.in config.h @ONLY)
+if(EXISTS "${CMAKE_BINARY_DIR}/config.h")
+    MESSAGE("[USER] Creating ${CMAKE_SOURCE_DIR}/config.h from ${CMAKE_BINARY_DIR}/config.h.in")
+else()
+    MESSAGE("[USER] Could not find configuration file in ${CMAKE_BINARY_DIR}!")
+endif()
 
 # Enable release build
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -75,7 +79,6 @@ pkg_check_modules(EIGEN eigen3 REQUIRED)
 # Set include folders
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_BINARY_DIR}
-                    ${CMAKE_CURRENT_BINARY_DIR}
                     ${EIGEN_INCLUDE_DIRS}
                     ${TCLAP_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIR}
