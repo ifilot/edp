@@ -19,7 +19,7 @@
  #*************************************************************************/
 
 # set minimum cmake requirements
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project (edp)
 
 # add custom directory to look for .cmake files
@@ -29,7 +29,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules )
 SET(VERSION_MAJOR "2")
 SET(VERSION_MINOR "0")
 SET(VERSION_MICRO "0")
-configure_file(config.h.in ../src/config.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+               ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
 
 # Enable release build
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
