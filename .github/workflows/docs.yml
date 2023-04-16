@@ -33,4 +33,4 @@ jobs:
         name: html-docs
         path: html-docs
     - name: Deploy
-      run: rm -rf ${{ secrets.DEPLOY_PATH }}/* && cp -rv html-docs/* ${{ secrets.DEPLOY_PATH }}
+      run: rm -r ${{ secrets.DEPLOY_PATH }}/html && mkdir -pv ${{ secrets.DEPLOY_PATH }}/html && cp -rv html-docs/* ${{ secrets.DEPLOY_PATH }}/html
