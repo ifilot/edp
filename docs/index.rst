@@ -1,8 +1,8 @@
 EDP – a program for projecting electron densities
 =================================================
 
-.. image:: https://github.com/ifilot/edp/actions/workflows/c-cpp.yml/badge.svg
-   :target: https://github.com/ifilot/edp/actions/workflows/c-cpp.yml
+.. image:: https://github.com/ifilot/edp/actions/workflows/build.yml/badge.svg
+   :target: https://github.com/ifilot/edp/actions/workflows/build.yml
 .. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
    :target: https://www.gnu.org/licenses/gpl-3.0
 
