@@ -74,6 +74,6 @@ EasyBuild Installation
 ======================
 
 For HPC infrastructure, there is also the option to install `EDP` using
-[EasyBuild](https://easybuild.io/). Make a copy of `EDP-2.0.1.eb` and run::
+`EasyBuild <https://easybuild.io/>`_. Make a copy of `EDP-2.0.1.eb` and run::
 
     eb EDP-2.0.1.eb
