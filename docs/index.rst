@@ -1,5 +1,5 @@
-EDP – a program for projecting electron densities
-=================================================
+EDP: a program for projecting electron densities from VASP onto planes
+======================================================================
 
 .. image:: https://img.shields.io/github/v/tag/ifilot/edp?label=version
    :alt: GitHub tag (latest SemVer)
