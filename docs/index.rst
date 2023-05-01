@@ -40,6 +40,7 @@ requests are ideally submitted via the `github issue tracker
    examples
    user_interface
    publications
+   community_guidelines
 
 Indices and tables
 ------------------

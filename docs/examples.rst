@@ -93,6 +93,13 @@ between 0-15, inclusive.
 Special features
 ================
 
+.. note::
+   In the subsections below, a list of special features of :program:`EDP` is given.
+   To visualize the results, we have made use of `NumPy <https://numpy.org/doc/stable/index.html>`_
+   and `Matplotlib <https://matplotlib.org/>`_.
+   These programs are typically readily available on Linux operating systems. The
+   scripts used below can be found `in the examples folder on Github <https://github.com/ifilot/edp/tree/master/examples>`_.
+
 Z-averaging
 -----------
 
