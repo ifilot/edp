@@ -165,7 +165,7 @@ to `line_extraction.txt`.
 
 Calculate the average electron density (or electrostatic potential) at a
 radius :math:`r \in 0,R` from an atom with 0.01 Å increments. The sampling
-points are based on the coordinates of the 23<sup>rd</sup> order Lebedev
+points are based on the coordinates of the 23\ :sup:`rd` order Lebedev
 quadrature. The result is written to `spherical_average.txt`.
 
 *Example*: ``-r 1,1.5``
