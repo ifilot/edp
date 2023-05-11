@@ -28,7 +28,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules )
 # prepare configuration file
 SET(VERSION_MAJOR "2")
 SET(VERSION_MINOR "0")
-SET(VERSION_MICRO "1")
+SET(VERSION_MICRO "2")
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_SOURCE_DIR}/config.h @ONLY)
 if(EXISTS "${CMAKE_SOURCE_DIR}/config.h")
     MESSAGE("[USER] Creating ${CMAKE_SOURCE_DIR}/config.h from ${CMAKE_SOURCE_DIR}/config.h.in")
@@ -87,27 +87,18 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 
 # Add sources
 file(GLOB SOURCES "*.cpp")
-add_executable(edp ${SOURCES})
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/edp.cpp)
 add_library(edpsources STATIC ${SOURCES})
+add_executable(edp ${CMAKE_CURRENT_SOURCE_DIR}/edp.cpp)
 
-# Set C++14
-add_definitions(-std=c++14)
+# Set c++17 and use march=native
+add_definitions(-std=c++17 -march=native)
 
 # Link libraries
-if(UNIX AND NOT APPLE)
-    SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath=\$ORIGIN/lib")
-endif()
-if(APPLE)
-    SET(CMAKE_MACOSX_RPATH TRUE)
-    SET_TARGET_PROPERTIES(edp PROPERTIES INSTALL_RPATH "@executable_path/lib")
-    target_link_libraries(edp ${Boost_LIBRARIES} ${CAIRO_LIBRARIES})
-else()
-    target_link_libraries(edp ${Boost_LIBRARIES} ${CAIRO_LIBRARIES})
-endif()
-
-# add Wno-literal-suffix to suppress warning messages
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
-
+target_link_libraries(edp
+                      edpsources
+                      ${Boost_LIBRARIES}
+                      ${CAIRO_LIBRARIES})
 
 if(NOT DISABLE_TEST)
     message("[USER] Performing unit tests")
