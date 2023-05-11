@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
             v[2] = boost::lexical_cast<double>(what[3]);
         } else if(boost::regex_match(v_str, what, re_scalar_2)) {
             v = ( sf.get_atom_position(boost::lexical_cast<unsigned int>(what[2])-1) -
-                  sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1)).normalized();
+                  sf.get_atom_position(boost::lexical_cast<unsigned int>(what[1])-1));
 
             // if the user has supplied a "xyz" directives, check which of these
             // vector components should be retained
@@ -194,6 +194,8 @@ int main(int argc, char *argv[]) {
                     v[2] = 0.0;
                 }
             }
+
+            v = v.normalized();
 
         } else {
             std::runtime_error("Could not obtain a vector v");

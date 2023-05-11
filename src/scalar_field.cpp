@@ -561,16 +561,13 @@ fpt ScalarField::get_value(unsigned int i, unsigned int j, unsigned int k) const
  *
  */
 Vec3 ScalarField::grid_to_realspace(fpt i, fpt j, fpt k) const {
+    // build direct coordinates
     fpt dx = (fpt)i / (fpt)grid_dimensions[0];
     fpt dy = (fpt)j / (fpt)grid_dimensions[1];
     fpt dz = (fpt)k / (fpt)grid_dimensions[2];
+    Vec3 d(dx, dy, dz);
 
-    Vec3 r;
-    r[0] = this->mat(0,0) * dx + this->mat(1,0) * dy + this->mat(2,0) * dz;
-    r[1] = this->mat(0,1) * dx + this->mat(1,1) * dy + this->mat(2,1) * dz;
-    r[2] = this->mat(0,2) * dx + this->mat(1,2) * dy + this->mat(2,2) * dz;
-
-    return r;
+    return this->mat.transpose() * d;
 }
 
 /*
@@ -598,13 +595,10 @@ Vec3 ScalarField::realspace_to_grid(fpt i, fpt j, fpt k) const {
  * Convert 3d realspace vector to direct position.
  *
  */
-Vec3 ScalarField::realspace_to_direct(fpt i, fpt j, fpt k) const {
-    Vec3 r;
-    r[0] = this->imat(0,0) * i + this->imat(0,1) * j + this->imat(0,2) * k;
-    r[1] = this->imat(1,0) * i + this->imat(1,1) * j + this->imat(1,2) * k;
-    r[2] = this->imat(2,0) * i + this->imat(2,1) * j + this->imat(2,2) * k;
+Vec3 ScalarField::realspace_to_direct(fpt x, fpt y, fpt z) const {
+    Vec3 r(x,y,z);
 
-    return r;
+    return this->imat.transpose() * r;
 }
 
 fpt ScalarField::get_max() const {
@@ -617,7 +611,7 @@ fpt ScalarField::get_min() const {
 
 Vec3 ScalarField::get_atom_position(unsigned int atid) const {
     if(atid < this->atom_pos.size()) {
-        return this->mat * this->atom_pos[atid];
+        return this->mat.transpose() * this->atom_pos[atid];
     } else {
         throw std::runtime_error("Requested atom id lies outside bounds");
     }

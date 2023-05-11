@@ -154,7 +154,7 @@ public:
 
     Vec3 grid_to_realspace(fpt i, fpt j, fpt k) const;
 
-    Vec3 realspace_to_grid(fpt i, fpt j, fpt k) const;
+    Vec3 realspace_to_grid(fpt x, fpt y, fpt z) const;
 
     Vec3 realspace_to_direct(fpt i, fpt j, fpt k) const;
 
