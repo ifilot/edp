@@ -28,7 +28,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules )
 # prepare configuration file
 SET(VERSION_MAJOR "2")
 SET(VERSION_MINOR "0")
-SET(VERSION_MICRO "2")
+SET(VERSION_MICRO "3")
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_SOURCE_DIR}/config.h @ONLY)
 if(EXISTS "${CMAKE_SOURCE_DIR}/config.h")
     MESSAGE("[USER] Creating ${CMAKE_SOURCE_DIR}/config.h from ${CMAKE_SOURCE_DIR}/config.h.in")
