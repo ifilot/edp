@@ -1,5 +1,5 @@
 name = 'EDP'
-version = '2.0.1'
+version = '2.0.3'
 
 homepage = 'https://edp.imc-tue.nl'
 description = "Electron Density Plotter"
@@ -11,7 +11,7 @@ sources = [{
     'git_config': {
         'url': 'https://github.com/ifilot',
         'repo_name': 'edp',
-        'tag': 'v2.0.1',
+        'tag': 'v2.0.3',
         'clone_into': 'edp',
     },
 }]
