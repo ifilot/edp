@@ -5,6 +5,7 @@
 [![Documentation](https://github.com/ifilot/edp/actions/workflows/docs.yml/badge.svg)](https://edp.imc-tue.nl)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![status](https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8/status.svg)](https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8)
+[![DOI](https://zenodo.org/badge/115362557.svg)](https://zenodo.org/badge/latestdoi/115362557)
 
 * Detailed documentation can be found at https://edp.imc-tue.nl.
 * See [the contributing guide](CONTRIBUTING.md) for detailed instructions how to make contributions.
