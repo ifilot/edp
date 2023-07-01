@@ -9,6 +9,8 @@ EDP: a program for projecting electron densities from VASP onto planes
    :target: https://www.gnu.org/licenses/gpl-3.0
 .. image:: https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8/status.svg
    :target: https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8
+.. image:: https://zenodo.org/badge/115362557.svg
+   :target: https://zenodo.org/badge/latestdoi/115362557
 
 :program:`EDP` is a C++ program designed to project the electron density as
 stored in a `CHGCAR <https://www.vasp.at/wiki/index.php/CHGCAR>`_
