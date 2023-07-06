@@ -1,0 +1,32 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Filot
+  given-names: I. A. W.
+  orcid: "https://orcid.org/0000-0003-1403-8379"
+contact:
+- family-names: Filot
+  given-names: I. A. W.
+  orcid: "https://orcid.org/0000-0003-1403-8379"
+doi: 10.5281/zenodo.8104498
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Filot
+    given-names: I. A. W.
+    orcid: "https://orcid.org/0000-0003-1403-8379"
+  date-published: 2023-07-06
+  doi: 10.21105/joss.05417
+  issn: 2475-9066
+  issue: 87
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5417
+  title: "EDP: a program for projecting electron densities from VASP
+    onto planes"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05417"
+  volume: 8
+title: "EDP: a program for projecting electron densities from VASP onto
+  planes"

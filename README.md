@@ -12,6 +12,23 @@
 * Bugs and feature requests are ideally submitted via the [gitlab issue tracker](https://github.com/ifilot/edp/issues).
 * The development team can also be reached by email via i.a.w.filot@tue.nl.
 
+If you make use of this program, please use the following to cite it:
+
+```bibtex
+@article{Filot2023,
+    doi = {10.21105/joss.05417},
+    url = {https://doi.org/10.21105/joss.05417},
+    year = {2023},
+    publisher = {The Open Journal},
+    volume = {8},
+    number = {87},
+    pages = {5417},
+    author = {I.a.w. Filot},
+    title = {EDP: a program for projecting electron densities from VASP onto planes},
+    journal = {Journal of Open Source Software}
+}
+```
+
 ## Purpose
 
 EDP is a C++ program designed to project the electron density as stored in a
