@@ -2,12 +2,12 @@
 
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/ifilot/edp?label=version)
 [![Build](https://github.com/ifilot/edp/actions/workflows/build.yml/badge.svg)](https://github.com/ifilot/edp/actions/workflows/build.yml)
-[![Documentation](https://github.com/ifilot/edp/actions/workflows/docs.yml/badge.svg)](https://edp.imc-tue.nl)
+[![Documentation](https://github.com/ifilot/edp/actions/workflows/docs.yml/badge.svg)](https://ifilot.github.io/edp/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![status](https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8/status.svg)](https://joss.theoj.org/papers/5544210e68408b1f00a6fb802b7745e8)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8104497.svg)](https://doi.org/10.5281/zenodo.8104497)
 
-* Detailed documentation can be found at https://edp.imc-tue.nl.
+* Detailed documentation can be found at https://ifilot.github.io/edp/.
 * See [the contributing guide](CONTRIBUTING.md) for detailed instructions how to make contributions.
 * Bugs and feature requests are ideally submitted via the [gitlab issue tracker](https://github.com/ifilot/edp/issues).
 * The development team can also be reached by email via i.a.w.filot@tue.nl.
