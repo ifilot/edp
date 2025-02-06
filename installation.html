@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; Electron Density Plotter  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Background" href="background.html" />
+    <link rel="prev" title="EDP: a program for projecting electron densities from VASP onto planes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Electron Density Plotter
+              <img src="_static/edp_logo_128.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#easybuild-installation">EasyBuild Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_interface.html">User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_guidelines.html">Community guidelines</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Electron Density Plotter</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div style="text-align: right;">
+<a href="https://github.com/ifilot/edp" target="_blank"><i class="fa-brands fa-github"></i> Github</a>
+</div>
+<hr>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="index-0">
+<span id="installation"></span><span id="id1"></span><h1>Installation<a class="headerlink" href="#index-0" title="Link to this heading"></a></h1>
+<p><strong class="program">EDP</strong> is developed for Linux operating systems. In order to compile
+<strong class="program">EDP</strong> on your system, you need to ensure the following libraries are
+available to you:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://eigen.tuxfamily.org">Eigen3</a> (matrix algebra)</p></li>
+<li><p><a class="reference external" href="https://www.cairographics.org/">Cairo graphics</a> (visualization)</p></li>
+<li><p><a class="reference external" href="https://www.boost.org/">Boost</a> (common routines)</p></li>
+<li><p><a class="reference external" href="https://tclap.sourceforge.net/">TCLAP</a> (command line instruction library)</p></li>
+<li><p><a class="reference external" href="https://sourceforge.net/projects/cppunit/">CPPUnit</a> (unit testing)</p></li>
+</ul>
+<p>On Debian-based operating systems, one can run the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">libeigen3</span><span class="o">-</span><span class="n">dev</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="n">libcairo2</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">libboost</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">dev</span> <span class="n">libtclap</span><span class="o">-</span><span class="n">dev</span> <span class="n">libcppunit</span><span class="o">-</span><span class="n">dev</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are running Windows and would like to use <strong class="program">EDP</strong>, one option
+is to use <a class="reference external" href="https://apps.microsoft.com/store/detail/debian/9MSVKQC78PK6">Debian for Windows Subsystem for Linux (WSL)</a>.
+The compilation instructions below can be readily used.</p>
+</div>
+<section id="compilation">
+<h2>Compilation<a class="headerlink" href="#compilation" title="Link to this heading"></a></h2>
+<p>Compilation of <strong class="program">EDP</strong> is fairly straightforward and a typical procedure
+looks as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ifilot</span><span class="o">/</span><span class="n">edp</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">edp</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">../</span><span class="n">src</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j9</span>
+</pre></div>
+</div>
+<p>To install <strong class="program">EDP</strong>, you can in addition run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>which will place a copy of the <code class="docutils literal notranslate"><span class="pre">edp</span></code> executable in <code class="docutils literal notranslate"><span class="pre">/usr/local/bin/edp</span></code>.</p>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<p>To test <strong class="program">EDP</strong>, one can run the following after compilation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>For verbose testing, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CTEST_OUTPUT_ON_FAILURE</span><span class="o">=</span><span class="n">TRUE</span> <span class="n">make</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>Typical output should look as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Running</span> <span class="n">tests</span><span class="o">...</span>
+<span class="n">Test</span> <span class="n">project</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="n">PROGRAMMING</span><span class="o">/</span><span class="n">CPP</span><span class="o">/</span><span class="n">edp</span><span class="o">/</span><span class="n">build</span>
+    <span class="n">Start</span> <span class="mi">1</span><span class="p">:</span> <span class="n">DatasetSetup</span>
+<span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="n">Test</span> <span class="c1">#1: DatasetSetup .....................   Passed    4.62 sec</span>
+    <span class="n">Start</span> <span class="mi">3</span><span class="p">:</span> <span class="n">TestProjection</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">4</span> <span class="n">Test</span> <span class="c1">#3: TestProjection ...................   Passed    2.32 sec</span>
+    <span class="n">Start</span> <span class="mi">4</span><span class="p">:</span> <span class="n">TestScalarField</span>
+<span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="n">Test</span> <span class="c1">#4: TestScalarField ..................   Passed    0.29 sec</span>
+    <span class="n">Start</span> <span class="mi">2</span><span class="p">:</span> <span class="n">DatasetCleanup</span>
+<span class="mi">4</span><span class="o">/</span><span class="mi">4</span> <span class="n">Test</span> <span class="c1">#2: DatasetCleanup ...................   Passed    0.00 sec</span>
+
+<span class="mi">100</span><span class="o">%</span> <span class="n">tests</span> <span class="n">passed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">tests</span> <span class="n">failed</span> <span class="n">out</span> <span class="n">of</span> <span class="mi">4</span>
+
+<span class="n">Total</span> <span class="n">Test</span> <span class="n">time</span> <span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">=</span>   <span class="mf">7.29</span> <span class="n">sec</span>
+</pre></div>
+</div>
+</section>
+<section id="easybuild-installation">
+<h2>EasyBuild Installation<a class="headerlink" href="#easybuild-installation" title="Link to this heading"></a></h2>
+<p>For HPC infrastructure, there is also the option to install <cite>EDP</cite> using
+<a class="reference external" href="https://easybuild.io/">EasyBuild</a>. Make a copy of <cite>EDP-2.0.1.eb</cite> and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eb</span> <span class="n">EDP</span><span class="o">-</span><span class="mf">2.0.1</span><span class="o">.</span><span class="n">eb</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="EDP: a program for projecting electron densities from VASP onto planes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="background.html" class="btn btn-neutral float-right" title="Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Inorganic Materials and Catalysis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H71EPP6GVB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-H71EPP6GVB', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

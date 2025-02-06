@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; Electron Density Plotter  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Interface" href="user_interface.html" />
+    <link rel="prev" title="Background" href="background.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Electron Density Plotter
+              <img src="_static/edp_logo_128.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#electron-density-projection">Electron density projection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-bounds-and-adding-legend">Setting bounds and adding legend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specifying-a-different-plane">Specifying a different plane</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#increasing-projection-plane-size">Increasing projection plane size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#color-schemes">Color schemes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#special-features">Special features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#z-averaging">Z-averaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#line-extraction">Line extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spherical-averaging">Spherical averaging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-systems">Model systems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#benzene">Benzene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methane">Methane</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aluminium-fcc-111">Aluminium FCC(111)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_interface.html">User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_guidelines.html">Community guidelines</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Electron Density Plotter</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div style="text-align: right;">
+<a href="https://github.com/ifilot/edp" target="_blank"><i class="fa-brands fa-github"></i> Github</a>
+</div>
+<hr>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="index-0">
+<span id="examples"></span><span id="id1"></span><h1>Examples<a class="headerlink" href="#index-0" title="Link to this heading"></a></h1>
+<p>A series of typical usage scenarios are given, including the result and the
+source code.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Three different model systems are used in the examples below. More information on these model systems can be found under <a class="reference internal" href="#model-systems"><span class="std std-ref">Model systems</span></a>.</p></li>
+<li><p>The examples below can be reproduced from the electron  density files as stored in <code class="docutils literal notranslate"><span class="pre">dataset.tar.bz2</span></code> which can be found under <code class="docutils literal notranslate"><span class="pre">src/test/testinput</span></code>.</p></li>
+<li><p>It is assumed that the executable <code class="docutils literal notranslate"><span class="pre">edp</span></code> is available from the <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>.</p></li>
+</ul>
+</div>
+<section id="electron-density-projection">
+<h2>Electron density projection<a class="headerlink" href="#electron-density-projection" title="Link to this heading"></a></h2>
+<p>Consider the benzene molecule, centered in a rectangular unit cell with dimensions
+<cite>14.313320 Å x 14.980580 Å x 10.000000 Å</cite>. To generate a projection of the
+electron density onto a plane spanned by the normal vectors <span class="math notranslate nohighlight">\(\vec{v} = (1,0,0)\)</span>
+and <span class="math notranslate nohighlight">\(\vec{w} = (0,1,0)\)</span> going through the center of the unit cell, the following
+command in run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">PARCHG_BENZENE_07</span> <span class="o">-</span><span class="n">o</span> <span class="n">benzene_xy</span><span class="o">.</span><span class="n">png</span> \
+<span class="o">-</span><span class="n">p</span> <span class="mf">7.15666</span><span class="p">,</span><span class="mf">7.49029</span><span class="p">,</span><span class="mf">5.0</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="Projection of the electron density of benzene through the xy plane." src="_images/benzene_xy_01.png" />
+</figure>
+<p>If no bounds are set, the electron density is by default projected according to
+<span class="math notranslate nohighlight">\(\rho \in (10^{-7},10^{2})\)</span>.</p>
+<section id="setting-bounds-and-adding-legend">
+<h3>Setting bounds and adding legend<a class="headerlink" href="#setting-bounds-and-adding-legend" title="Link to this heading"></a></h3>
+<p>To set the bounds of the electron density to <span class="math notranslate nohighlight">\(\rho \in (10^{-5},10^{0})\)</span>
+and add a legend to the plot, the following command is used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">PARCHG_BENZENE_07</span> <span class="o">-</span><span class="n">o</span> <span class="n">benzene_xy</span><span class="o">.</span><span class="n">png</span> \
+<span class="o">-</span><span class="n">p</span> <span class="mf">7.15666</span><span class="p">,</span><span class="mf">7.49029</span><span class="p">,</span><span class="mf">5.0</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">l</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="Projection of the electron density of benzene through the xy plane including legend and setting new bounds." src="_images/benzene_xy_02.png" />
+</figure>
+<p>Instead of specifying the center of unit the unit cell by hand, we can perform the
+same operation by using atom indices. Since all the atoms lie on the <span class="math notranslate nohighlight">\(xy\)</span>-
+plane through the center of the unit cell, we can pick any atom. Here, we have
+used the first atom:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">PARCHG_BENZENE_07</span> <span class="o">-</span><span class="n">o</span> <span class="n">benzene_xy</span><span class="o">.</span><span class="n">png</span> <span class="o">-</span><span class="n">p</span> <span class="mi">1</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">l</span>
+</pre></div>
+</div>
+</section>
+<section id="specifying-a-different-plane">
+<h3>Specifying a different plane<a class="headerlink" href="#specifying-a-different-plane" title="Link to this heading"></a></h3>
+<p>To produce the projection onto the <span class="math notranslate nohighlight">\(xz\)</span>-plane through the first carbon atom,
+the following command is used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">PARCHG_BENZENE_07</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">p</span> <span class="mi">1</span> <span class="o">-</span><span class="n">o</span> <span class="n">benzene_xz</span><span class="o">.</span><span class="n">png</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">l</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="Projection of the electron density of benzene through the xz plane." src="_images/benzene_xz_01.png" />
+</figure>
+</section>
+<section id="increasing-projection-plane-size">
+<h3>Increasing projection plane size<a class="headerlink" href="#increasing-projection-plane-size" title="Link to this heading"></a></h3>
+<p>To increase the scale of the image, we can use 30 pixels/Å instead of
+25 pixels/Å as used in the previous examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">PARCHG_BENZENE_07</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="o">-</span><span class="n">s</span> <span class="mi">30</span> <span class="o">-</span><span class="n">p</span> <span class="mi">1</span> <span class="o">-</span><span class="n">o</span> <span class="n">benzene_xz</span><span class="o">.</span><span class="n">png</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">l</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="Projection of the electron density of benzene through the xz plane." src="_images/benzene_xz_02.png" />
+</figure>
+</section>
+</section>
+<section id="color-schemes">
+<h2>Color schemes<a class="headerlink" href="#color-schemes" title="Link to this heading"></a></h2>
+<p><strong class="program">EDP</strong> supports 16 color schemes as schematically shown in the image
+below. To select a color scheme, append the following to the command line
+instructions: <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">&lt;color-scheme-id&gt;</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;color-scheme-id&gt;</span></code> should be a number
+between 0-15, inclusive.</p>
+<figure class="align-default">
+<img alt="Set of 16 different color schemes." src="_images/color_schemes.jpg" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The color schemes are extracted from the following resources.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://colorbrewer2.org">Color brewer 2.0</a></p></li>
+<li><p><a class="reference external" href="http://tristen.ca/hcl-picker/#/hlc/6/1.05/CAF270/453B52">Colorpicker for data (tristen.ca)</a></p></li>
+<li><p><a class="reference external" href="http://gka.github.io/palettes">Chroma.js Color Scale Helper</a></p></li>
+<li><p><a class="reference external" href="http://paletton.com/">Paletton</a></p></li>
+</ul>
+</div>
+</section>
+<section id="special-features">
+<h2>Special features<a class="headerlink" href="#special-features" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the subsections below, a list of special features of <strong class="program">EDP</strong> is given.
+To visualize the results, we have made use of <a class="reference external" href="https://numpy.org/doc/stable/index.html">NumPy</a>
+and <a class="reference external" href="https://matplotlib.org/">Matplotlib</a>.
+These programs are typically readily available on Linux operating systems. The
+scripts used below can be found <a class="reference external" href="https://github.com/ifilot/edp/tree/master/examples">in the examples folder on Github</a>.</p>
+</div>
+<section id="z-averaging">
+<h3>Z-averaging<a class="headerlink" href="#z-averaging" title="Link to this heading"></a></h3>
+<p>Consider the <span class="math notranslate nohighlight">\((111)\;2x2\)</span> termination of FCC Al using 7 layers. Besides
+projecting the electron density onto the plane, we can supply an additional instruction
+to calculate the total electron density per plane lying in the <span class="math notranslate nohighlight">\(z\)</span>-direction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">CHGCAR_Al_FCC111</span> <span class="o">-</span><span class="n">o</span> <span class="n">al_fcc111_xz</span><span class="o">.</span><span class="n">png</span> \
+<span class="o">-</span><span class="n">p</span> <span class="mi">28</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">l</span> <span class="o">-</span><span class="n">z</span>
+</pre></div>
+</div>
+<p>The result is stored in <cite>z_extraction.txt</cite> which can be readily visualized using
+a simple Python script.</p>
+<figure class="align-default">
+<img alt="Electron density at height z." src="_images/al_fcc111_zavg.jpg" />
+</figure>
+</section>
+<section id="line-extraction">
+<h3>Line extraction<a class="headerlink" href="#line-extraction" title="Link to this heading"></a></h3>
+<p>Consider the methane molecule at the center of a cubic unit cell of length 10 Å.
+We wish to calculate the average electron density alongside a line running through
+the central carbon atom to one of the H atoms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">CHGCAR_CH4</span> <span class="o">-</span><span class="n">o</span> <span class="n">ch4</span><span class="o">.</span><span class="n">png</span> \
+<span class="o">-</span><span class="n">p</span> <span class="mi">1</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">e</span> <span class="mi">1</span><span class="o">-</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>The result is stored in <cite>line_extraction.txt</cite>.</p>
+<figure class="align-default">
+<img alt="Electron density alongside C-H coordinate in methane." src="_images/ch4_line.jpg" />
+</figure>
+<p>Note that the electron density is plotted between 0 and ~17.5 Å. This corresponds
+to the tridiagonal of the cubic unit cell which has size <span class="math notranslate nohighlight">\(\sqrt{3} * 10 \approx 17.32\)</span> Å.</p>
+</section>
+<section id="spherical-averaging">
+<h3>Spherical averaging<a class="headerlink" href="#spherical-averaging" title="Link to this heading"></a></h3>
+<p>Consider the methane molecule at the center of a cubic unit cell of length 10 Å.
+We wish to calculate the average electron density surrounding the central
+carbon atom. This can be done using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edp</span> <span class="o">-</span><span class="n">i</span> <span class="n">CHGCAR_CH4</span> <span class="o">-</span><span class="n">o</span> <span class="n">ch4</span><span class="o">.</span><span class="n">png</span> \
+<span class="o">-</span><span class="n">p</span> <span class="mi">1</span> <span class="o">-</span><span class="n">v</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="mi">25</span> <span class="o">-</span><span class="n">r</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>The result is stored in <cite>spherical_average.txt</cite>.</p>
+<figure class="align-default">
+<img alt="Average electron density at radial position r surrounding C in methane." src="_images/ch4_spherical_average.jpg" />
+</figure>
+</section>
+</section>
+<section id="model-systems">
+<h2>Model systems<a class="headerlink" href="#model-systems" title="Link to this heading"></a></h2>
+<p>In the examples as shown on this page, three model systems have been used. The
+files to reproduce these calculations can be found
+<a class="reference external" href="https://github.com/ifilot/edp/tree/master/examples/model_systems_input">here</a>.</p>
+<section id="benzene">
+<h3>Benzene<a class="headerlink" href="#benzene" title="Link to this heading"></a></h3>
+<figure class="align-default">
+<img alt="Benzene molecule inside its unit cell." src="_images/benzene_top.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="n">C</span>  <span class="n">H</span>                                   
+<span class="linenos"> 2</span>   <span class="mf">1.0000000000000000</span>     
+<span class="linenos"> 3</span>    <span class="mf">14.3133200000000009</span>    <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 4</span>     <span class="mf">0.0000000000000000</span>   <span class="mf">14.9805799999999998</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 5</span>     <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>   <span class="mf">10.0000000000000000</span>
+<span class="linenos"> 6</span>   <span class="n">C</span>    <span class="n">H</span> 
+<span class="linenos"> 7</span>     <span class="mi">6</span>     <span class="mi">6</span>
+<span class="linenos"> 8</span><span class="n">Direct</span>
+<span class="linenos"> 9</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5933244878604808</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">10</span>  <span class="mf">0.4154116501391032</span>  <span class="mf">0.5466643642949370</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">11</span>  <span class="mf">0.4154116501391032</span>  <span class="mf">0.4533356357050631</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">12</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.4066755121395193</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">13</span>  <span class="mf">0.5845883498608969</span>  <span class="mf">0.4533356357050631</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">14</span>  <span class="mf">0.5845883498608969</span>  <span class="mf">0.5466643642949370</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">15</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.6661748879618772</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">16</span>  <span class="mf">0.3493793251819203</span>  <span class="mf">0.5830873759075694</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">17</span>  <span class="mf">0.3493793251819203</span>  <span class="mf">0.4169126240924306</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">18</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.3338251120381229</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">19</span>  <span class="mf">0.6506206748180797</span>  <span class="mf">0.4169126240924306</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">20</span>  <span class="mf">0.6506206748180797</span>  <span class="mf">0.5830873759075694</span>  <span class="mf">0.5000000000000000</span>
+</pre></div>
+</div>
+</section>
+<section id="methane">
+<h3>Methane<a class="headerlink" href="#methane" title="Link to this heading"></a></h3>
+<figure class="align-default">
+<img alt="Methane molecule inside its unit cell." src="_images/ch4_top.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">CH4</span>                                     
+<span class="linenos"> 2</span>   <span class="mf">1.0000000000000000</span>     
+<span class="linenos"> 3</span>    <span class="mf">10.0000000000000000</span>    <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 4</span>     <span class="mf">0.0000000000000000</span>   <span class="mf">10.0000000000000000</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 5</span>     <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>   <span class="mf">10.0000000000000000</span>
+<span class="linenos"> 6</span>   <span class="n">C</span>    <span class="n">H</span> 
+<span class="linenos"> 7</span>     <span class="mi">1</span>     <span class="mi">4</span>
+<span class="linenos"> 8</span><span class="n">Direct</span>
+<span class="linenos"> 9</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">10</span>  <span class="mf">0.4366541535484265</span>  <span class="mf">0.4366541535484265</span>  <span class="mf">0.4366541535484265</span>
+<span class="linenos">11</span>  <span class="mf">0.5633458464515737</span>  <span class="mf">0.5633458464515736</span>  <span class="mf">0.4366541535484265</span>
+<span class="linenos">12</span>  <span class="mf">0.4366541535484265</span>  <span class="mf">0.5633458464515737</span>  <span class="mf">0.5633458464515736</span>
+<span class="linenos">13</span>  <span class="mf">0.5633458464515736</span>  <span class="mf">0.4366541535484265</span>  <span class="mf">0.5633458464515737</span>
+</pre></div>
+</div>
+</section>
+<section id="aluminium-fcc-111">
+<h3>Aluminium FCC(111)<a class="headerlink" href="#aluminium-fcc-111" title="Link to this heading"></a></h3>
+<figure class="align-default">
+<img alt="(111) termination of Al/FCC bulk." src="_images/Al111_top.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">Al</span>                                      
+<span class="linenos"> 2</span>   <span class="mf">1.0000000000000000</span>     
+<span class="linenos"> 3</span>     <span class="mf">5.7275649276110352</span>    <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 4</span>     <span class="mf">2.8637824638055176</span>    <span class="mf">4.9602167291359347</span>    <span class="mf">0.0000000000000000</span>
+<span class="linenos"> 5</span>     <span class="mf">0.0000000000000000</span>    <span class="mf">0.0000000000000000</span>   <span class="mf">34.0296115413079079</span>
+<span class="linenos"> 6</span>   <span class="n">Al</span>
+<span class="linenos"> 7</span>    <span class="mi">28</span>
+<span class="linenos"> 8</span><span class="n">Direct</span>
+<span class="linenos"> 9</span>  <span class="mf">0.0000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.2948892147472962</span>
+<span class="linenos">10</span>  <span class="mf">0.5000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.2948892147472962</span>
+<span class="linenos">11</span>  <span class="mf">0.0000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.2948892147472962</span>
+<span class="linenos">12</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.2948892147472962</span>
+<span class="linenos">13</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.3640369018627199</span>
+<span class="linenos">14</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.3640369018627199</span>
+<span class="linenos">15</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.3640369018627199</span>
+<span class="linenos">16</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.3640369018627199</span>
+<span class="linenos">17</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.4317507348766002</span>
+<span class="linenos">18</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.4317507348766002</span>
+<span class="linenos">19</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.4317507348766002</span>
+<span class="linenos">20</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.4317507348766002</span>
+<span class="linenos">21</span>  <span class="mf">0.0000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">22</span>  <span class="mf">0.5000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">23</span>  <span class="mf">0.0000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">24</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>
+<span class="linenos">25</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.5682492651233999</span>
+<span class="linenos">26</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.5682492651233999</span>
+<span class="linenos">27</span>  <span class="mf">0.1666666666666643</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.5682492651233999</span>
+<span class="linenos">28</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.6666666666666643</span>  <span class="mf">0.5682492651233999</span>
+<span class="linenos">29</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.6359630981372800</span>
+<span class="linenos">30</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.6359630981372800</span>
+<span class="linenos">31</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.6359630981372800</span>
+<span class="linenos">32</span>  <span class="mf">0.3333333333333357</span>  <span class="mf">0.8333333333333357</span>  <span class="mf">0.6359630981372800</span>
+<span class="linenos">33</span>  <span class="mf">0.0000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.7051107852527040</span>
+<span class="linenos">34</span>  <span class="mf">0.5000000000000000</span> <span class="o">-</span><span class="mf">0.0000000000000000</span>  <span class="mf">0.7051107852527040</span>
+<span class="linenos">35</span>  <span class="mf">0.0000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.7051107852527040</span>
+<span class="linenos">36</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.5000000000000000</span>  <span class="mf">0.7051107852527040</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="background.html" class="btn btn-neutral float-left" title="Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="user_interface.html" class="btn btn-neutral float-right" title="User Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Inorganic Materials and Catalysis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H71EPP6GVB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-H71EPP6GVB', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
